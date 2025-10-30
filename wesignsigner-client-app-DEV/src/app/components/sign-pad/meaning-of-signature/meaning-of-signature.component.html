@@ -1,0 +1,36 @@
+<div>
+    <h3>{{'SIGN_PAD.MEANING_OF_SIGNATURE' | translate}}</h3>
+    <div class="ct-separator"></div>
+    <div class="ct-break--short"></div>
+
+    <span>{{'SIGN_PAD.MEANING_OF_SIGNATURE_POPUP' | translate}}</span>
+    <div class="ct-break--short"></div>
+    <div>
+        <label>
+            {{'SIGN_PAD.MEANING_OF_SIGNATURE_SIGNER_NAME' | translate}} : {{signerName}}            
+        </label>
+    </div>
+    <div>
+        <label>
+            {{'SIGN_PAD.MEANING_OF_SIGNATURE' | translate}} :        
+        </label>
+        <select class="ct-select--primary" style="width: 270px;margin: 10px;" id="meaningOfSignature" name="meaningOfSignature"
+        #meaning
+        (change)="onSelected(meaning.value)">
+            <option></option>
+            <ng-container *ngFor="let option of meaningOptions">
+                <option>{{option}}</option>
+            </ng-container>
+        </select>
+    </div>
+    <div class="ct-break--short"></div>
+    <div class="ct-separator"></div>
+    <div class="ct-break--short"></div>
+    <div class="ct-float-right">
+        <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+        <button class="ct-button--primary" [disabled]="meansSelectedValue == ''" (click)="continue()">{{'BUTTONS.SUBMIT' | translate}}</button>
+      </div>
+
+   
+</div>

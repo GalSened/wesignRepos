@@ -1,0 +1,324 @@
+<div class="ct-c-signature-panel" [class.ct-is-hidden]="!show" [class.ct-is-shown]="show">
+
+
+    <div class="signature-panel__overlay">
+        <div class="signature-panel__container">
+            <nav>
+                <button class="tablinks" (click)="changeSection('Draw')" [class.ct-is-hidden]="isInitialsSignaturePad"
+                    id="drawButton">{{'SIGN_PAD.DRAW' | translate}}</button>
+
+                <button class="tablinks" (click)="changeSection('Graphic')"
+                    [class.ct-is-hidden]="isInitialsSignaturePad">{{'SIGN_PAD.GRAPHIC' | translate}}</button>
+
+                <button class="tablinks" (click)="changeSection('Initials')">{{'SIGN_PAD.INITIALS' |
+                    translate}}</button>
+            </nav>
+
+            <div id="Draw" class="tabcontent is-active">
+                <div class="ct-c-signature-pad">
+                    <span>{{'SIGN_PAD.DRAW_YOUR_SIG' | translate}}</span>
+
+                    <div class="signature-pad__canvas" #area>
+                        <ngx-signature-pad [config]="signaturePadOptions" style="cursor: crosshair;">
+                        </ngx-signature-pad>
+                    </div>
+
+                    <div class="canvas__drawline">
+                        <a (click)="clear($event)">{{'SIGN_PAD.CLEAR' | translate}}</a>
+                    </div>
+                </div>
+
+                <section>
+                    <ng-container *ngIf="currentSelectedSection == 'Draw'">
+                        <div>
+
+                            <label class="ct-radio ct-text-left">
+                                <span>{{'SIGN_PAD.NONE' | translate}}</span>
+
+                                <input type="radio" id="1" name="sigType" checked (click)="ChangedSigningType(1)">
+
+                                <span id="span1" class="ct-radio__checkmark"></span>
+                            </label>
+
+                            <span>&nbsp;&nbsp;</span>
+
+                            <label class="ct-radio ct-text-left" *ngIf="userProgram.serverSignature">
+                                <span>{{'SIGN_PAD.SERVER' | translate}}</span>
+
+                                <input type="radio" id="3" name="sigType" (click)="ChangedSigningType(3)">
+
+                                <span id="span3" class="ct-radio__checkmark"></span>
+                            </label>
+                            <span>&nbsp;&nbsp;</span>
+
+                            <label class="ct-radio ct-text-left" *ngIf="userProgram.smartCard">
+                                <span>{{'SIGN_PAD.CARD' | translate}}</span>
+
+                                <input type="radio" id="2" name="sigType" (click)="ChangedSigningType(2)">
+
+                                <span id="span2" class="ct-radio__checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="ct-break--short"></div>
+                        <label class="ct-checkbox ct-text-left">
+                            <span>{{'SIGN_PAD.SET_IMAGE_TO_ALL_SIGNATURES' | translate}}</span>
+                            <!-- <input type="checkbox" [(ngModel)]="shouldSetImageToAllSigntures"> -->
+                               <input type="checkbox"
+       [checked]="shouldSetImageToAllSigntures"
+       (change)="onShouldSetImageToAllSignturesChange($event.target.checked)">
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>
+                        <div class="ct-break--short"></div>
+                        <label class="ct-checkbox ct-text-left">
+                            <span>{{'SIGN_PAD.SAVE_SIGNATURE_MESSAGE' | translate}}</span>
+                            <input type="checkbox" [(ngModel)]="shouldSaveThisSignature">
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>
+                    
+                        <div *ngIf="signaturesImages && signaturesImages.length > 0">
+                            <div class="ct-break--short"></div>
+                            <span>{{'SIGN_PAD.SAVED_SIGNATURE_IMAGES' | translate}}</span>
+                            <div class="ct-break--short"></div>
+
+                            <ng-container *ngFor="let signaturesImage of signaturesImages ; let i = index"
+                                #contactSignatureImageCanvas>
+                                <button style="height: auto; margin-left: 10px;" class="ct-c-initials">
+                                    <img id="{{'contactSignatureImageCanvas' + i}}" (click)="selectContactSignature(i)"
+                                        src="{{signaturesImage}}"
+                                        style="max-height: 60px; max-width: 110px; width: auto; height: auto;">
+
+                                </button>
+                            </ng-container>
+                        </div>
+                        <div class="ct-break--short"></div>
+                        <div class="ct-separator"></div>
+                    </ng-container>
+                    <ng-container *ngIf="show && this.field.signingType == 2">
+                        <div class="ct-break--short"></div>
+                        <div class="ct-text-center">
+                            <label class="color--alert">{{'DOCUMENT.SMART_CARD_INSTALLER_GUIDE' | translate}}</label>
+                        </div>
+                    </ng-container>
+                    <div class="ct-break--short"></div>
+                    <div class="ct-float-right"><button class="ct-button--outline"
+                            (click)="cancel($event)">{{'BUTTONS.CANCEL' |
+                            translate}}</button>
+                        <button *ngIf="show && this.field.signingType == 2" [disabled]="isBusy"
+                            class="ct-button--outline"
+                            (click)="downloadSmartCardInstaller()">{{'BUTTONS.DOWNLOAD_INSTALLER' | translate}}</button>
+                        <button class="ct-button--primary" style="margin: 0 10px" (click)="done()"
+                            [disabled]="signaturePad.isEmpty()">{{'BUTTONS.SIGN' |
+                            translate}}</button>
+                    </div>
+
+                    <div class="ct-is-clear"></div>
+                </section>
+
+
+            </div>
+
+            <div id="Graphic" class="tabcontent">
+                <div class="ct-break--shorter"></div>
+
+                <div class="ct-c-file-upload">
+                    <form>
+                        <div class="ct-is-clear"></div>
+
+                        <input type="file" #fileInput id="fileInput" name="fileInput" accept="image/*"
+                            (click)="fileInput.value = null" (change)="fileDropped($event)" />
+
+                        <span id="mtxt">{{'SIGN_PAD.DROP' | translate}}</span>
+                        <div class="ct-break--shorter"></div>
+                        <button class="ct-button--outline" (click)="fileInput.click()">{{'BUTTONS.UPLOAD' |
+                            translate}}</button>
+
+                    </form>
+                </div>
+
+                <div class="ct-break--short"></div>
+
+                <section>
+                    <div class="ct-separator"></div>
+
+                    <ng-container *ngIf="currentSelectedSection == 'Graphic'">
+                        <div>
+
+                            <label class="ct-radio ct-text-left">
+                                <span>{{'SIGN_PAD.NONE' | translate}}</span>
+
+                                <input type="radio" id="1" name="sigType" checked (click)="ChangedSigningType(1)">
+
+                                <span id="span1" class="ct-radio__checkmark"></span>
+                            </label>
+
+                            <span>&nbsp;&nbsp;</span>
+
+                            <label class="ct-radio ct-text-left" *ngIf="userProgram.serverSignature">
+                                <span>{{'SIGN_PAD.SERVER' | translate}}</span>
+
+                                <input type="radio" id="3" name="sigType" (click)="ChangedSigningType(3)">
+
+                                <span id="span3" class="ct-radio__checkmark"></span>
+                            </label>
+                            <span>&nbsp;&nbsp;</span>
+
+                            <label class="ct-radio ct-text-left" *ngIf="userProgram.smartCard">
+                                <span>{{'SIGN_PAD.CARD' | translate}}</span>
+
+                                <input type="radio" id="2" name="sigType" (click)="ChangedSigningType(2)">
+
+                                <span id="span2" class="ct-radio__checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="ct-break--short"></div>
+                        <label class="ct-checkbox ct-text-left">
+                            <span>{{'SIGN_PAD.SET_IMAGE_TO_ALL_SIGNATURES' | translate}}</span>
+    
+                            <!-- <input type="checkbox" [(ngModel)]="shouldSetImageToAllSigntures"> -->
+                             <input type="checkbox"
+       [checked]="shouldSetImageToAllSigntures"
+       (change)="onShouldSetImageToAllSignturesChange($event.target.checked)">
+
+    
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>
+                        <div class="ct-break--short"></div>
+                        <label class="ct-checkbox ct-text-left">
+                            <span>{{'SIGN_PAD.SAVE_SIGNATURE_MESSAGE' | translate}}</span>
+                            <input type="checkbox" [(ngModel)]="shouldSaveThisSignature">
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>
+                        <div *ngIf="signaturesImages && signaturesImages.length > 0">
+                            <div class="ct-break--short"></div>
+                            <span>{{'SIGN_PAD.SAVED_SIGNATURE_IMAGES' | translate}}</span>
+                            <div class="ct-break--short"></div>
+
+                            <ng-container *ngFor="let signaturesImage of signaturesImages ; let i = index"
+                                #contactSignatureImageCanvas>
+                                <button style="height: auto; margin-left: 10px;" class="ct-c-initials">
+                                    <img id="{{'contactSignatureImageCanvas' + i}}" (click)="selectContactSignature(i)"
+                                        src="{{signaturesImage}}"
+                                        style="max-height: 60px; max-width: 110px; width: auto; height: auto;">
+
+                                </button>
+                            </ng-container>
+                        </div>
+
+                        <div class="ct-separator"></div>
+                    </ng-container>
+                    <ng-container *ngIf="show && this.field.signingType == 2">
+                        <div class="ct-break--short"></div>
+                        <div class="ct-text-center">
+                            <label class="color--alert">{{'DOCUMENT.SMART_CARD_INSTALLER_GUIDE' | translate}}</label>
+                        </div>
+                    </ng-container>
+                    <div class="ct-break--short"></div>
+
+                    <div class="ct-float-right">
+                        <button class="ct-button--outline" (click)="cancel($event)">{{'BUTTONS.CANCEL' |
+                            translate}}</button>
+                        <button *ngIf="show && this.field.signingType == 2" [disabled]="isBusy"
+                            class="ct-button--outline"
+                            (click)="downloadSmartCardInstaller()">{{'BUTTONS.DOWNLOAD_INSTALLER' | translate}}</button>
+                    </div>
+                    <div class="ct-is-clear"></div>
+                </section>
+            </div>
+
+            <div id="Initials" class="tabcontent">
+                <div class="ct-break--shorter"></div>
+
+                <ng-container *ngFor="let textSignature of textSignatures ; let i = index">
+                    <button class="ct-c-initials" (click)="selcetCanvasName($event)">
+                        <canvas id="{{textSignature}}" style="height: 40px; width: 168px;"> </canvas>
+                    </button>
+                </ng-container>
+
+                <div class="ct-break--short"></div>
+
+                <div class="ct-text-center" *ngIf="showError">
+                    <label class="is-error">{{'SIGN_PAD.SELECT_IMAGE' | translate}}</label>
+                    <div class="ct-break--shorter"></div>
+                </div>
+
+                <section>
+                    <div class="ct-separator"></div>
+
+
+                    <span>{{'SIGN_PAD.FONT' | translate}}</span>
+
+                    <div class="ct-break--shorter"></div>
+
+                    <select class="ct-select--primary" id="fonts" [(ngModel)]="selectedFont" (change)="changeFont()">
+                        <option></option>
+                        <ng-container *ngFor="let font of fonts">
+                            <option>{{font}}</option>
+                        </ng-container>
+                    </select>
+                    <div class="ct-separator"></div>
+                    <ng-container *ngIf="currentSelectedSection == 'Initials'">
+                        <div>
+
+                            <label class="ct-radio ct-text-left">
+                                <span>{{'SIGN_PAD.NONE' | translate}}</span>
+
+                                <input type="radio" id="1" name="sigType" checked (click)="ChangedSigningType(1)">
+
+                                <span id="span1" class="ct-radio__checkmark"></span>
+                            </label>
+
+                            <span>&nbsp;&nbsp;</span>
+
+                            <label class="ct-radio ct-text-left" *ngIf="userProgram.serverSignature">
+                                <span>{{'SIGN_PAD.SERVER' | translate}}</span>
+
+                                <input type="radio" id="3" name="sigType" (click)="ChangedSigningType(3)">
+
+                                <span id="span3" class="ct-radio__checkmark"></span>
+                            </label>
+                            <span>&nbsp;&nbsp;</span>
+
+                            <label class="ct-radio ct-text-left" *ngIf="userProgram.smartCard">
+                                <span>{{'SIGN_PAD.CARD' | translate}}</span>
+
+                                <input type="radio" id="2" name="sigType" (click)="ChangedSigningType(2)">
+
+                                <span id="span2" class="ct-radio__checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="ct-break--short"></div>
+                        <label class="ct-checkbox ct-text-left">
+                            <span>{{'SIGN_PAD.SET_IMAGE_TO_ALL_SIGNATURES' | translate}}</span>
+    
+                            <!-- <input type="checkbox" [(ngModel)]="shouldSetImageToAllSigntures"> -->
+                               <input type="checkbox"
+       [checked]="shouldSetImageToAllSigntures"
+       (change)="onShouldSetImageToAllSignturesChange($event.target.checked)">
+    
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>
+                        <div class="ct-separator"></div>
+                    </ng-container>
+                    <ng-container *ngIf="show && this.field.signingType == 2">
+                        <div class="ct-break--short"></div>
+                        <div class="ct-text-center">
+                            <label class="color--alert">{{'DOCUMENT.SMART_CARD_INSTALLER_GUIDE' | translate}}</label>
+                        </div>
+                    </ng-container>
+                    <div class="ct-break--short"></div>
+
+                    <div class="ct-float-right">
+                        <button class="ct-button--outline" (click)="cancel($event)">{{'BUTTONS.CANCEL' |
+                            translate}}</button>
+                        <button *ngIf="show && this.field.signingType == 2" [disabled]="isBusy"
+                            class="ct-button--outline"
+                            (click)="downloadSmartCardInstaller()">{{'BUTTONS.DOWNLOAD_INSTALLER' | translate}}</button>
+
+                    </div>
+
+                    <div class="ct-is-clear"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>

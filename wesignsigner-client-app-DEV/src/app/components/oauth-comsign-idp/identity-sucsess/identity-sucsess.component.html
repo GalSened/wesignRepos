@@ -1,0 +1,57 @@
+
+
+<body class="ct-p-login">
+    <!--[if IE]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+      <![endif]-->
+  
+    <!-- Add your site or application content here 
+    
+    
+    
+            "FACE_RECOGNITION_FAILED":"זיהוי פנים נכשל!",
+        "IDENTIFICATION_WAS_UNSUCCESSFUL" : "הזיהוי לא הצליח",
+        "YOU_ARE_NOT_AUTHORIZED_TO_SIGN_THIS_DOCUMENT":"אינך מורשה לחתום על מסמך זה."
+      -->
+    <header>          
+      <div class="header__logo"></div> 
+           
+    </header>
+    <div>
+      <div class="center_data">
+        
+        
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" 
+type = "ball-clip-rotate-pulse" [fullScreen] = "true"><p style="color: white" > {{'GLOBAL.LOADING_CHECK_VALIDATION_RESULT' | translate}} </p></ngx-spinner>
+
+<ng-container  *ngIf="showVisualtIdentityOperationFailed">
+
+
+  <div class="ct-break--large"></div>
+
+  <div class="ct-i-face-recognition-general"></div>
+  <div class="ct-break--medium"></div>
+  <h1> {{'FACE_RECOGNITION.FACE_RECOGNITION_FAILED' | translate}}</h1>
+  <div class="ct-break--medium"></div>
+  <span>{{'FACE_RECOGNITION.IDENTIFICATION_WAS_UNSUCCESSFUL' | translate}}</span>
+  <br>
+  <span>{{'FACE_RECOGNITION.YOU_ARE_NOT_AUTHORIZED_TO_SIGN_THIS_DOCUMENT' | translate}}</span>
+  <div class="ct-break--large"></div>
+
+</ng-container>
+<ng-container *ngIf="showVisualtIdentityWrongUser">
+  <div class="ct-break--large"></div>
+
+  <div class="ct-i-face-recognition-falied"></div>
+  <div class="ct-break--medium"></div>
+  <h1> {{'FACE_RECOGNITION.IDENTIFY_YOU_NOT_THE_PERSON_TITLE' | translate}}</h1>
+  <div class="ct-break--medium"></div>
+  <span>{{'FACE_RECOGNITION.IDENTIFY_YOU_NOT_THE_PERSON' | translate}}</span>
+  <div class="ct-break--large"></div>
+
+</ng-container>
+</div>
+  
+  
+    </div>
+  </body>

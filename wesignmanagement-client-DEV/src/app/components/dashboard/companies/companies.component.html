@@ -1,0 +1,199 @@
+<ngx-spinner></ngx-spinner>
+
+<app-company-form *ngIf="isFormShown" [class.ws_is-hidden]="!isFormShown" [class.ws_is-shown]="isFormShown"
+    (removeCompanyForm)="hideForm($event)" [operation]='operation' [company]="company"
+    (bannerAlertEvent)="showBannerAlert($event)">
+</app-company-form>
+
+
+<div [class.ws_is-hidden]="isFormShown" [class.ws_is-shown]="!isFormShown">
+    <div class="ws_body__wrapper">
+        <!--alert-->
+        <app-banner-alert #bannerAlert></app-banner-alert>
+
+        <!--filters-->
+        <div class="ws_c-table-filter">
+            <div class="table-filter__icon">
+                <div class="ws_icon__filter"></div>
+            </div>
+
+
+            <input type="text" class="ws_search ws_search--table-filter" placeholder="Search..." #searchInput
+                [(ngModel)]="filter.key">
+        </div>
+    </div>
+
+    <!--info-->
+    <div class="ws_c-table-info">
+        <span>&nbsp;</span>
+
+        <button class="ws_button--table-info ws_float-right" [disabled]="!appState.IsActivated"
+            (click)="createCompany()">New Company</button>
+    </div>
+
+    <!--table-->
+    <table cellpadding="0" cellspacing="0" class="ws_animate-slide-down">
+        <tr class="header">
+            <th>Company Name
+                <button class="ws_button--icon ws_align-vert--middle" (click)="companyNameSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Company Admin Users
+            </th>
+            <th>Program
+                <button class="ws_button--icon ws_align-vert--middle" (click)="programSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th width="100">Expired In
+                <button class="ws_button--icon ws_align-vert--middle" (click)="expiredDateSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th width="140">Documents Usage Per Month
+                <button class="ws_button--icon ws_align-vert--middle" (click)="documentsUsagePerMonthSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th width="150">Templates Usage
+                <button class="ws_button--icon ws_align-vert--middle" (click)="templatesUsagePerMonthSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th width="140">Users Usage
+                <button class="ws_button--icon ws_align-vert--middle" (click)="usersUsagePerMonthSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th width="140">Sms Usage Per Month
+                <button class="ws_button--icon ws_align-vert--middle" (click)="smsUsagePerMonthSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th width="150">
+                <!--pagination-->
+                <div class="ws_pagination ws_float-right">
+                    <div paginator class="ws_float-right" *ngIf="pageCalc" [last]="pageCalc.endPage"
+                        (changed)="pageChanged($event)"></div>
+                </div>
+            </th>
+        </tr>
+        <ng-container *ngIf="companies$ | async as companies">
+            <ng-container *ngFor="let company of companies; index as i">
+
+                <tr class="ws_tr__menu" (click)="showCompanyUsers(company)">
+                    <td><span>{{company.name}}</span></td>
+                    <td>
+                        <div id="{{company.id}}">
+                            <app-custom-drop-down [options]="CollectionToOptions(company.companyAdminUsers)"
+                                [currentSelection]="company.companyAdminUsers!=null&&company.companyAdminUsers.length>0?company.companyAdminUsers[0]['item1']:''">
+                            </app-custom-drop-down>
+                        </div>
+                    </td>
+                    <td><span>{{company.programName}}</span></td>
+                    <td><span>{{company.exipredTime| date:'mediumDate'}}</span></td>
+                    <td><span>{{company.documents}}</span></td>
+                    <td><span>{{company.templates}}</span></td>
+                    <td><span>{{company.users}}</span></td>
+                    <td><span>{{company.sms}}</span></td>
+                    <td class="ws_text-right outer">
+                        <div class="ws_table-menu">
+
+                            <div class="table-menu__icon ws_tooltip"
+                                *ngIf="company.id != '00000000-0000-0000-0000-000000000001'">
+                                <button class="ws_button--icon" [disabled]="!appState.IsActivated"
+                                    (click)="openResendAlert()">
+                                    <div class="ws_icon__resend"></div>
+                                    <span class="ws_tooltip--resend-alt">Resend Password</span>
+                                </button>
+                            </div>
+
+                            <div class="table-menu__icon ws_tooltip"
+                                *ngIf="company.id != '00000000-0000-0000-0000-000000000001'">
+                                <button class="ws_button--icon" [disabled]="!appState.IsActivated"
+                                    (click)="editCompany(company)">
+                                    <div class="ws_icon__edit"></div>
+                                    <span class="ws_tooltip--edit">Edit</span>
+                                </button>
+                            </div>
+
+                            <div class="table-menu__icon ws_tooltip"
+                                *ngIf="company.id != '00000000-0000-0000-0000-000000000001'">
+                                <button class="ws_button--icon" [disabled]="!appState.IsActivated"
+                                    (click)="openDeletionAlert(company)">
+                                    <div class="ws_icon__delete"></div>
+                                    <span class="ws_tooltip--delete">Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <ng-container *ngIf="company.id==selectedCompanyId ">
+
+                <ng-container *ngIf="users$ | async as users ">
+                    <tr class="is-active " [class.ws_is-hidden]="!showUsers" [class.ws_display--table-row]="showUsers">
+                        <td colspan="9">
+                            <table>
+                                <tr class="inner inner-header">
+                                    <td width="50"></td>
+                                    <td width="200"><span>Name</span></td>
+                                    <td width="200"><span>Email</span></td>
+                                  
+                                    <td width="200"><span>Type</span></td>
+                                    <td><span>Group</span></td>
+                                    <!-- <td width="100"></td> -->
+                                </tr>
+                                <ng-container *ngFor="let user of users">
+
+                                    <tr class="inner">
+                                        <td>
+                                            <div class="ws_icon__email"></div>
+                                        </td>
+                                        <td><a>{{user.name}}</a></td>
+                                        <td><span>{{user.email}}</span></td>
+                                     
+                                        <td><span>{{UserType[user.type]}}</span></td>
+                                        <td><span>{{user.groupName}}</span></td>
+                                    </tr>
+                                </ng-container>
+
+                            </table>
+                        </td>
+                    </tr>
+                </ng-container>
+
+                <app-alert [class.ws_is-hidden]="!showDeletionAlert" [class.ws_is-shown]="showDeletionAlert"
+                    (removeDeletionAlert)="hideAlert()" (deleteOperation)="deleteCompany()" [itemName]='company.name'
+                    [itemType]="'Company'" [operationType]="'delete'">
+                </app-alert> 
+
+                <!--modal resend password-->
+                <div class="ws_overlay" [class.ws_is-hidden]="!showResendAlert" [class.ws_is-shown]="showResendAlert"
+                    id="js-modal-resend">
+                    <div class="ws_c-modal ws_text-center ws_animate-slide-down">
+                        <div class="ws_break--short"></div>
+
+                        <h1>Resend Password</h1>
+
+                        <div class="ws_break--short"></div>
+
+                        <h3>Would you like to resend password?</h3>
+
+                        <div class="ws_break--short"></div>
+
+                        <button class="ws_button--small ws_button--outline" (click)="closeResendAlert()">cancel</button>
+
+                        <button class="ws_button--small" (click)="resendResetPassword(company)">Resend</button>
+
+                        <div class="ws_break--short"></div>
+                    </div>
+                </div>
+
+            </ng-container>
+            </ng-container>
+        </ng-container>
+    </table>
+
+</div>

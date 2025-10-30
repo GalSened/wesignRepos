@@ -1,0 +1,6 @@
+{
+    "onlyCountries": ["ad", "au", "at", "bs", "by", "be", "br", "bg", "ca", "ky", "cy", "cz", "dk"
+        , "ee", "fi", "fr", "ge", "de", "gi", "gr", "ht", "hu", "ie", "il", "it", "lv", "li", "lt"
+        , "lu", "mv", "mt", "mh", "md", "nl", "nz", "pl", "pt", "ro", "ru", "sm", "rs", "sk", "si"
+        , "za", "es", "sz", "se", "ch", "tr", "ua", "ae", "gb", "us"]
+}

@@ -1,0 +1,49 @@
+
+    <button *ngIf="user$ | async as user" class="ws_button--icon ws_float-right">
+        <div class="ws_icon__plan--white ws_tooltip">
+            <span class="ws_tooltip--plan">              
+                 {{'GLOBAL.YOUR_PROGRAM_IS' | translate}} <h2>{{user.program.name}}</h2>
+
+                <div class="ws_separator"></div>
+
+                {{'GLOBAL.VALID_UNTIL' | translate}}<h2>{{user.program.expiredTime | date:'dd/MM/yyyy'}}</h2>
+                
+                <div class="ws_separator"></div>
+
+                {{'GLOBAL.DOCUMENT_LEFT' | translate}} <h2>{{user.program.remainingDocumentsForMonth}} {{'GLOBAL.OF' | translate}} {{ user.program.documentsForMonth}}</h2>
+
+            </span>
+        </div>
+    </button>
+
+<div class="ws_c-top-dropdown ws_float-right" *ngIf="user$ | async as user" (click)="showHeaderMenu = !showHeaderMenu"
+    (clickOutside)="showHeaderMenu = false">
+    <span>{{user.name}}</span>
+
+    <button class="ws_button--icon top-dropdown__icon ws_float-right">
+        <div class="ws_icon__arrow-down--white"></div>
+    </button>
+
+    <nav class="ws_text-right ws_is-hidden ws_animate-slide-down" [class.ws_is-hidden]="!showHeaderMenu"
+        [class.ws_is-shown]="showHeaderMenu">
+        <!-- <nav class="ws_text-right ws_is-hidden ws_animate-slide-down"
+        [ngClass]="{'ws_is-hidden':!showHeaderMenu,'ws_is-shown': showHeaderMenu}"> -->
+        <ul (click)="showHeaderMenu = !showHeaderMenu">
+            <li><a [routerLink]="['/dashboard','profile']">{{'GLOBAL.TOPMENU.VIEWPROFILE' | translate}}</a></li>
+
+            <li *ngIf="!tiny"><a [routerLink]="['/dashboard','main','contacts']">{{'GLOBAL.CONTACTS' | translate}}</a></li>
+
+            <!-- -->
+            <li *ngIf="!tiny && (user.type == userType.CompanyAdmin || user.type == userType.SystemAdmin )"  >
+                <a [routerLink]="['/dashboard','main','managment']" >{{'GLOBAL.MANAGEMENT' | translate}}  {{user.userType}}</a></li>
+
+            <li *ngIf="!tiny" class="ws_separator"></li>
+
+            <li><a [routerLink]="[ '/privacy']">{{'GLOBAL.TOPMENU.PRIVACY' | translate}}</a></li>
+
+            <li><a [routerLink]="[ '/terms']">{{'REGISTER.TERMS' | translate}}</a></li>
+
+            <li><a (click)="logout()">{{'GLOBAL.TOPMENU.SIGNOUT' | translate}}</a></li>
+        </ul>       
+    </nav>
+</div>

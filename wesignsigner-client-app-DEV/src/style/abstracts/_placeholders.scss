@@ -1,0 +1,101 @@
+// breaks
+.ct-break {
+  margin-bottom: 0;
+}
+
+.ct-break--shorter {
+  margin-bottom: 10px;
+}
+
+.ct-break--short {
+  margin-bottom: 25px;
+}
+
+.ct-break--medium {
+  margin-bottom: 50px;
+}
+
+.ct-break--large {
+  margin-bottom: 100px;
+}
+
+.ct-break--larger {
+  margin-bottom: 150px;
+}
+
+.ct-break-horizontal-short {
+  margin-left: 20px;
+}
+
+// float
+.ct-float-left {
+  float: left;
+}
+
+.ct-float-right {
+  float: right;
+}
+
+// display
+.ct-is-hidden {
+  display: none !important;
+}
+
+.ct-is-shown {
+  display: initial !important;
+}
+
+.ct-is-visible {
+  visibility: visible;
+}
+
+.ct-is-not-visible {
+  visibility: hidden;
+}
+
+// text align
+.ct-text-center {
+  text-align: center;
+}
+
+.ct-text-justify-center {
+  justify-content: center;
+}
+
+.ct-text-left {
+  text-align: left;
+}
+
+.ct-text-right {
+  text-align: right;
+}
+.ct-text-center {
+  text-align: center;
+}
+
+.ct-is-inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ct-flex {
+  display: flex;
+}
+
+// misc
+.ct-is-clear {
+  clear: both;
+}
+
+// colors
+.color--error {
+  color: $color--error !important;
+}
+
+.color--confirm {
+  color: $color--confirm !important;
+}
+
+.color--alert {
+  color: $color--alert !important;
+}

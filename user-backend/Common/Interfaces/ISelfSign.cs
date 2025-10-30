@@ -1,0 +1,22 @@
+﻿namespace Common.Interfaces
+{
+    using Common.Enums.Documents;
+    using Common.Models;
+    using Common.Models.Documents.Signers;
+    using Common.Models.Documents.SplitSignature;
+    using System;
+    using System.Threading.Tasks;
+
+    public interface ISelfSign
+    {
+        //TODO support multi templates
+        Task<DocumentCollection> Create(Template selfSignTemplate, string remoteIpAddress);
+        Task<SelfSignUpdateDocumentResult> Update(DocumentCollection documentCollection, DocumentOperation operation, bool useForAllFields = false);
+        //Task<SelfSignUpdateDocumentResult> UpdateGovDocument(DocumentCollection documentCollection);
+        Task Delete(DocumentCollection documentCollection);
+        Task<Signer1FileSigingResult> SignFileUsingSigner1(Signer1FileSiging signer1FileSiging);
+        Task VerifySigner1Credential(SignerAuthentication input);
+        Task<Guid> CreateSmartCardSigningFlow(SmartCardSigningFlow smartCardSigningFlow);
+        Task<SplitDocumentProcess> ProcessAfterSignerAuth(IdentityFlow identityFlow);
+    }
+}

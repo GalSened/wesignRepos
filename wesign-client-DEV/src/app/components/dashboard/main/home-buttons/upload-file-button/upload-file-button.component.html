@@ -1,0 +1,10 @@
+<button (click)="fileInput.click()" [disabled]="user && user.type==1">
+    <div id="uploadAndSignDropZone" class="drop_zone">       
+        {{'DOCUMENT.UPLOAD_AND_SIGN' | translate}}
+        &nbsp;
+        <i-feather  style="position: fixed; padding-top: 5px;width: 30px;" name="upload-cloud" ></i-feather>
+    
+    </div>
+</button>
+<input #fileInput type="file" (change)="fileDropped()" accept="image/*,.pdf,.docx,.doc" title=""
+    style="display: none;" multiple [disabled]="user && user.type==1">

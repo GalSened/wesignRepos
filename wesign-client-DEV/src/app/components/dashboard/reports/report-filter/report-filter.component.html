@@ -1,0 +1,87 @@
+<sgn-alert-component></sgn-alert-component>
+<sgn-add-report-frequency *ngIf="showFrequencyReportCreation" (cancel)="cancelFrequencyReport()" (submit)="createFrequencyReport($event)"></sgn-add-report-frequency>
+<div class="report-filter-container">
+    <div class="ct-c-filter-current-report">
+    <div class="ct-c-filter ct-c-filter-documents">
+        <div class="ct-c-filter-section">
+            <span>{{'GLOBAL.REPORTS.REPORT_TYPE' | translate}}</span>
+            <ng-select [(ngModel)]="reportType"
+                class="ngselect-ct-select--short ngselect-ct-select--primary" [items]="optionalReportTypes" bindLabel="name"
+                bindValue="id" [virtualScroll]="true" [searchable]="true" [clearable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" [multiple]="false">
+            </ng-select>
+        </div>
+        <div class="ct-c-filter-section">
+            <span>{{'GLOBAL.REPORTS.DOCUMENT_STATUS' | translate}}</span>
+            <ng-select [(ngModel)]="reportRequest.documentStatuses"
+                class="ngselect-ct-select--short ngselect-ct-select--primary reports_doc-status_select" [items]="docStatuses" bindLabel="name"
+                bindValue="id" [multiple]="true" [virtualScroll]="true" [searchable]="true" [clearable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" (change)="onDocumentStatusesChanged($event)">
+            </ng-select>
+        </div>
+
+        <div class="ct-c-filter-section">
+            <span>{{'GLOBAL.REPORTS.DISTRIBUTION_MODE' | translate}}</span>
+            <ng-select [(ngModel)]="reportRequest.includeDistributionDocs"
+                class="ngselect-ct-select--short ngselect-ct-select--primary" [items]="distributionOptions"
+                bindLabel="label" bindValue="value" [multiple]="false" [virtualScroll]="true" [searchable]="false"
+                [clearable]="false" [closeOnSelect]="true" [hideSelected]="true">
+            </ng-select>
+        </div>
+
+        <div class="ct-c-filter-section">
+            <span>{{'GLOBAL.REPORTS.USER_GROUPS' | translate}}</span>
+            <ng-select [(ngModel)]="reportRequest.groupIds"
+                class="ngselect-ct-select--short ngselect-ct-select--primary" [items]="groups" bindLabel="name"
+                bindValue="groupId" [multiple]="true" [virtualScroll]="true" [searchable]="true" [clearable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true">
+            </ng-select>
+        </div>
+        <div class="ws_c-calendar ct-c-filter-calender">
+            <div>
+                <div class="calendar__picker" tabindex="0" (click)="showFromCalendardWrapper()"
+                    (clickOutside)="isFromCalendarShown = false">
+
+                    <div class="ws_icon__calendar" (click)="showFromCalendar()"></div>
+                    <span (click)="showFromCalendar()">{{'DATA.FILTER.FROM' | translate}}</span>
+                    <sgn-calendar-component [isShown]="isFromCalendarShown" (selected)="fromSelected($event)">
+                    </sgn-calendar-component>
+                </div>
+                <div class="ws_label ws_label--filter" id="removeFrom" *ngIf="reportRequest.from">
+                    <div><span>{{reportRequest.from | date:'mediumDate'}}</span></div>
+                    <button class="ws_button--icon" (click)="removeDate($event,'from')">
+                        <div class="ws_icon__remove--small"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <div class="calendar__picker" tabindex="0" (click)="showToCalendardWrapper()"
+                    (clickOutside)="isToCalendarShown = false">
+                    <div (click)="showToCalendar()" class="ws_icon__calendar"></div>
+                    <span (click)="showToCalendar()">{{'DATA.FILTER.TO' | translate}}</span>
+
+                    <sgn-calendar-component [isShown]="isToCalendarShown" (selected)="toSelected($event)">
+                    </sgn-calendar-component>
+
+                </div>
+                <div class="ws_label ws_label--filter" id="removeTo" *ngIf="reportRequest.to">
+                    <div><span>{{reportRequest.to | date:'mediumDate'}}</span></div>
+                    <button class="ws_button--icon" (click)="removeDate($event,'to')">
+                        <div class="ws_icon__remove--small"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="reports-filter-button-container">
+            <button class="ct-button--primary reports-filter-buttons" (click)="submitRequest()">{{'GLOBAL.REPORTS.SUBMIT_BUTTON' | translate}}</button>
+            <button class="ct-button--primary reports-filter-buttons" (click)="getCSV()">{{'GLOBAL.REPORTS.EXPORT_BUTTON' | translate}}</button>
+        </div>
+    </div>
+    <div class="ct-c-filter-section ct-c-filter-frequency-section">
+        <button class="ct-button--primary create-frequency-report-button ct-tooltip--aside-menu-icons" (click)="openFrequencyPopup()">{{'GLOBAL.REPORTS.CREATE_FREQUENCY' | translate}}
+            <span class="tooltiptext">{{'GLOBAL.REPORTS.CREATE_FREQUENCY_TOOLTIP' | translate}}</span>                              
+        </button>
+    </div>
+</div>

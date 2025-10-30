@@ -1,0 +1,169 @@
+<div>
+  <ng-container *ngIf="showContacts">
+    <sgn-select-contact [ngClass]="showContacts?'ct-is-shown':'ct-is-hidden'" (hide)="showContacts=!showContacts"
+      (sendContact)="updateSigner($event)">
+    </sgn-select-contact>
+  </ng-container>
+  <sgn-note *ngIf="showPersonalNote && signer" (hide)="hideAdditionalOptions()" [signer]="signer"></sgn-note>
+  <sgn-otp *ngIf="showOtp && signer" (hide)="hideAdditionalOptions()"
+    (updateIdentificationMode)="updateIdentificationMode()" [signer]="signer"></sgn-otp>
+  <sgn-visual-identification *ngIf="enableVisualIdentification && showVisualIdentificationPopUp && signer"
+    (hide)="hideAdditionalOptions()" (updateIdentificationMode)="updateIdentificationMode()"
+    [signer]="this.signer"></sgn-visual-identification>
+  <ng-container *ngIf="!showContacts && !showPersonalNote && !showOtp && !showVisualIdentificationPopUp">
+    <div class="ct-c-modal">
+      <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down replace-signer-container">
+          <h3>{{'SIGNERS.REPLACE_SIGNER' | translate}}</h3>
+
+          <div class="ct-separator"></div>
+
+          <div class="ct-break--short"></div>
+
+          <span>{{'SIGNERS.NEW_SIGNER_DETAILS' | translate}}</span>
+
+          <div class="ct-break--short"></div>
+          <div class="add-signers__container">
+            <table>
+              <tr></tr>
+              <tr class="no_background_on_hover" style="cursor: default">
+                <td>
+                  <button class="ct-button--icon ct-tooltip--table-icons" (click)="openContactsBook($event)"
+                    *ngIf="userProgram.uiViewLicense.shouldShowContacts">
+                    <i-feather name="book-open"></i-feather>
+
+
+                    <span class="tooltiptext">{{'CONTACTS.ADDRESS_BOOK' | translate}}</span>
+                  </button>
+                </td>
+                <td>
+                  <div id="signerDetails" style="margin: auto;">
+
+                    <input type="text" class="ct-input--primary" [(ngModel)]="name"
+                      [class.is-error]="submitted && (!name || name=='')" name="full name" autocomplete="off"
+                      placeholder="{{'SIGNERS.FULL_NAME' | translate}}" maxlength="50">
+
+                    <div class="ct-break--shorter"></div>
+
+                    <div>
+                      <select class="ct-select--primary" style="width: 100%;" (change)="onSignerMethodChanged($event)">
+                        <option [selected]="deliveryMethod==2">{{'GLOBAL.SEND_BY_EMAIL' | translate}}</option>
+                        <option [selected]="deliveryMethod==1">{{'GLOBAL.SEND_BY_SMS' | translate}}</option>
+                      </select>
+
+                      <div class="ct-break--shorter"></div>
+
+                      <div *ngIf="deliveryMethod==2|| !deliveryMethod">
+                        <input #email="ngModel" [(ngModel)]="means" name="email" type="text" required
+                          pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,100})" class="ct-input--primary"
+                          placeholder="{{'SIGNERS.EMAIL' | translate}}" minlength="3" maxlength="50">
+                      </div>
+
+                      <div *ngIf="deliveryMethod==1">
+
+                        <div *ngIf="!userProgram.isSmsProviderSupportGloballySend">
+                          <div class="ct-text-center">
+                            <label class="color--alert">{{'ERROR.INPUT.SMS_ONLY_ISRAELI_NUMBERS' | translate}}</label>
+                            <div class="ct-break--shorter"></div>
+                          </div>
+                          <input type="text" class="ct-input--primary" autocomplete="off"
+                            *ngIf="!userProgram.isSmsProviderSupportGloballySend"
+                            placeholder="{{'REGISTER.PHONE_NUMBER' | translate}}" #contactPhone="ngModel"
+                            [(ngModel)]="means" name="phone" pattern="^([0-9]{10}|[0-9]{2}-[0-9]{8}|[0-9]{3}-[0-9]{7})$" maxlength="50">
+                        </div>
+
+                        <input ng2TelInput #contactPhone="ngModel" [(ngModel)]="means" name="phone"
+                          *ngIf="userProgram.isSmsProviderSupportGloballySend" required pattern="^[0-9\\-]{9,15}$"
+                          class="ct-input--primary" (countryChange)="onCountryChange($event)"
+                          [ng2TelInputOptions]="telOptions" maxlength="50">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <div class="ct-break--short"></div>
+            <span>{{'SIGNERS.NEW_SIGNER_DETAILS_SUBTITLE' | translate}}</span>
+            <div class="ct-break--shorter"></div>
+            <table>
+              <tr>
+                <th>{{'SIGNERS.RECIPIENT' | translate}}</th>
+                <th>{{'REGISTER.SEND_BY' | translate}}</th>
+                <th *ngIf="signerAuthActive ">{{'SIGNERS.USE_INTERNAL_AUTH' | translate}}</th>
+                <th *ngIf="IdentificationTypeRequierd"> {{'DOCUMENT.IDENTIFICATION_TYPE' | translate }}</th>
+                <th>{{'SIGNERS.ADDITIONAL_OPTIONS' | translate}}</th>
+              </tr>
+              <ng-container>
+                <tr>
+                  <td>{{name}}</td>
+                  <td>{{SendingMethod[deliveryMethod]}}</td>
+                  <td *ngIf="signerAuthActive">
+                    <label class="ct-checkbox ct-text-left">
+                      <span>&nbsp;</span>
+                      <input type="checkbox" [checked]="isAuthSelected()" (change)="selectedAuthForSigner()" />
+                      <span class="ct-checkbox__checkmark"></span>
+                    </label>
+                  </td>
+                  <td *ngIf="IdentificationTypeRequierd">
+                    <button *ngIf="signerIdentificationType" style="all:unset; cursor: pointer;"
+                      (click)="removeSignerMode()"><i-feather style="color:red;" name="x"></i-feather></button>
+                    <span> {{signerIdentificationType | translate}} </span>
+
+                  </td>
+                  <td class="ct-text-right">
+                    <button class="ct-button--icon" (click)="showDrop($event)">
+                      <i-feather name="more-vertical"></i-feather>
+                    </button>
+
+                    <div class="td__options-dropdown replace_signer_options-dropdown" *ngIf="showExtraInfoDrop"
+                      (clickOutside)="closeclickOutside($event)">
+                      <ul class="ul_additional_options">
+                        <li><a (click)="onPersonalNoteClick()">{{'GLOBAL.PERSONAL_NOTE' |
+                            translate}}</a></li>
+                        <li *ngIf="deliveryMethod != 3"><a (click)="onOtpClick()">{{'GLOBAL.OTP_AUTH' | translate}}</a>
+                        </li>
+                        <li *ngIf="deliveryMethod != 3 && enableVisualIdentification"
+                          class="ct-tooltip--face-recognition"><a (click)="onFaceRecognitionClick()">
+                            {{'GLOBAL.VISUAL_IDENTIFICATION' | translate}}</a></li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </table>
+          </div>
+
+          <div class="ct-break--medium"></div>
+
+          <ng-container *ngIf="hasError">
+            <div class="ct-text-center">
+              <label class="is-error">{{'ERROR.INPUT.0' | translate}}</label>
+            </div>
+            <div class="ct-break--medium"></div>
+          </ng-container>
+          <ng-container *ngIf="sameSignerError">
+            <div class="ct-text-center">
+              <label class="is-error">{{'ERROR.INPUT.REPLACE_SAME_SIGNER' | translate}}</label>
+            </div>
+            <div class="ct-break--medium"></div>
+          </ng-container>
+          <div class="ct-break--short"></div>
+          <ng-container>
+            <label class="ct-text-left">{{'SIGNERS.ADD_ADDITIONAL_OPTIONS_REMINDER' | translate}}</label>
+          </ng-container>
+          <div class="ct-break--shorter"></div>
+
+          <div class="ct-float-right">
+            <button class="ct-button--outline" (click)="close()" [disabled]="isBusy">{{'REGISTER.CANCEL' |
+              translate}}</button>
+
+            <button class="ct-button--primary" (click)="send()" [disabled]="isBusy">{{'FORGET.SEND' |
+              translate}}</button>
+          </div>
+
+          <div class="ct-is-clear"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

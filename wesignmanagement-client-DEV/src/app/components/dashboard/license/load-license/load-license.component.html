@@ -1,0 +1,15 @@
+<div class="ws_break--short"></div>
+<div class="ws_separator"></div>
+
+<div>
+    <h1>Enter License</h1>
+    <textarea #input></textarea>
+    <div class="ws_text-center">
+        <button class="ws_button--small" (click)="activate()" [disabled]="isBusy">Activate</button>
+        <div class="ws_text-center">
+            <span  *ngIf="failedActivate" class="ws_alert alert--error">Error - Failed activated licesne - see logs</span>
+
+            <div class="ws_break--short"></div>
+        </div>
+    </div>
+</div>

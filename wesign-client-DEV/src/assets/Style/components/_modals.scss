@@ -1,0 +1,283 @@
+// modals
+.ct-c-modal {
+  .modal__overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 300vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+  }
+  
+  .modal__container__wide{
+    width: 50% !important;
+
+    @include respond-to('medium') {
+      width: 90% !important;
+    }
+  }
+
+  .modal__container.manage_group{
+    width: 900px;
+  }
+
+  .modal__container {
+    overflow: auto;
+    max-height: 680px;
+    position: relative;
+    top: 3%;
+    width: 550px;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 6px;
+    background: white;
+
+    @include respond-to('medium') {
+      width: 90%;
+    }
+
+    @include respond-to('small') {
+      top: .5%;
+    }
+
+    .modal-container__wrapper {
+      background: $color--grey-mid;
+      margin-bottom: 7px;
+      padding: 5px 7px 10px 5px;
+    }
+
+    textarea {
+      width: -webkit-fill-available;
+    }
+
+    ul {
+      list-style-type: disc !important;
+      margin: 0 20px;
+
+      li {
+        margin: 3px 0;
+      }
+    }
+
+    nav {
+      overflow: hidden;
+      border-bottom: solid 1px $color--border;
+
+      button {
+        border: none;
+        outline: none;
+        padding: 10px 25px 10px 0;
+        font-size: 19px;
+        font-weight: 400;
+        color: $color--text;
+        text-align: left;
+        background: white;
+      }
+
+      button:hover {
+        color: $color--primary;
+      }
+
+      button.is-active {
+        color: $color--primary;
+      }
+    }
+
+    .tabcontent {
+      display: none;
+      text-align: center;
+      padding: 15px 0 0 0;
+
+      input {
+        width: -webkit-fill-available;
+      }
+    }
+
+    .modal-container__footer {
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      padding-top: 50px;
+      background: white !important;
+      text-align: center;
+    }
+  }
+
+  .replace-signer-container {
+    width: 600px;
+    overflow: hidden;
+  }
+}
+
+.ws_is-hidden {
+  display: none;
+}
+
+.ws_is-shown {
+  display: block;
+}
+
+.ws_icon__calendar {
+  width: 24px;
+  height: 24px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23546E7A' stroke='none' d='M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z'/%3E%3C/svg%3E") center center no-repeat;
+}
+
+
+.ws_icon__remove--small {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F44336' stroke='none' d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E") center center no-repeat;
+}
+
+.ws_c-calendar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 27%;
+}
+
+
+
+.ws_c-calendar .calendar__picker {
+  display: inline-block;
+  width: 69px;
+  padding: 5px 0 5px 5px;
+}
+
+
+
+.ws_c-calendar .calendar__picker .ws_icon__calendar {
+  display: inline-block;
+}
+
+.ws_c-calendar .calendar__picker span {
+  display: inline-block;
+  vertical-align: super;
+}
+
+.ws_c-calendar .calendar__picker .calendar {
+  position: absolute;
+  width: 260px;
+  margin: 7px -190px;
+  padding: 10px;
+  border: solid 1px #ECEFF1;
+  background: white;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
+  z-index: 102;
+}
+
+.ws_c-calendar .calendar__picker .calendar__select {
+  width: 60px;  
+  background: url(../../assets/icons/icon_calendar-select.png) no-repeat center;
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+}
+
+.ws_c-calendar .calendar__picker .calendar .calendar--navbar {
+  align-items: stretch;
+  display: flex;
+  display: -ms-flexbox;
+  -ms-flex-align: stretch;
+  -ms-flex-pack: justify;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.ws_c-calendar .calendar__picker .calendar-navbar__calendar-navbar-icons {
+  margin-top: 9px;
+  width: 24px;
+  height: 24px;
+  border-radius: 200px;
+  background: #FAFAFA;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.ws_c-calendar .calendar__picker .calendar-navbar__calendar-navbar-icons:hover {
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.ws_c-calendar .calendar__picker .calendar-navbar__calendar-navbar-icons.calendar-navbar-icons--left {
+  background: url(../../assets/icons/icon_calendar-navleft.png) no-repeat;
+  border-radius: 0%;
+}
+
+.ws_c-calendar .calendar__picker .calendar-navbar__calendar-navbar-icons.calendar-navbar-icons--right {
+  background: url(../../assets/icons/icon_calendar-navright.png) no-repeat;
+  border-radius: 0%;
+}
+
+.calendar-navbar__calendar-navbar-icons.disabled {
+  cursor: default;
+  opacity: .25;
+  pointer-events: none;
+}
+
+.ws_c-calendar .calendar__picker .calendar__calendar-week {
+  display: block;
+  margin-top: 5px;
+  width: 100%;
+}
+
+.ws_c-calendar .calendar__picker .calendar-week__calendar-day {
+  display: inline-block;
+  width: 30px;
+  font-size: 13px;
+  color: #3949AB;
+  text-align: center;
+}
+
+
+
+.ws_c-calendar .calendar__picker .calendar__calendar-date {
+  display: block;
+  width: 100%;
+}
+
+.ws_c-calendar .calendar__picker .calendar-date {
+  display: inline-block;
+}
+
+.ws_c-calendar .calendar__picker .calendar-date .calendar-date--date-item {
+  width: 30px;
+  height: 25px;
+  padding-top: 8px !important;
+  font-family: 'Changa-Medium', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 12px !important;
+  color: #455A64 !important;
+  text-align: center;
+  background: transparent !important;
+  border: 0px !important;
+  cursor: pointer;
+}
+
+.ws_c-calendar .calendar__picker .calendar-date.disabled {
+  cursor: default;
+  opacity: .25;
+  pointer-events: none;
+}
+
+.ws_c-calendar .calendar__picker .calendar-date .calendar-date--date-item:hover {
+  color: white;
+  background: #F44336;
+}
+
+.ws_c-calendar .calendar__picker .calendar-date--date-item.active {
+  color: white !important;
+  border-radius: 0;
+  background: #F44336 !important;
+}
+
+.ws_c-calendar .calendar__picker:hover {
+  cursor: pointer;
+  background: #FAFAFA;
+}

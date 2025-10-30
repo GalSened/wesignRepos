@@ -1,0 +1,45 @@
+// login
+.ct-p-user-sign {
+    background: white;
+
+    main {
+        nav {
+            height: 40px;
+            padding-top: 5px;
+            padding: 5px 5px 0 5px;
+            text-align: center;
+            background: $color--grey-dark;
+            border-bottom: solid 1px $color--border;
+
+            span {
+                color: white;
+            }
+
+            select {
+                vertical-align: top;
+                width: 75px;
+                height: 35px;
+
+                @include respond-to('small') {
+                    display: none;
+                }
+            }
+
+            button {
+                padding: 4px 1px 1px 1px;
+            }
+
+            button.ct-button--icon.document-bg {
+                display: inline-block;
+
+                @include respond-to('small') {
+                    display: none;
+                }
+            }
+
+            svg {
+                color: white;
+            }
+        }
+    }
+}

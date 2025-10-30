@@ -1,0 +1,73 @@
+
+<div class="ct-c-modal">
+   
+    <div class="modal__overlay">
+        <div class="modal__container manage_group ct-animate-slide-down">
+            <h3>{{'MANAGEMENT.MANAGE_GROUP' | translate}}</h3>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+            <sgn-pop-up-confirm [data]="deleteGroupPopupData" (submitEvent)="doDeleteGroupEvent()"
+            (cancelEvent)="deleteGroupPopupData.showModal = false">
+            </sgn-pop-up-confirm>
+
+            <ng-container *ngIf="groups">
+                <ng-container *ngFor="let group of groups  ">
+
+                    <div style="width: 98%;">
+                        <input type="text" class="ct-input--primary manage_group" (keypress)="groupNAmeKeyPress()"
+                            [(ngModel)]="group.name" placeholder="{{'MANAGEMENT.GROUP_EXAMPLE' | translate}}"
+                            maxlength="50">
+
+                        <div class="ct-float-right" *ngIf="group.groupId">
+                            <button class="ct-button--icon add-remove ct-tooltip--table-icons"
+                                (click)="editGroup($event,group.groupId,group.name)">
+                                <i-feather name="edit-2" style="margin-right: 10px; margin-left: 10px;"></i-feather>
+                                <span class="tooltiptext">{{'MANAGEMENT.EDIT_GROUP_NAME' | translate}}</span>
+                            </button>
+
+                            <button class="ct-button--icon add-remove ct-tooltip--table-icons"
+                                (click)="deleteGroup($event,group.groupId, group.name)">
+                                <i-feather name="minus-circle" style="margin-right: 10px; margin-left: 10px;"></i-feather>
+                                <span class="tooltiptext">{{'MANAGEMENT.DELETE_GROUP' | translate}}</span>
+                            </button>
+
+                            <div class="ct-horizontal-break--short"></div>
+                        </div>
+                    </div>
+
+
+
+                </ng-container>
+            </ng-container>
+
+
+            <div class="ct-break--shorter"></div>
+
+            <button class="ct-button--primary ct-button--small" (click)="addGroup()">{{'GLOBAL.ADD' |
+                translate}}</button>
+
+            <div class="ct-break--short"></div>
+
+            <div class="ct-separator"></div>
+
+          
+           
+
+            <div class="modal-container__footer">
+
+                <ng-container *ngIf="error">
+                    <div class="ct-text-center">
+                        <label class="is-error">{{error}}</label>
+                    </div>
+                </ng-container>
+                <div class="ct-break--short"></div>
+                <button class="ct-button--outline" (click)="back()">{{'BUTTONS.CLOSE' | translate}}</button>
+
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

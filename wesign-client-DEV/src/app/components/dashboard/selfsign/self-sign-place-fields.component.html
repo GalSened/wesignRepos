@@ -1,0 +1,42 @@
+<div class="ct-p-edit-document">
+    <sgn-assign-modal [pages$]="pages$" [pagesCount]="pagesCount" [signers]="signers"></sgn-assign-modal>
+
+    <sgn-smart-card-signing-alert *ngIf="showOpenLink" (hide)="closePopUp() "
+        (sign)="smartCardSigning()"></sgn-smart-card-signing-alert>
+    <sgn-eidas-signing-flow-alert *ngIf="eidasShowAlert" (hide)="closePopUp() "
+        (sign)="smartCardSigning()"></sgn-eidas-signing-flow-alert>
+
+    <sgn-alert-component></sgn-alert-component>
+
+    <sgn-top-header-title [nextButtonText]="'TEMPLATE.FINISH' | translate" (nextButton)="next()" (backButton)="back()"
+        [title]="'SIGNERS.EDIT_AND_SIGN_DOCUMENT' | translate">
+    </sgn-top-header-title>
+
+    <main>
+        <sgn-add-fileds-sidebar></sgn-add-fileds-sidebar>
+
+        <div class="main__content">
+
+            <sgn-zoom [totalPages]="pagesCount" [(zmodel)]="zmodel" [currentPage]="currentPage"
+                (changeBackgroundEvent)="isDark = !isDark"></sgn-zoom>
+
+            <sgn-server-sign [errorMessage]="signErrorMessage" [showErrorMessage]="showSignErrorMessage"
+                (hide)="showServerSign=false" *ngIf="showServerSign"></sgn-server-sign>
+
+            <sgn-sign-pad *ngIf="signatureColor" [color]="signatureColor" [collectionId]="collectionId"
+                (shouldSetImageToAllSignturesChange)="onShouldSetImageToAllSignturesChanged($event)"></sgn-sign-pad>
+
+            <div class="ct-c-document" [class.bg-is-dark]="isDark" [class.bg-is-light]="!isDark">
+
+
+                <div class="doc__image" *ngFor="let page of pages$ | async; let i = index;"
+                    [ngStyle]="{'zoom': zmodel.ZoomLevel, 'position': 'relative'}" editpage
+                    [ocrHtml]="documentPages[i]?.ocrHtml" [pageNumber]="documentPages[i]?.pageNumber"
+                    [pageData]="documentPages[i]" [templateId]="documentId" [displayPageNumber]="i+1"
+                    (changePageScroll)="changePageNumber($event)">
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>

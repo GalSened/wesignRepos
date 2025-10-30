@@ -1,0 +1,44 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <h2>{{'TEMPLATE.UPLOAD' | translate}}</h2>
+        
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <h3>{{'DOCUMENT.SELECT_TYPE' | translate}}</h3>
+
+        <div class="ct-break--short"></div>
+        
+        <button class="ct-button--outline" (click)="certFileInputXML.click()">XML</button>
+        <input #certFileInputXML type="file" (change)="certFileDropped('XML')" accept=".xml" title="" style="display: none;">
+
+        <button class="ct-button--outline" (click)="certFileInputXLSX.click()">XLSX</button>
+        <input #certFileInputXLSX type="file" (change)="certFileDropped('XLSX')" accept=".xlsx" title="" style="display: none;">
+
+        <button class="ct-button--outline" (click)="certFileInputDOCX.click()">DOCX</button>
+        <input #certFileInputDOCX type="file" (change)="certFileDropped('DOCX')" accept=".docx" title="" style="display: none;">
+
+        <button class="ct-button--outline" (click)="certFileInputPDF.click()">PDF</button>
+        <input #certFileInputPDF type="file" (change)="certFileDropped('PDF')" accept=".pdf" title="" style="display: none;">
+
+        <div class="ct-break--short"></div>
+
+        <div class="ct-separator"></div>
+        
+        <div class="ct-text-center" *ngIf="showErrorMessage">
+            <label class="is-error">{{errorMessage | translate}}</label>
+            <div class="ct-break--shorter"></div>
+        </div>
+        
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

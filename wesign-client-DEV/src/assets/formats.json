@@ -1,0 +1,14 @@
+{
+    "Dates": {
+        "mm/dd/yyyy": "mm/dd/yyyy",
+        "dd/mm/yyyy": "dd/mm/yyyy",
+        "mm-dd-yyyy": "mm-dd-yyyy",
+        "dd-mm-yyyy": "dd-mm-yyyy",
+        "dd-MMM-yyyy": "dd-MMM-yyyy",
+        "MMM-dd-yyyy": "MMM-dd-yyyy"
+    },
+    "Time": {
+        "hh:mm:ss": "hh:mm:ss",
+        "hh:mm": "hh:mm"
+    }
+}

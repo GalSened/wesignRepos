@@ -1,0 +1,98 @@
+    // profile
+    .ct-p-profile {
+        background: white;
+
+        main {
+            display: flex;
+            overflow-x: auto;
+
+            aside {
+                width: 220px;
+                height: 80vh;
+                padding: 15px 0 0 0;
+                background: $color--grey-light;
+
+                menu {
+                    
+                    ul {
+                        list-style: none;
+
+                        li {
+                            padding: 7px 5px;
+                        }
+
+                        li:hover {
+                            cursor: pointer;
+                            color: $color--primary;
+                        }
+
+                        li.is-active {
+                            color: $color--primary;
+                        }
+                    }
+
+                    @include respond-to('medium') {
+                        width: auto;
+                    }
+
+                    @include respond-to('small') {
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+
+                @include respond-to('medium') {
+                    max-width: 95px;
+                    padding: 30px 5px;
+                }
+
+                @include respond-to('small') {
+                    display: flex;
+                    align-items: center;
+                    position: absolute;
+                    max-width: 100%;
+                    height: 125px;
+                    padding: 5px 0;
+                    background: $color--grey-light;
+                    text-align: center;
+                }
+            }
+
+            .main__content {
+                :focus {
+                    outline: none;
+                  }
+                padding: 10px;
+                background-color: white;
+
+                @include respond-to('small') {
+                    display: grid;
+                    margin-top: 135px;
+                    padding: 5px;
+                }
+
+                .content__table {
+                    overflow: auto;
+                    border: solid 1px $color--border;
+                    max-height: 65vh;
+                    padding-bottom: 40px;
+
+                    @include respond-to('small') {
+                        max-height: 45vh;
+                    }
+                }
+
+                .signature-color-button{
+                    width: 30px;
+                    height: 30px;
+                    margin: 10px;
+                }
+
+                .selected-color {
+                    outline: 2.5px solid rgb(4, 199, 199);
+                    outline-offset: 1.25px;
+                }
+            }
+        }
+    }
+

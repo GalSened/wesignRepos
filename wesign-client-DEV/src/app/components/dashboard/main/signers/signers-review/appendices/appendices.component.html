@@ -1,0 +1,58 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <span>{{'DOCUMENT.WHICH_APPENDICES' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-c-file-upload">
+                <form>
+                    <input type="file" #fileInput id="fileInput" name="fileInput" accept="image/*,.pdf,.docx"
+                    (click)="fileInput.value = null" (change)="fileDropped()" />
+                    <span id="mtxt">{{'SIGN_PAD.DROP' | translate}}</span>
+                    <div class="ct-is-clear"></div>                    
+                    <button class="ct-button--outline"
+                        (click)="fileInput.click()">{{'BUTTONS.UPLOAD' | translate}}</button>
+                </form>
+            </div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="modal-container__wrapper" *ngFor="let appendix of senderAppendices ; let i = index">
+            
+                <input type="text" class="ct-input--primary" [(ngModel)]="appendix.name" maxlength="50">
+            
+            
+                <div class="ct-float-right">
+                  
+                    <button class="ct-button--icon add-remove" (click)="removeAppendix(i)">
+                        <i-feather name="minus-circle"></i-feather>
+                    </button>
+                </div>
+
+                <div class="ct-break--shorter"></div>
+
+                <label class="ct-checkbox ct-text-left"  (click)="AddAppendixToAllSigners(appendix,i)">
+                  <span>{{'DOCUMENT.ATTACH_ALL' | translate}}</span>
+                    <input type="checkbox"  id="{{i}}" >
+        
+                    <span class="ct-checkbox__checkmark"></span>
+                </label>
+            </div>
+            
+            <div class="ct-is-clear"></div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+                <button class="ct-button--primary" (click)="send()">{{'BUTTONS.SUBMIT' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

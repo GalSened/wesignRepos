@@ -1,0 +1,84 @@
+.reports-filter-wrapper {
+    display: flex;
+    column-gap: 2rem;
+    align-items: center;
+    width: 100%;
+    height: 14vh;
+    padding: 0px 10px 0px 10px;
+}
+
+.reports-select {
+    width: 15%;
+    min-width: 250px;
+    height: 20%;
+    min-height: 40px;
+}
+
+.reports-submit-button {
+    width: 10%;
+    min-width: 136px;
+    font-size: 12px !important;
+}
+
+.reports-label-andInput {
+    display: flex;
+    column-gap: 25px;
+}
+
+
+.reports-label-andInput span {
+    align-self: center;
+}
+
+
+.reports-expired-select {
+    width: 8%;
+    min-width: 100px;
+}
+
+.calendar__picker {
+    min-width: 67px;
+}
+
+.reports-company-select-container  {
+    width: 20%;
+    min-width: 300px;
+}
+
+.reports-minimum-select-container {
+    width: 20%;
+    min-width: 300px;
+}
+
+.reports-companyGroup-select {
+    width: 250px;
+}
+
+.reports-buttonContainer {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto !important;
+    margin-right: 10px;
+}
+
+.reports-textualSelect {
+    width: 15rem;
+    height: 3rem;
+}
+.reports-textualSelect input {
+    height: 100%;
+}
+.reports-textualSelect .ng-select-container {
+    width: 100%;
+    height: 100%;
+}
+
+.reports-frequencyEmails, .reports-frequencies {
+    align-self: center;
+}
+
+.automated-reports-btns-section {
+    display: flex;
+    width: 20rem;
+    justify-content: space-evenly;
+}

@@ -1,0 +1,26 @@
+<div class="ct-c-modal" [ngClass]="(data.showModal)?'ct-is-shown':'ct-is-hidden'">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <h3>{{data.title}}</h3>
+  
+        <div class="ct-separator"></div>
+  
+        <div class="ct-break--short"></div>
+  
+        <!-- <span [innerHTML]="data.content | safeHtml"></span> -->
+        <!-- <span [innerHTML]="data.content"></span> -->
+        <span>{{data.content}}</span>
+  
+        <div class="ct-break--medium"></div>
+  
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="cancel()">{{data.rejectBtnText}}</button>
+  
+          <button class="ct-button--primary"
+            (click)="confirm()">{{data.confirmBtnText}}</button>
+        </div>
+  
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

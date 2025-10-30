@@ -1,0 +1,47 @@
+<div class="ct-c-modal ct-is-shown">
+    <div class="modal__overlay">
+      <div class="modal__container">            
+        <h3>{{'GLOBAL.CARD' | translate}}</h3>
+
+        <div class="ct-separator"></div>
+        <div class="ct-break--short"></div>
+
+        <span class="color--error"> {{'DOCUMENT.MAKE_SURE_INSTALLED_APP' | translate}}</span> 
+        <div class="ct-break--shorter"></div>
+
+        <span class="color--error"> {{'DOCUMENT.INSTALLED_APP_GUIDE' | translate}}</span> 
+
+        <div class="ct-break--medium"></div>
+        <div class="ct-break--short"></div>
+
+        <span>{{'DOCUMENT.YOU_ARE_REDIRECTED_TO_SMARTCARD_CLIENT' | translate}}</span>
+
+        <div class="ct-break--shorter"></div>
+
+        <span> {{'DOCUMENT.CLICK_OC_PROCEED' | translate}}</span>
+
+        <div class="ct-break--shorter"></div>
+
+        <span> {{'DOCUMENT.OPEN_SMARTCARDCLIENT_BUTTON' | translate}}</span>
+        <div class="ct-break--shorter"></div>
+
+        <span> {{'DOCUMENT.OPEN_SMARTCARDCLIENT_BUTTON2' | translate}}</span>
+        
+        <div class="ct-break--short"></div>
+        
+        <div class="ct-float-right">              
+            <button class="ct-button--primary" (click)="smartCardSigning()"> {{'DOCUMENT.PROCEED' | translate}} </button>      
+            <button class="ct-button--outline" (click)="downloadSmartCardInstaller()">{{'BUTTONS.DOWNLOAD_INSTALLER' | translate}}</button>
+            <button class="ct-button--outline" (click)="closePopUp()"> {{'BUTTONS.CLOSE' | translate}} </button>            
+        </div>
+
+        <div class="ct-is-clear"></div>
+
+        <div class="ct-break--shorter"></div>
+      </div>
+    </div>
+  </div>
+
+<div class="ct-c-alert ct-animate-fadein">
+
+</div>

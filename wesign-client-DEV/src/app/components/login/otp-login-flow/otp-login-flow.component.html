@@ -1,0 +1,54 @@
+<ng-container *ngIf="otpFlow" >
+<span>{{'OTP.CODE' | translate}}</span>
+
+<div class="ct-break--shorter"></div>
+
+<form (ngSubmit)="isValidCode()">
+  <div class="ct-input--secondary__container">
+    <input [(ngModel)]="otpCode" type="text" class="ct-input--primary" id="auth" name="auth"
+      autocomplete="off" placeholder="">
+
+    <div class="ct-break--shorter"></div>
+
+    <a (click)="generateOtpCode()">{{'OTP.RESEND' | translate}}</a>
+    <div class="ct-break--shorter"></div>
+
+    <div class="ct-text-center" *ngIf="showErrorMessage">
+      <label class="is-error">{{errorMessage}}</label>
+      <div class="ct-break--shorter"></div>
+    </div>
+    <div class="ct-break--shorter"></div>
+
+    <div *ngIf="hasOtpTimeLeft && sentSignerMeans!=''">
+      <label class="is-confirm">{{otpSuccesSentToSignerMeans}}</label>
+      <div class="ct-break--shorter"></div>
+    </div>
+    <div class="ct-break--short"></div>
+
+    <input type="submit" [disabled]="isSubmitBusy || !hasOtpTimeLeft" value="{{'BUTTONS.SUBMIT' | translate}}">
+    
+    <div class="ct-c-loader ct-float-right" *ngIf="isSubmitBusy">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div *ngIf="hasOtpTimeLeft">
+      <label class="is-confirm">{{'OTP.OTP_EXPIRATION_TIME' | translate}} {{otpLeftTime}}</label>
+      <div class="ct-break--shorter"></div>
+    </div>
+    <div *ngIf="!hasOtpTimeLeft">
+      <label class="is-error">{{'OTP.NO_VALID_OTP' | translate}}</label>
+      <div class="ct-break--shorter"></div>
+    </div>
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center" *ngIf="showErrorCodeMessage">
+      <label class="is-error">{{errorCodeMessage}}</label>
+      <div class="ct-break--shorter"></div>
+    </div>
+
+  </div>
+</form>
+
+</ng-container>

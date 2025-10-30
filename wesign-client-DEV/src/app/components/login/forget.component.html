@@ -1,0 +1,47 @@
+<div class="ct-p-login">
+    <main>
+        <div class="main__img"></div>
+
+        <div class="main__content">
+            <header>
+                <div class="header__logo"  [routerLink]="['/dashboard','main']" routerLinkActive="router-link-active">
+                </div>
+                <sgn-lang-selector></sgn-lang-selector>
+            </header>
+
+            <div class="content__form ct-animate-fadein">
+                <h2>{{"FORGET.FORGOT_PASSWORD" | translate}}</h2>
+
+                <span>{{"FORGET.PLEASE_FILL" | translate }}</span>
+
+                <div class="ct-break--short"></div>
+
+                <form [formGroup]="forgetForm" #ngForm="ngForm" (ngSubmit)="send()">
+
+                    <input class="ct-input--primary" type="email" formControlName="email" email minlength="2"
+                        maxlength="50"
+                        [class.ws_input--error]="forgetForm.get('email').invalid && (ngForm.submitted && ngForm.invalid)"
+                        placeholder="{{'FORGET.EMAIL' | translate}}">
+
+                    <label class="is-error" *ngIf="errorMessage">{{errorMessage | translate}}</label>
+
+                    <label class="is-error" *ngIf="isSent">{{"FORGET.PLEASE_CHECK" | translate}}</label>
+
+                    <div class="ct-break--short"></div>
+
+                    <input type="submit" value="{{'FORGET.SEND' | translate}}" *ngIf="!isSent"
+                        [disabled]="!forgetForm.valid || isBusy">
+
+                    <div class="ct-c-loader ct-float-right" *ngIf="isBusy">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+
+                </form>
+            </div>
+
+            <sgn-footer-component [isFullClass]="false"></sgn-footer-component>
+        </div>
+    </main>
+</div>

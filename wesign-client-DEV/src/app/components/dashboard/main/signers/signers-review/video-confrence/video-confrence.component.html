@@ -1,0 +1,96 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div  style="width: 700px;" class="modal__container ct-animate-slide-down">
+            <h3>{{'GLOBAL.VIDEO_CONFRENCE' | translate}}</h3>
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+            
+            
+            <span >{{'VIDEO_CONFRENCE_POPUP.YOU_HAVE_SELECTED_THE_VIDEO_CONFERENCE_OPTION' | translate}}</span>            
+            <div class="ct-break"></div>
+            <span  >{{'VIDEO_CONFRENCE_POPUP.TO_START_NEED_TO_CHOOSE' | translate}}</span>            
+            <div class="ct-break"></div>
+            <span  >{{'VIDEO_CONFRENCE_POPUP.NEED_TO_CHOOSE_CONTACTS' | translate}}</span>            
+            <div class="ct-break"></div>
+            <span  >{{'VIDEO_CONFRENCE_POPUP.NEED_TO_PRESS_ON_START' | translate}}</span>            
+            <div class="ct-break"></div>
+            <span >{{'VIDEO_CONFRENCE_POPUP.THE_CONFRENCE_CALL_WILL_OPEN_IN_NEW_WINDOW' | translate}}</span>                        
+            <div class="ct-break"></div>
+            <span  >{{'VIDEO_CONFRENCE_POPUP.AT_THE_END_OF_THE_VIDEO_CONFERENCE' | translate}}</span>            
+            <div class="ct-break--short"></div>
+            <span  >{{'VIDEO_CONFRENCE_POPUP.YOU_CAN_RETURN_TO_SEND_DOC_PROCESS' | translate}}</span>
+            <div class="ct-break"></div>
+            <span>{{'VIDEO_CONFRENCE_POPUP.TO_CANCEL_NEED_TO_PRESS' | translate}}</span>
+            <div class="ct-break--short"></div>
+
+            <div class="ct-break--shorter"></div>
+            <span style="font-weight:bold;text-decoration:underline">{{'VIDEO_CONFRENCE_POPUP.SELECT_RECIPIENTS' | translate}}</span>
+            <div class="ct-break--short"></div>
+           
+           
+    <main class="ct-animate-fadein">
+        <div class="container" style="height: 307px;">
+            <div class="container__table">
+                <table cellpadding="0" cellspacing="0" class="ct-text-left" style="height: 100px;">
+                    <tr style="position: sticky; top: 0; z-index: 10;">
+                        <th>    
+                            <label class="ct-checkbox ct-text-left">
+                                <span>&nbsp;</span>
+                                <input id="selectAllId" type="checkbox" value="1"                                    
+                                    (change)="selectedAll($event)">
+                                <span class="ct-checkbox__checkmark"></span>
+                            </label>                                                        
+                        </th>                     
+                        <th>{{'VIDEO_CONFRENCE_POPUP.FULL_NAME' | translate}}</th>
+                        <th>{{'VIDEO_CONFRENCE_POPUP.SIGNED_BY' | translate}}</th>
+                                                
+                    </tr>
+
+            <ng-container *ngFor="let signer of signers ; let i = index">
+
+                <tr >
+                    <td (click)="onRowClick(signer, i)">
+                        <label class="ct-checkbox ct-text-left">
+                            <span>&nbsp;</span>
+                            <input id="{{i}}" type="checkbox" value="1"
+                                 name="checkboxOverlay[]" [(ngModel)]="signers[i].selected"
+                                (change)="selected($event, signer, i)">
+
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>                                
+                    </td>
+                
+                    <td>{{signer.contactName}}</td>
+                    <td>{{SendingMethod[signer.sendingMethod]}}</td>
+                
+                </tr>
+
+            </ng-container>
+            </table>
+            </div>
+            <div class="ct-break--short"></div>
+            <div class="ct-break--short"></div>
+
+            <div class="ct-text-center" *ngIf="showErrorCodeMessage">
+                <label class="is-error">{{errorCodeMessage}}</label>
+                <div class="ct-break--shorter"></div>
+              </div>
+              <div class="ct-break--short"></div>
+            <div>
+                <div class="ct-float-right">
+                    <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+        
+                    <button   [disabled]="!isSignerSelected || isSubmitBusy" class="ct-button--primary"
+                     (click)="createZoomMeeting()">{{'VIDEO_CONFRENCE_POPUP.START_ZOOM' | translate}}</button>
+                </div>
+        
+               
+            </div>
+        </div>
+    </main>
+    
+
+    
+
+</div>

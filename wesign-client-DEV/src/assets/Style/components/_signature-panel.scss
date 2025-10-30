@@ -1,0 +1,65 @@
+// signature panel
+.ct-c-signature-panel {
+    .signature-panel__overlay {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+    }
+
+    .signature-panel__container {
+        position: relative;
+        top: 1%;
+        width: 600px;
+        height: 100%;
+        margin: 0 auto;
+        padding: 7px 7px 20px 7px;
+        background: white;
+        overflow-y: auto;
+
+        @include respond-to('medium') {
+            width: 96.5%;
+        }
+
+        @include respond-to('small') {
+            top: 0;
+            height: 100vh;
+        }
+    }
+
+    nav {
+        overflow: hidden;
+        border-bottom: solid 1px $color--border;
+
+        button {
+            border: none;
+            outline: none;
+            padding: 10px 25px 10px 0;
+            font-size: 19px;
+            font-weight: 400;
+            color: $color--text;
+            text-align: left;
+            background: white;
+        }
+
+        button:hover {
+            color: $color--primary;
+        }
+
+        button.is-active {
+            color: $color--primary;
+        }
+    }
+
+    .tabcontent {
+        display: none;
+        padding: 15px 0 0 0;
+
+        input {
+            width: -webkit-fill-available;
+        }
+    }
+}

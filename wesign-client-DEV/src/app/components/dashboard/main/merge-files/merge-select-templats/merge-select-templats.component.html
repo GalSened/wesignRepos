@@ -1,0 +1,45 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down modal__container__wide" style="width: 95% !important ">
+            <input type="text" #searchInput class="ct-input--primary" placeholder="{{'GLOBAL.SEARCH_TEMPLATES' | translate}}" debounce [delay]="500"
+                [(ngModel)]="templateFilter.Search"  [ngClass] = "{'loading': showSearchSpinner}">
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-c-list">
+                <table cellpadding="0" cellspacing="0" class="ct-text-left" *ngIf="templateInfos">
+                    <tr>
+                        <th>{{ "DATA.TITLE" | translate}}</th>
+                       
+                       
+                        <th class="ct-float-right">
+                            <div paginator class="ct-c-pagination" *ngIf="pageCalc" [currentPage]="currentPage"
+                            [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                        </th>
+                    </tr>
+                    <ng-container *ngFor="let template of templateInfos.templates">
+                        <tr>
+                            <td (click)="sendTemplateToParent(template)">{{template.name}}</td>
+                          
+                           
+                            <td ></td>
+                        </tr>
+                    </ng-container>
+
+                </table>
+            </div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

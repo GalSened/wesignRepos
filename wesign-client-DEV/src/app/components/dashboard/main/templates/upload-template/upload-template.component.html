@@ -1,0 +1,108 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <nav>
+          <button class="tablinks" *ngIf="templateMode" (click)="openCity($event, 'Default')" id="defaultOpen">{{'TEMPLATE.DEFAULT' | translate}}</button>
+
+          <button class="tablinks" (click)="openCity($event, 'Placeholders')" id="placeHolderOpen">{{'TEMPLATE.PLACEHOLDERS' | translate}}</button>
+        </nav>
+      
+      
+        <div id="Default" class="tabcontent"   *ngIf="templateMode">
+          <div class="ct-break--shorter"></div>
+
+          <span>{{'TEMPLATE.SUPPORTED_FILES' | translate}}</span>
+
+          <div class="ct-break--short"></div>
+
+          <div class="ct-c-file-upload">
+            <sgn-upload-file-area [acceptTypes]="acceptTypes" (fileUploadEvent)="fileDropped($event)">              
+            </sgn-upload-file-area>
+          </div>
+
+          <div class="ct-break--short"></div>
+       
+          <div>
+            <input type="text" class="ct-input--primary"  [(ngModel)]="name" maxlength="50" disabled>
+
+            <div class="ct-float-right">
+              <button class="ct-button--icon add-remove">
+                  <i-feather name="minus-circle" (click)="clean()"></i-feather>                  
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="Placeholders" class="tabcontent">
+          <div class="ct-break--shorter"></div>
+
+          <span>{{'TEMPLATE.UPLOAD_PLACEHOLDER' | translate}}</span>
+
+          <div class="ct-break--shorter"></div>
+
+          <span>{{'TEMPLATE.FOR_EXAMPLE' | translate}}</span>
+
+          <a href="/assets/Doc1.docx">Template File</a>
+
+          <span>&nbsp;</span>
+
+          <a href="/assets/xml_demo.xml" download>XML File</a>
+
+          <div class="ct-break--short"></div>
+
+          <div class="ct-c-file-upload file-upload--short">
+            <div class="ct-break--shorter"></div>
+            <span style="margin: auto; display: table">{{'TEMPLATE.DROP' | translate}}</span>
+            <div class="ct-break--shorter"></div>
+            <sgn-upload-file-area [acceptTypes]="acceptTypes" (fileUploadEvent)="fileDropped2($event)">
+            </sgn-upload-file-area>
+          
+            <div class="ct-break--shorter"></div>
+          
+            <div>
+              <input type="text" class="ct-input--primary" [(ngModel)]="name2" maxlength="50" disabled>
+          
+              <div class="ct-float-right">
+                <button class="ct-button--icon add-remove">
+                  <i-feather name="minus-circle" (click)="clean2()"></i-feather>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ct-c-file-upload file-upload--short">
+            <div class="ct-break--shorter"></div>
+            <span style="margin: auto; display: table">{{'TEMPLATE.DROP_XML' | translate}}</span>
+            <div class="ct-break--shorter"></div>
+            <sgn-upload-file-area [acceptTypes]="xmlAcceptTypes" (fileUploadEvent)="fileDropped3($event)">
+            </sgn-upload-file-area>
+          
+            <div class="ct-break--shorter"></div>
+          
+            <div>
+              <input type="text" class="ct-input--primary" [(ngModel)]="name3" maxlength="50" disabled>
+          
+              <div class="ct-float-right">
+                <button class="ct-button--icon add-remove">
+                  <i-feather name="minus-circle" (click)="clean3()"></i-feather>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--outline" [disabled]="isInProcess" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+          <button class="ct-button--primary" [disabled]="isBusy || (mode ==  'Default' && base64defaultTemplate == '' ) || (mode ==  'Placeholders' && base64placeHolderTemplate == '')" (click)="submit()">{{'BUTTONS.SUBMIT' | translate}}</button>
+        </div>
+
+        
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

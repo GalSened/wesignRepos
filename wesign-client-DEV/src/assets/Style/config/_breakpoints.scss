@@ -1,0 +1,218 @@
+/*breakpoints*/
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .p-login {
+        background: #66bcef !important;
+    }
+
+    .p-register {
+        background: #66bcef !important;
+    }
+
+    main {
+        margin-top: 0 !important;
+    }
+
+    .ws_c-header {
+        position: initial !important;
+    }
+}
+
+@media screen and (min-width: 320px) and (max-width: 800px) {
+
+    /*login*/
+    body {
+        min-width: 100% !important;
+        padding-top: 0 !important;
+        background: white !important;
+    }
+
+    .p-login {
+        background: white !important;
+        background-image: none !important;
+    }
+
+    .p-login .ws_login__wrapper {
+        width: 355px !important;
+        padding: 10px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .ws_input--login__icon {
+        right: -300px !important;
+    }
+
+    /*register*/
+    .p-register {
+        min-width: 100% !important;
+        padding-top: 0 !important;
+        background: white !important;
+    }
+
+    .p-register .ws_register__wrapper {
+        width: 100% !important;
+        padding: 10px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .p-register .ws_register__wrapper .register-wrapper__form {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .ws_select--register__tel {
+        width: 50% !important;
+    }
+
+    /**/
+    *:focus {
+        outline: none !important;
+        border: 0 !important;
+    }
+
+    input[type=date] {
+        font-size: 75% !important;
+    }
+
+    input[type=checkbox].ws_checkbox+label.ws_label-checkbox--field-ui {
+        padding: 0 7px !important;
+    }
+
+    input[type=radio].ws_radio+label.ws_label-radio--field-ui {
+        padding: 4px 7px !important;
+    }
+
+    main {
+        margin-top: 0 !important;
+    }
+
+    .ws_c-header {
+        position: initial !important;
+    }
+
+    body {
+        zoom: 1 !important;
+    }
+
+    .ws_body {
+        height: calc(var(--vh, 1vh) * 100) !important;
+        /* Use vh as a fallback for browsers that do not support Custom Properties */
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
+
+    .ws_body .ws_body__wrapper {
+        overflow-y: none !important;
+        overflow-x: none !important;
+        padding-bottom: 0 !important;
+    }
+
+    .ws_container {
+        display: block !important;
+        min-width: 100% !important;
+    }
+
+    .ws_c-top-dropdown .top-dropdown__menu {
+        margin: 3px -20px !important;
+    }
+        
+    /*dashboard*/
+    .ws_c-header .header__image {
+        display: none;
+    }
+
+    /*document*/
+    .ws_c-document {
+        width: 100% !important;
+        margin-top: 0 !important;
+        padding-bottom: 200px !important;
+    }
+
+    .ws_c-document div.doc__zoom {
+        zoom: 0.30 !important;
+        margin-bottom: 20px !important;
+    }
+
+    .ws_c-document div .doc__paging {
+        display: none;
+    }
+
+    .ws_c-document .doc__field.field-input input:focus {
+        border: 0 !important;
+        outline: 0 !important;
+    }
+
+    .ws_c-document .doc__field.field-input input:active {
+        border: 0 !important;
+        outline: 0 !important;
+    }
+
+
+    .doc__field.field-attachment {
+        font-size: 16px !important;
+    }
+
+    .ws_c-document .doc__field.field-ui {
+        margin: 0 !important;
+        //padding: 3px 5px 3px 5px !important;
+    }
+
+    .doc__nav {
+        display: none;
+    }
+
+    .ws_c-signature-pad .signature-pad__draw-area {
+        margin-bottom: 100px !important;
+    }
+
+    .signature-pad__nav {
+
+        position: fixed !important;
+        bottom: 0;
+
+        div {
+            width: auto !important;
+            text-align: center;
+        }
+    }
+
+    .ws_alert.alert--user-sign {
+        top: 0px !important;
+    }
+
+    /**/
+    .ws_c-file-upload-user-sign {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .ws_c-file-upload-user-sign h1 {
+        text-align: center !important;
+        max-width: 90% !important;
+    }
+
+    /**/
+    .ws_c-file-upload form {
+        width: 100% !important;
+        height: 100px !important;
+        border-width: 1px !important;
+    }
+
+    .ws_c-file-upload .file-upload__icon {
+        top: -75px !important;
+    }
+
+    .ws_c-file-upload span {
+        top: -80px !important;
+    }
+
+    .ws_c-modal {
+        overflow: auto !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100vh;
+        padding: 5px !important;
+        background: white !important;
+    }
+}

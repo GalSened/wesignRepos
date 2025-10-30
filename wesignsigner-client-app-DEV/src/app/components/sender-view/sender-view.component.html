@@ -1,0 +1,16 @@
+<app-loader  *ngIf="!loaded"></app-loader>
+
+<div *ngIf="isOnlineMode && loaded">
+
+    <body class="ct-p-user-sign" >
+        <app-header></app-header>
+        <app-second-header ></app-second-header>
+        <main>
+            <app-view-settings [showNotes]="false" [senderView]="true" [showAppendixesIcon]="false" [showAttchments]="false" [totalPages]="pages?.length" 
+            (changeBackgroundEvent)="changeBackgroud()" (changeZoomLevelEvent)="changeZoomLevel($event)"  [currentPage]="currentPage" ></app-view-settings>
+            <app-documents-group [pages]="pages" [zoomLevel]="zoomLevel" [isDark] = "isDarkMode" [isSender]="true" (changePageScroll) = "changePageNumber($event)"></app-documents-group>
+        </main>
+    </body>
+</div>
+
+<app-error *ngIf="!isOnlineMode && loaded"></app-error>

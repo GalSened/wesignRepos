@@ -1,0 +1,70 @@
+<div class="ct-p-login">
+    <main>
+        <div class="main__img"></div>
+
+        <div class="main__content">
+            <header>
+                <div class="header__logo"  [routerLink]="['/dashboard','main']"></div>
+                <sgn-lang-selector></sgn-lang-selector>
+            </header>
+
+            <div class="content__form ct-animate-fadein">
+                <h2>{{"RESET.PASSWORD_RESET" | translate}}</h2>
+
+                <div class="ct-break--short"></div>
+
+                <form [formGroup]="resetForm" #ngForm="ngForm" (ngSubmit)="reset()">
+
+                    <div class="ct-input--secondary__container">
+                        <input class="ct-input--primary" required type="password"
+                            formControlName="newPassword" #newPassword
+                            placeholder="{{'RESET.NEW_PASSWORD' | translate }}"
+                            [class.is-error]="resetForm.get('newPassword').invalid && (ngForm.submitted && ngForm.invalid)">
+
+                        <div class="ct-float-right">
+                            <button class="ct-button--icon show-password" [togglePass]="newPassword"
+                                [(eyeIconProp)]="eyeIcon">
+                                <i-feather [name]="eyeIcon"></i-feather>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="ct-break--short"></div>
+
+                    <div class="ct-input--secondary__container">
+                        <input class="ct-input--primary" required type="password"
+                            formControlName="confirmPassword" #confirmPassword
+                            [class.is-error]="resetForm.get('confirmPassword').invalid && (ngForm.submitted && ngForm.invalid)"
+                            placeholder="{{'RESET.CONFIRM' | translate }}">
+
+                        <div class="ct-float-right">
+                            <button class="ct-button--icon show-password" [togglePass]="confirmPassword"
+                                [(eyeIconProp)]="eyeIcon2">
+                                <i-feather [name]="eyeIcon2"></i-feather>
+                            </button>
+                        </div>
+                    </div>
+                    <label class="ws_error_msg_big_font is-error"
+                    *ngIf="passMinLength">{{"ERROR.INPUT.L_PASS_1" | translate}} {{passMinLength}} {{"ERROR.INPUT.L_PASS_2" | translate}}</label>
+                    <label class="ws_error_msg_big_font is-error"
+                        *ngIf="!passMinLength && (errorMessage || (ngForm.submitted && ngForm.form.invalid))">{{errorMessage | translate}}</label>
+
+                    <div class="ct-break--medium"></div>
+
+                    <input [disabled]="isBusy || !resetForm.valid || 
+                    (resetForm.get('newPassword').value != resetForm.get('confirmPassword').value)" type="submit"
+                        [disabled]="isBusy" value="{{'RESET.UPDATE' | translate }}">
+
+                    <div *ngIf="isBusy" class="ct-c-loader ct-float-right">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+
+                </form>
+            </div>
+
+            <sgn-footer-component [isFullClass]="false"></sgn-footer-component>
+        </div>
+    </main>
+</div>

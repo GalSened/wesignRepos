@@ -1,0 +1,5 @@
+<div class="ct-c-document" [class.bg-is-dark]="isDark" (scroll)="onScroll($event)" #document style="overflow:scroll;" >
+    <app-document-page *ngFor="let page of pages; let i = index" [page]="page" [pageNumber]="i+1"  (changePageScroll) = "changePageNumber($event)"[isSender]="isSender"
+        [ngStyle]="{'zoom': zoomLevel, '-moz-transform':'scale('+zoomLevel+')', '-moz-transform-origin':'top center', '-o-transform':'scale('+zoomLevel+')', '-o-transform-origin':'top center', '-webkit-transform':'scale('+zoomLevel+')' , '-webkit-transform-origin':'top center', 'transform':'scale('+zoomLevel+')', 'transform-origin':'top center' }">
+    </app-document-page>
+</div>

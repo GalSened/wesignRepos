@@ -1,0 +1,23 @@
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using HistoryIntegratorService.Binders;
+
+namespace HistoryIntegratorService.Providers
+{
+    public class GuidListModelBinderProvider : IModelBinderProvider
+    {
+        public IModelBinder? GetBinder(ModelBinderProviderContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (context.Metadata.ModelType == typeof(List<Guid>))
+            {
+                return new GuidListModelBinder();
+            }
+
+            return null;
+        }
+    }
+}

@@ -1,0 +1,85 @@
+<div class="ws_break--short"></div>
+<div class="ws_separator"></div>
+<div>
+        <h1>Properties:</h1>
+        <table cellpadding="0" cellspacing="0" class="ws_animate-slide-down" *ngIf="licneseActivted">
+                <tr class="header">
+                        <th>Key
+                                <button class="ws_button--icon ws_align-vert--middle">
+                                </button>
+                        </th>
+                        <th>Value
+                                <button class="ws_button--icon ws_align-vert--middle">
+                                </button>
+                        </th>
+                        <th>Usages
+                                <button class="ws_button--icon ws_align-vert--middle">
+                                </button>
+                        </th>
+                </tr>
+
+                <tr class="ws_tr__menu">
+                        <td><span>Amount of Templates</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.templates<0) ? 'Unlimited' : wesignlicense.licenseLimits.licenseCounters.templates}} </span></td>
+                        <td><span>{{(wesignlicense.licenseUsage.templates<0) ? 'Unlimited' : wesignlicense.licenseUsage.templates}} </span></td>
+
+                </tr>
+
+                <tr class="ws_tr__menu">
+                        <td><span>Amount of Users</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.users<0) ? 'Unlimited' : wesignlicense.licenseLimits.licenseCounters.users}} </span></td>
+                        <td><span>{{(wesignlicense.licenseUsage.users<0) ? 'Unlimited' : wesignlicense.licenseUsage.users}} </span></td>
+
+                </tr>
+                <tr class="ws_tr__menu">
+                        <td><span>Amount of Documents Per Month</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.documentsPerMonth<0) ? 'Unlimited' : wesignlicense.licenseLimits.licenseCounters.documentsPerMonth}}</span></td>
+                        <td><span>{{(wesignlicense.licenseUsage.documentsPerMonth<0) ? 'Unlimited' : wesignlicense.licenseUsage.documentsPerMonth}}</span></td>
+                </tr>
+                
+                <tr class="ws_tr__menu">
+                        <td><span>Amount of SMS Per Month</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.smsPerMonth<0) ? 'Unlimited' : wesignlicense.licenseLimits.licenseCounters.smsPerMonth}}</span></td>
+                        <td><span>{{(wesignlicense.licenseUsage.smsPerMonth<0) ? 'Unlimited' : wesignlicense.licenseUsage.smsPerMonth}}</span></td>
+                </tr>    
+                <tr class="ws_tr__menu">
+                        <td><span>Visual Identifications Per Month</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.visualIdentificationsPerMonth<0) ? 'Unlimited' : wesignlicense.licenseLimits.licenseCounters.visualIdentificationsPerMonth}}</span></td>
+                        <td><span>{{(wesignlicense.licenseUsage.visualIdentificationsPerMonth<0) ? 'Unlimited' : wesignlicense.licenseUsage.visualIdentificationsPerMonth}}</span></td>
+                </tr>   
+                <tr class="ws_tr__menu">
+                        <td><span>Video Conference Per Month</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.videoConferencePerMonth<0) ? 'Unlimited' : wesignlicense.licenseLimits.licenseCounters.videoConferencePerMonth}}</span></td>
+                        <td><span>{{(wesignlicense.licenseUsage.videoConferencePerMonth<0) ? 'Unlimited' : wesignlicense.licenseUsage.videoConferencePerMonth}}</span></td>
+                </tr>   
+                <tr class="ws_tr__menu">
+                        <td><span>Use Active Directory</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.licenseCounters.useActiveDirectory) ? 'Active' : 'Inactive'}}</span></td>
+                        <td><span></span></td>
+                </tr>            
+                <tr class="ws_tr__menu">
+                        <td><span>UI - Show SelfSign</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.uiViewLicense.shouldShowSelfSign) ? 'Active' : 'Inactive'}}</span></td>
+                        <td><span></span></td>
+                </tr>
+                <tr class="ws_tr__menu">
+                        <td><span>UI - Show Group Sign</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.uiViewLicense.shouldShowGroupSign) ? 'Active' : 'Inactive'}}</span></td>
+                        <td><span></span></td>
+                </tr>
+                <tr class="ws_tr__menu">
+                        <td><span>UI - Show Live Sign</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.uiViewLicense.shouldShowLiveMode) ? 'Active' : 'Inactive'}}</span></td>
+                        <td><span></span></td>
+                </tr>
+                <tr class="ws_tr__menu">
+                        <td><span>UI - Show Contacts</span></td>
+                        <td><span>{{(wesignlicense.licenseLimits.uiViewLicense.shouldShowContacts) ? 'Active' : 'Inactive'}}</span></td>
+                        <td><span></span></td>
+                </tr>
+                <h1>License will expired in  {{this.licenseExpiredInDays}} days</h1>
+
+
+
+        </table>
+</div>

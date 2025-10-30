@@ -1,0 +1,35 @@
+<div class="ct-c-modal" [ngClass]="(show)?'ct-is-shown':'ct-is-hidden'">
+    <div  class="modal__overlay">
+      <div style="display: table;"  class="modal__container ct-animate-slide-down">
+        <h3>{{'GLOBAL.TOPMENU.SWITCH_GROUP' | translate}} </h3>
+  
+        <div class="ct-separator"></div>
+  
+        <div class="ct-break--short"></div>
+  
+        <span>{{'GLOBAL.TOPMENU.SELECT_SWITCH_GROUP_MEMBER' | translate}}</span>
+        <div class="ct-break--short"></div>
+
+        <ng-select [items]="groups"
+            bindLabel="name"
+            bindValue="groupId"
+            [multiple]="false"
+            [virtualScroll]="true"
+            placeholder="{{'GLOBAL.TOPMENU.SELECT_GROUP' | translate}}"
+            [selectableGroup]="true"
+            [closeOnSelect]="true"
+            [(ngModel)]="selectedGroupId"> 
+        </ng-select>
+    
+        <div class="ct-break--medium"></div>
+        <div class="ct-separator"></div>
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="cancel()">{{'REGISTER.CANCEL' | translate}}</button>
+  
+          <button class="ct-button--primary" (click)="confirm()" [disabled]="!selectedGroupId || selectedGroupId.length == 0">{{'BUTTONS.SUBMIT' | translate}}</button>
+        </div>
+  
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+</div>

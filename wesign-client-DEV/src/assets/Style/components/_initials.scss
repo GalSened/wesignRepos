@@ -1,0 +1,30 @@
+// initials
+.ct-c-initials {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 200px;
+    margin-bottom: 5px;
+    padding: 15px 15px 10px 15px;
+    border: solid 1px $color--border;
+    background: white;
+
+    @include respond-to('small') {
+        height: 75px;
+        padding: 5px 15px 10px 15px;
+    }
+
+    input {
+        width: 100%;
+        font-size: 45px;
+        font-family: 'Kalam-Regular';
+        text-align: center;
+        letter-spacing: -3px;
+        color: black;
+        background: white;
+        border: 0;
+
+        @include respond-to('small') {
+            height: 75px;
+        }
+    }
+}

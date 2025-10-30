@@ -1,0 +1,10 @@
+<ng-container *ngFor="let radio of radiogroup.radioFields">
+    <div >
+
+        <app-radio-field [disabled]="disabled" 
+        [selected]="radiogroup.selectedRadioName"
+        
+        [radio]="radio"  [documentId]="documentId"  [groupname]="radiogroup.name" [pageHeight]="pageHeight" [pageWidth]="pageWidth">
+        </app-radio-field>
+    </div>
+</ng-container>

@@ -1,0 +1,43 @@
+<!-- <sgn-loading></sgn-loading> -->
+<sgn-alert-component></sgn-alert-component>
+
+<div class="ws_break--large"></div>
+<div class="ws_margin-auto">
+    <!-- <div class="ws_break--medium"></div> -->
+
+    <h1 class="ws_text-center">{{'TEMPLATE.UPLOAD' | translate}}</h1>
+    <h3 class="ws_text-center">(doc,docx,pdf,jpg,png)</h3>
+
+    <div class="ws_break--short"></div>
+    <div class="ws_c-file-upload">
+        <form method="post">
+            <input #fileInput type="file" (change)="fileDropped()" accept="image/*,.pdf,.docx" title="">
+
+            <div class="file-upload__icon">
+                <div class="ws_icon__doc"></div>
+            </div>
+
+            <div class="file-upload__icon">
+                <div class="ws_icon__image"></div>
+            </div>
+
+            <div class="file-upload__icon">
+                <div class="ws_icon__pdf"></div>
+            </div>
+
+            <div class="ws_break--shorter"></div>
+
+            <!-- <span id="mtxt">Drag your files here or click in this area.</span> -->
+            <span *ngIf="!file"> {{"DROP_ZONE_TEXT" | translate}} </span>
+            <span *ngIf="file"> {{file.name}} {{file.size | filesize}} </span>
+
+            <div class="ws_text-center">
+                <button class="ws_button--small ws_button--outline" type="button"
+                    (click)="cancel()">{{'REGISTER.CANCEL' | translate}}</button>
+                <button class="ws_button--small" [disabled]="fileInput.files.length < 1 || busy"
+                    (click)="upload()">{{'GLOBAL.NEXT' | translate}}</button>
+            </div>
+        </form>
+    </div>
+</div>
+

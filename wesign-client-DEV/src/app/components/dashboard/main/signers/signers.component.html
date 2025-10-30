@@ -1,0 +1,124 @@
+<div class="ct-p-inner">
+    <sgn-alert-component></sgn-alert-component>
+
+
+  <sgn-top-header-title [title]="'SIGNERS.ADD_SIGNERS' | translate" [nextButtonText]=""
+        (nextButton)="sign()"></sgn-top-header-title>
+
+    <!-- <sgn-top-header-title *ngIf="!tiny" [title]="'SIGNERS.ADD_SIGNERS' | translate" [nextButtonText]=""
+        (nextButton)="sign()"></sgn-top-header-title> -->
+
+    <!-- <sgn-top-header-title *ngIf="tiny" [title]="'SIGNERS.ADD_SIGNERS' | translate" [nextButtonText]=""
+        (nextButton)="sign()"></sgn-top-header-title>
+ -->
+
+    <main class="ct-animate-fadein">
+        <div class="container">
+
+            <ng-container *ngIf="isTemplate && state$ | async as state">
+                <span>{{'SIGNERS.TEMPLATES_ORDER' | translate}}&nbsp;</span>
+
+                <a [routerLink]="['/dashboard','templates']">{{'DATA.EDIT' | translate}}
+                    {{'FIELDS.LIST' | translate}}</a>
+
+                <div class="ct-break--shorter"></div>
+
+                <div class="ct-c-templates-reorder">
+                    <ng-container *ngFor="let template of state.SelectedTemplates; index as i">
+                        <sgn-template-select [name]="template.name" [index]="i" (moveTemplate)="moveTemplate($event)">
+                        </sgn-template-select>
+                    </ng-container>
+                </div>
+
+                <div class="ct-break--short"></div>
+
+                <div class="ct-separator"></div>
+            </ng-container>
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'DOCUMENT.NAME' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-c-file-upload-rename" *ngIf="state$ | async as state">
+
+                <div>
+                    <i-feather name="edit-2"></i-feather>
+                </div>
+
+                <input type="text" class="ct-input--primary" [(ngModel)]="fileName" maxlength="50" debounce
+                    [delay]="500" (change)="nameChanged($event)"  [class.is-error]="fileName == ''">
+
+                <ng-container *ngIf="!isTemplate">
+
+                    <input #fileInput type="file" (change)="fileDropped()" accept="image/*,.pdf,.docx,.doc" title=""
+                        style="display: none;">
+                    <a class="ct-float-right" (click)="fileInput.click()">{{'GLOBAL.UPLOAD_NEW' | translate}}</a>
+                </ng-container>
+
+            </div>
+
+            <div class="ct-break--short"></div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+
+
+
+            <ng-container *ngIf="tiny">
+                <h3>{{'SIGNERS.ADD_SIGNER_DETAILS' | translate}}:</h3>
+                <div class="ct-break--short"></div>
+                <section>
+                    <div class="ct-c-add-signers ct-is-signer1">
+                        <div class="add-signers__container is-lite ct-text-center">
+                            <div class="ct-break--shorter"></div>
+
+                            <select class="ct-select--primary" (change)="onSignerMethodChanged($event)">
+                                <option [selected]="useEmail">{{'GLOBAL.SEND_BY_EMAIL' | translate}}</option>
+                                <option [selected]="!useEmail">{{'GLOBAL.SEND_BY_SMS' | translate}}</option>
+                            </select>
+                            <div class="ct-break--shorter"></div>
+                            <input #fullName="ngModel" [(ngModel)]="fullNameData" type="text" required
+                                [class.is-error]="!validName" class="ct-input--primary ct-input--short"
+                                placeholder="{{'REGISTER.FULL_NAME' | translate}}" maxlength="50" minlength="3"
+                                pattern=".{3,}(?: .+){0,2}">
+
+
+                            <div class="ct-break--shorter"></div>
+
+                            <input *ngIf="useEmail" #email="ngModel" [(ngModel)]="emailPhoneData" type="text" required
+                                pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,100})" [class.is-error]="!validEmailPhone"
+                                class="ct-input--primary ct-input--short" placeholder="{{'SIGNERS.EMAIL' | translate}}"
+                                minlength="3" maxlength="50">
+
+                            <div *ngIf="!useEmail" >
+                                <input *ngIf="!useEmail" ng2TelInput #phone="ngModel" [(ngModel)]="emailPhoneData"
+                                    type="text" required (countryChange)="onCountryChange($event)"
+                                    [ng2TelInputOptions]="telOptions"
+                                    pattern="(\+\d{1,3}\s?)?((\(\d{3}\)\s?)|(\d{3})(\s|-?))(\d{3}(\s|-?))(\d{4})(\s?(([E|e]xt[:|.|]?)|x|X)(\s?\d+))?"
+                                    [class.is-error]="!validEmailPhone" class="ct-input--primary ct-input--short"
+                                    placeholder="{{'REGISTER.PHONE_NUMBER' | translate}}" maxlength="50">
+                                <div class="ct-break--shorter"></div>        
+                                <span class="tooltiptext" *ngIf="!validEmailPhone">{{'TINY.PHONE_NUMBER' |
+                                    translate}}</span>                        
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="ct-break--short"></div>
+                <div class="ct-text-center">
+                    <button class="ct-button--primary ct-button--small" (click)="sign()">{{'SIGNERS.EDIT_DOCUMENT' |
+                        translate}}</button>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="!tiny">
+                <sgn-document-method-selector [isBusy]="busy" (signAct)="signAction($event)" [multidocs]="multidocs" [documentName]="fileName">
+                </sgn-document-method-selector>
+            </ng-container>
+        </div>
+    </main>
+
+</div>

@@ -1,0 +1,222 @@
+<!-- Segmentation Charts Container -->
+<div class="segmentation-charts-container">
+
+  <!-- Chart Controls -->
+  <div class="chart-controls">
+    <div class="control-group">
+      <h3 class="section-title">{{ 'ANALYTICS.SEGMENTATION.TITLE' | translate }}</h3>
+      <p class="section-subtitle">{{ 'ANALYTICS.SEGMENTATION.SUBTITLE' | translate }}</p>
+    </div>
+
+    <div class="chart-actions">
+      <button class="btn btn-sm btn-outline-secondary" (click)="refreshCharts()" title="Refresh Charts">
+        <i class="feather" data-feather="refresh-cw"></i>
+      </button>
+
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <i class="feather" data-feather="download"></i>
+          Export
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="downloadChart('sendType')">Send Type Chart</a></li>
+          <li><a class="dropdown-item" (click)="downloadChart('device')">Device Chart</a></li>
+          <li><a class="dropdown-item" (click)="downloadChart('organization')">Organization Chart</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+
+    <!-- Send Type Distribution -->
+    <div class="chart-container send-type-chart">
+      <div class="chart-header">
+        <h4>Send Type Distribution</h4>
+        <div class="chart-info">
+          <i class="feather" data-feather="pie-chart"></i>
+          <span>Document distribution by sending method</span>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #sendTypeChart></canvas>
+      </div>
+
+      <!-- Send Type Stats -->
+      <div class="chart-stats">
+        <div class="stat-item" *ngFor="let segment of segmentationData.sendTypeBreakdown">
+          <span class="stat-label">{{ segment.name }}</span>
+          <span class="stat-value" [ngClass]="formatPerformanceClass(segment.successRate)">
+            {{ segment.successRate }}%
+          </span>
+          <span class="stat-count">{{ segment.count | number }} docs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Device Usage Analysis -->
+    <div class="chart-container device-chart">
+      <div class="chart-header">
+        <h4>Device Usage & Performance</h4>
+        <div class="chart-info">
+          <i class="feather" data-feather="smartphone"></i>
+          <span>Usage patterns across device types</span>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #deviceChart></canvas>
+      </div>
+
+      <!-- Device Performance Summary -->
+      <div class="device-performance">
+        <div class="performance-item" *ngFor="let device of segmentationData.deviceBreakdown">
+          <div class="device-info">
+            <span class="device-name">{{ device.name }}</span>
+            <span class="device-share">{{ device.percentage }}% share</span>
+          </div>
+          <div class="device-metrics">
+            <div class="metric">
+              <span class="metric-label">Success</span>
+              <span class="metric-value" [ngClass]="formatPerformanceClass(device.successRate)">
+                {{ device.successRate }}%
+              </span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Avg Time</span>
+              <span class="metric-value">{{ device.averageTimeToSign }}min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Organization Analysis -->
+  <div class="organization-analysis">
+    <div class="chart-container organization-chart">
+      <div class="chart-header">
+        <h4>Organization Performance Analysis</h4>
+        <div class="chart-info">
+          <i class="feather" data-feather="users"></i>
+          <span>User count vs document volume (bubble size indicates total volume)</span>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #organizationChart></canvas>
+      </div>
+    </div>
+
+    <!-- Top Organizations Table -->
+    <div class="top-organizations" *ngIf="segmentationData.organizationBreakdown.length > 0">
+      <h5>Top Organizations by Volume</h5>
+
+      <div class="organizations-table">
+        <div class="table-header">
+          <span class="col-org">Organization</span>
+          <span class="col-users">Users</span>
+          <span class="col-docs">Documents</span>
+          <span class="col-success">Success Rate</span>
+          <span class="col-tier">Tier</span>
+        </div>
+
+        <div class="table-row" *ngFor="let org of getTopOrganizations(6); let i = index">
+          <div class="org-info">
+            <span class="org-name">{{ org.organizationName }}</span>
+            <span class="org-volume" *ngIf="org.isHighVolume">
+              <i class="feather" data-feather="trending-up"></i>
+              High Volume
+            </span>
+          </div>
+          <span class="users-count">{{ org.usersCount | number }}</span>
+          <span class="docs-count">{{ org.documentsCount | number }}</span>
+          <span class="success-rate" [ngClass]="formatPerformanceClass(org.successRate)">
+            {{ org.successRate }}%
+          </span>
+          <span class="tier-badge" [ngClass]="formatTierBadgeClass(org.tier)">
+            {{ org.tier | titlecase }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template Usage Insights -->
+  <div class="template-insights" *ngIf="segmentationData.templateUsage.length > 0">
+    <h4>{{ 'ANALYTICS.TEMPLATES.USAGE_INSIGHTS' | translate }}</h4>
+
+    <div class="templates-grid">
+
+      <!-- Top Templates by Usage -->
+      <div class="insight-card templates-ranking">
+        <div class="insight-header">
+          <i class="feather" data-feather="file-text"></i>
+          <h5>Most Used Templates</h5>
+        </div>
+        <div class="insight-content">
+          <div class="template-list">
+            <div class="template-item" *ngFor="let template of getTopTemplates(5); let i = index">
+              <div class="template-rank">{{ i + 1 }}</div>
+              <div class="template-info">
+                <span class="template-name">{{ template.templateName }}</span>
+                <div class="template-metrics">
+                  <span class="usage-count">{{ template.usageCount }} uses</span>
+                  <span class="success-rate" [ngClass]="formatPerformanceClass(template.successRate)">
+                    {{ template.successRate }}% success
+                  </span>
+                </div>
+              </div>
+              <div class="template-badge" *ngIf="template.isPopular">
+                <i class="feather" data-feather="star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Template Performance -->
+      <div class="insight-card template-performance">
+        <div class="insight-header">
+          <i class="feather" data-feather="activity"></i>
+          <h5>Template Performance</h5>
+        </div>
+        <div class="insight-content">
+          <div class="performance-metrics">
+            <div class="metric-card" *ngFor="let template of getTopTemplates(3)">
+              <div class="metric-header">
+                <span class="template-name">{{ template.templateName }}</span>
+                <span class="complexity-badge" [ngClass]="'complexity-' + template.complexity">
+                  {{ template.complexity }}
+                </span>
+              </div>
+              <div class="metric-values">
+                <div class="metric-item">
+                  <span class="metric-label">Success Rate</span>
+                  <span class="metric-value" [ngClass]="formatPerformanceClass(template.successRate)">
+                    {{ template.successRate }}%
+                  </span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Avg Time</span>
+                  <span class="metric-value">{{ template.averageTimeToSign }}min</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Abandonment</span>
+                  <span class="metric-value" [ngClass]="template.abandonmentRate > 15 ? 'text-danger' : 'text-success'">
+                    {{ template.abandonmentRate }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

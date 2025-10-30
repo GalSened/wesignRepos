@@ -1,0 +1,28 @@
+<div class="ct-c-language-bar">
+   
+    <ng-select [searchable]="false" [clearable]="false" id="languagesOptions" class="ct-select--primary"
+        [(ngModel)]="selectedLanguage" (ngModelChange)="languageSelected(selectedLanguage)" [items]="languages"
+        bindLabel="item.Description">
+        
+
+        <ng-template ng-label-tmp let-item="item">
+            <div class="ct-ngSelect-templateContainer ct-ngSelect-label">
+                <img class="ct-ngSelect-img" height="16" width="16" [ngClass]="item.imgClass" />
+                <p class="ct-ngSelect-label-text">{{item.Description}}</p>
+                
+            </div>
+        </ng-template>
+
+        <ng-template ng-option-tmp let-item="item">
+            <div class="ct-ngSelect-templateContainer">
+                <img class="ct-ngSelect-img" height="16" width="16" [ngClass]="item.imgClass"  />
+                <p>{{item.Description}}</p>
+                
+            </div>
+        </ng-template>
+
+    </ng-select>
+
+    
+
+</div>

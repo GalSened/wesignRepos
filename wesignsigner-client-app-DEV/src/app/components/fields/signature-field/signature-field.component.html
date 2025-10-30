@@ -1,0 +1,19 @@
+<div id="{{signature.name}}" class="ct-c-field is-signature ct-animate-fadein" style="position: absolute;"
+    [class.is-signed]="disabled" [class.is-mandatory]="!disabled" [style.width.px]="width" [style.height.px]="height"
+    [style.top.px]="top" [style.left.px]="left">
+    <button class="ct-button--icon button--field clear-signature-btn" (click)="onClearSign($event)" *ngIf="signature.image != null && signature.image != ''">
+    </button>
+    <div class="marker" *ngIf="signature.mandatory && !disabled"></div>
+    <div *ngIf="!disabled" class="field__icon">
+        <i-feather name="feather"></i-feather>
+    </div>
+    
+    <button *ngIf="!isSenderLink  && !disabled && this.sigKind == SignatureFieldKind.Simple">
+        {{'SIGN_PAD.SIGN_HERE' | translate}}
+    </button>
+    <button *ngIf="!isSenderLink  && !disabled && this.sigKind == SignatureFieldKind.Initials">
+        {{'SIGN_PAD.SIGN_HERE_INITIALS' | translate}}
+    </button>
+    
+    
+</div>

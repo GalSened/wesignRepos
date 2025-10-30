@@ -1,0 +1,36 @@
+<div class="ct-c-modal" *ngIf="showNotes">
+    <div class="modal__overlay">
+      <div class="notes_modal__container ct-animate-slide-down">
+        <h3>{{'GLOBAL.SENDER_NOTE' | translate}}</h3>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <textarea [(ngModel)]="senderNotes"  rows="6"  style="overflow-y:scroll;" maxlength="250" disabled></textarea>
+
+        <div class="ct-break--shorter"></div>
+        <div class="ct-break--shorter"></div>
+        <div class="ct-break--shorter"></div>
+
+
+
+        <h3>{{'GLOBAL.SIGNER_NOTE' | translate}}</h3>
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <textarea id="signerNotes" rows="6" onfocus="this.rows = 6" style="overflow-y:scroll;"  [(ngModel)]="signerNotes" maxlength="250" placeholder="{{'GLOBAL.SIGNER_REPLAY' | translate}}" ></textarea>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--primary" (click)="close()">{{'BUTTONS.CLOSE' | translate}}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,58 @@
+<div class="p-login">
+    <div class="ws_login__wrapper ws_animate-slide-down ">
+        <div class="login-wrapper__image"></div>
+
+        <div class="ws_break--short"></div>
+
+        <form method="post">
+
+            <span>User</span>
+
+            <input type="text" required minlength="2" maxlength="50" [(ngModel)]="userEmail" #email name="email"
+                [class.ws_input--error]="email.invalid && (email.dirty || email.touched)">
+
+            <div class="ws_input--login__icon ws_icon__user"></div>
+
+            <span>Password</span>
+            
+            <!-- <div class="ws_tooltip-vert" *ngIf="isOTP">
+                <a href="#">ℹ</a>
+                <span class="ws_tooltip-vert--one-line ws_text-left">
+                    First 6 digits should be OTP, than concat your password</span>
+            </div> -->
+
+            <input type="password" required minlength="2" maxlength="50" [(ngModel)]="password" #pass name="pass"
+                [class.ws_input--error]="pass.invalid && (pass.dirty || pass.touched)" (keyup.enter)="onEnter()">
+
+            <button class="ws_button--icon ws_button--icon-input ws_float-right" (click)=togglePassword($event)>
+                <div class="ws_icon__view"></div>
+            </button>
+
+           
+
+            <div class="ws_text-center">
+                <span class="ws_alert alert--error ws_text-center " *ngIf="isError">{{errorMessage}}</span>
+
+                <div class="ws_break--short"></div>
+            </div>
+
+            <div class="ws_text-center" *ngIf="isOTP && isError">
+                <span class="ws_alert alert--confirm ws_text-center">
+                    First 6 digits should be OTP, than concat your password
+                </span>
+
+                <div class="ws_break--short"></div>
+            </div>
+
+            <div class="ws_text-center">
+                <button class="ws_button--login" [disabled]="isBusy" (click)=doLogin()>Login</button>
+                <div id="ws_button--preloader" *ngIf="isBusy">
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>

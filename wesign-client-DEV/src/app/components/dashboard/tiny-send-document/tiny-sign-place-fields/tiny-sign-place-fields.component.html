@@ -1,0 +1,37 @@
+<div class="ct-p-edit-document">
+
+    <sgn-alert-component></sgn-alert-component>
+
+    <sgn-top-header-title [nextButtonText]="'TEMPLATE.SEND' | translate" (nextButton)="next()"></sgn-top-header-title>
+
+    <main>
+        <aside class="aside-lite">
+            <button #elem class="ct-button--primary ct-button--add-field-lite" (click)="addSignature()">
+                {{'FIELDS.ADD_SIGNATURE' | translate}}
+            </button>
+        </aside>
+
+        <div class="main__content">
+
+            <sgn-zoom [totalPages]="pagesCount"  [(zmodel)]="zmodel" [currentPage]="currentPage"
+            (changeBackgroundEvent)="isDark = !isDark"
+            ></sgn-zoom>
+
+            <sgn-sign-pad *ngIf="signatureColor" [color]="signatureColor"></sgn-sign-pad>
+
+            <div class="ct-c-document">
+                <div class="doc__image"
+                    [ngStyle]="{'zoom': zmodel.ZoomLevel }"
+                    *ngFor="let page of pages$ | async;  let i = index;" editpage [pageNumber]="page"
+                    [pageNumber]="templatePages[page-1].pageNumber" [pageData]="templatePages[page-1]"
+                    [displayPageNumber]="i+1"
+                    [templateId]="templateId" (changePageScroll) = "changePageNumber($event)">
+                </div>
+                
+            </div>
+        </div>
+    </main>
+
+</div>
+
+

@@ -1,0 +1,108 @@
+// signature panel
+.ct-c-signature-panel {
+
+    .signature-panel__overlay {
+        position: fixed; 
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+    }
+
+    section{
+        background: white;
+        border: inherit;
+        padding: 0;
+    }
+
+    div{
+        background: white;
+    
+        button{
+            width: inherit;
+            padding: 7px;
+    
+            canvas{
+                background: white;
+            }
+        }
+    }
+    
+    span{
+        background: white;
+    }
+    
+    label{
+        background: white;
+    }
+
+    .signature-panel__container {
+        position: relative;
+        top: 5%;
+        width: 600px;
+        margin: 0 auto;
+        height: 100%;
+        padding: 7px 7px 20px 7px;
+        background: white;
+        overflow-y : scroll;
+        
+        @include respond-to('medium') {
+            width: 96.5%;
+        }
+
+        @include respond-to('small') {
+            top: 0;
+            height: 100vh;
+        }
+    }
+
+    nav {
+        overflow: hidden;
+        border-bottom: solid 1px $color--border;
+        background: white;
+
+        button {
+            border: none;
+            outline: none;
+            padding: 10px 25px 10px 0;
+            font-size: 19px;
+            font-weight: 400;
+            color: $color--text;
+            text-align: left;
+            background: white;
+        }
+
+        button:hover {
+            color: $color--primary;
+        }
+
+        button.is-active {
+            color: $color--primary;
+        }
+    }
+
+    .tabcontent {
+        display: none;
+        padding: 15px 0 0 0;
+        background: white;
+        @include respond-to('small') {
+            padding: 5px 0 0 0;
+        }
+        input {
+            width: -webkit-fill-available;
+        }
+        
+    }
+}
+.signature-saved_image_canvas{
+    max-height: 54px; 
+    max-width: 99px; 
+    width: auto; 
+    height: auto;
+    @include respond-to('small') {
+        max-height: 48px; 
+        max-width: 76px; 
+    }  
+}

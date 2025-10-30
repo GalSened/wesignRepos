@@ -1,0 +1,20 @@
+
+<div class="select--custom" [ngClass]="additionalClass" (clickOutside)="outSideClick($event)">
+    <select tabindex="{{tabindex}}" [disabled]="isDisabled" (click)="clickEventFunc($event)"
+        (keydown.enter)="$event.preventDefault(); $event.stopPropagation(); showDropDown=!showDropDown;">        
+    </select>
+
+
+    <div class="select-custom--selected"   style="height: 20px;border-color:transparent"  [class.select-custom__arrow-active]="showDropDown"
+        (click)="$event.preventDefault(); $event.stopPropagation(); showDropDown=!showDropDown; clickEventFunc($event);">    
+        {{options ? options[currentSelection]:''}}
+    </div>
+
+    <div class="select-custom__items" *ngIf="options" [class.select-custom-hide]="!showDropDown">
+        <ng-container *ngFor="let option of options | keyvalue : orderOriginal; index as optionIndex">
+            <div [class.same-as-selected]="currentSelection==option.key" (click)="setCurrentSelection(option)"  [ngClass]="{'disabled' : optionIndex > LastValidOptionIndex && shouldDisable}">
+                {{option.value}}  </div>
+        </ng-container>
+    </div>
+    
+</div>

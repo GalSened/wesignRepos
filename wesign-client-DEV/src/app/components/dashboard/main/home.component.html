@@ -1,0 +1,61 @@
+<div class="ct-p-home">
+    <sgn-alert-component></sgn-alert-component>
+    <sgn-certificate-sign-upload *ngIf="!tiny && showSigner1ExtraSigningTypes && showSigner1FileTypes"
+        (closeCertificateSignUpload)="showSigner1FileTypes = false"> </sgn-certificate-sign-upload>
+    <!-- <sgn-gov-sign-upload *ngIf="!tiny && isGovSign" (closeGovSign)="isGovSign = false"> </sgn-gov-sign-upload> -->
+
+    <sgn-upload-template *ngIf="showUploadTemplate" (hide)="showUploadTemplate=!showUploadTemplate"
+        (templateMode)="false"></sgn-upload-template>
+
+    <main class="ct-animate-fadein">
+        <div class="main__content">
+            <sgn-upload-file-button *ngIf="uiViewLicense && uiViewLicense.shouldShowUploadAndsign"
+                [multipleFiles]="uiViewLicense.shouldShowGroupSign"></sgn-upload-file-button>
+
+            <ng-container *ngIf="!tiny && showSigner1ExtraSigningTypes">
+                <button style="display: inline-flex;" (click)="showSigner1FileTypes = true">
+                    <div id="certificateSignDropZone" class="drop_zone">
+                        {{'GLOBAL.CERTIFICATE_SIGN_TITLE' | translate}}
+
+                        <h3> {{'GLOBAL.CERTIFICATE_SIGN_SUBTITLE' | translate}} </h3>
+                    </div>
+                </button>
+            </ng-container>
+
+            <!-- <ng-container *ngIf="!tiny && user && user.shouldEnableGovernmentSignatureFormat">
+                <button style="display: inline-flex;" (click)="isGovSign = true">
+                    <div class="drop_zone">
+                        {{'GLOBAL.GOV_SIGN_TITLE' | translate}}
+                    </div>
+                </button>
+            </ng-container> -->
+        </div>
+
+        <nav *ngIf="uiViewLicense">
+            <button class="button--contacts-ent ct-tooltip--aside-menu-icons"
+                [routerLink]="['/dashboard','mergefiles']">
+                {{'GLOBAL.MERGE_FILES' | translate}}
+                <i-feather name="help-circle"></i-feather>
+
+                <span class="tooltiptext">
+                    {{'CONTACTS.MERGE_FILES_TOOLTIP_ROW_1' | translate}}
+                </span>
+
+            </button>
+            <button class="button--contacts-ent" disabled>&nbsp;</button>
+
+            <button class="button--contacts-ent ct-tooltip--aside-menu-icons"
+                (click)="showUploadTemplate=!showUploadTemplate">
+                {{'TEMPLATE.PLACEHOLDERS' | translate}}
+                <i-feather name="help-circle"></i-feather>
+
+                <span class="tooltiptext">
+                    {{'CONTACTS.PLACEHOLDERS_TOOLTIP_ROW_1' | translate}}
+                </span>
+            </button>
+        </nav>
+    </main>
+
+    <sgn-footer-component></sgn-footer-component>
+
+</div>

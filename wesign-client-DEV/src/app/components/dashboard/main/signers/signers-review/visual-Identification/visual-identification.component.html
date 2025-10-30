@@ -1,0 +1,67 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'GLOBAL.VISUAL_IDENTIFICATION_TITLE' | translate}}</span>
+            <br>
+            <span>{{'GLOBAL.VISUAL_IDENTIFICATION_TITLE_1' | translate}}</span>
+  
+            <div class="ct-break--short"></div>
+            <div >
+
+                <label class="ct-radio ct-text-left">
+                    <span>{{'GLOBAL.VISUAL_IDENTIFICATION_ISRAEL_ID' | translate}}</span>
+
+                    <input type="radio" id="1" name="sigType" checked (click)="isPassport(false)">
+
+                    <span id="span1" class="ct-radio__checkmark"></span>
+                </label>
+
+                <span>&nbsp;&nbsp;</span>
+
+                <label class="ct-radio ct-text-left" >
+                    <span>{{'GLOBAL.VISUAL_IDENTIFICATION_FOREIGN_PASSPORT' | translate}}</span>
+
+                    <input type="radio" id="3" name="sigType" (click)="isPassport(true)">
+
+                    <span id="span3" class="ct-radio__checkmark"></span>
+                </label>
+            </div>
+            <div class="ct-break--short"></div>
+            <div class="ct-break--short"></div>        
+
+            <input type="text" oninvalid="validId=false" (paste)="onPaste($event)" (keypress)="onKeyPress($event)"
+                id="IdInput" class="ct-input--primary" [(ngModel)]="confirmId" value="" 
+                [class.is-error]="submitted && shouldUseVisualIdentification"  
+                placeholder="{{(!isPassportSelected ? 'GLOBAL.ID_NUMBER': 'GLOBAL.VISUAL_IDENTIFICATION_FOREIGN_PASSPORT_PLACEHOLDER')  | translate}}*">
+                <div class="ct-break--shorter"></div>
+            <span *ngIf="!isPassportSelected" class="ct-tooltip-under-input">{{'GLOBAL.VISUAL_IDENTIFICATION_SMALL_INPUT_TEXT' |
+                translate}}</span>
+            <div class="ct-break--shorter"></div>
+            <div class="ct-separator"></div>
+
+            <ng-container *ngIf="hasError">
+                <div class="ct-text-center">
+                    <label class="is-error">{{'ERROR.INPUT.0' | translate}}</label>
+                </div>
+            </ng-container>
+            <div class="ct-break--short"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div>
+                <div class="ct-float-right">
+                    <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+                    <button class="ct-button--primary" (click)="send()">{{'BUTTONS.SUBMIT' | translate}}</button>
+                </div>
+
+                <label class="is-error ct-float-left" *ngIf="!validId">{{'GLOBAL.ID_INVALID_MESSAGE' | translate}}</label>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

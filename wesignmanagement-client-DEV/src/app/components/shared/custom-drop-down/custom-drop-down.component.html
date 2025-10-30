@@ -1,0 +1,20 @@
+<div class="select--custom" [ngClass]="additionalClass" (clickOutside)="outSideClick($event)">
+    <select tabindex="{{tabindex}}" [disabled]="isDisabled" (click)="clickEventFunc($event)"
+        (keydown.enter)="$event.preventDefault(); $event.stopPropagation(); showDropDown=!showDropDown;">
+    </select>
+
+    <div class="select-custom--selected" [class.select-custom__arrow-active]="showDropDown"
+        (click)="$event.preventDefault(); $event.stopPropagation(); showDropDown=!showDropDown; clickEventFunc($event);">
+        {{selectedOptionsText}}
+    </div>
+
+    <div class="select-custom__items" *ngIf="options" [class.select-custom-hide]="!showDropDown">
+        <input *ngIf="enableSearch" type="text" placeholder="Filter" [(ngModel)]="filterValue" (input)="filterOptions()">
+        <ng-container *ngFor="let option of filteredOptions | keyvalue">
+            <div class="select-custom__option" (click)="setCurrentSelection(option)">
+                <div class="custom-checkbox" *ngIf="multiSelect" [class.checked]="isSelected(option.key)"></div>
+                <span class="custom-span">{{option.value}}</span>
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+
+<div class="ws_body__wrapper">
+<app-banner-alert #bannerAlert></app-banner-alert>
+<div class="ws_wrapper--1024px ws_margin-auto">
+    <div class="ws_break--short"></div>
+
+    <h1>Manage Group</h1>
+
+    <div class="ws_break--short"></div>
+
+    <div class="ws_separator"></div>
+    <span>Group</span>
+    <app-custom-drop-down [options]="CollectionToOptions(company.groups)" [class.ws_input--error]="isError"
+        [currentSelection]="selectedgroupGroup" [enableSearch]="true"
+        (currentSelectionChange)="dropDownUpdate($event)">
+    </app-custom-drop-down>
+
+    <div class="ws_break--short"></div>
+    <span>Active Directory Group for Users</span>
+    
+    <ng-select class="select" [items]="dataModel" [closeOnSelect]="true"
+    [(ngModel)]="selectedADUser"> </ng-select>
+    <div class="ws_break--short"></div>
+    
+    <span>Active Directory Group for Contacts</span>
+    <ng-select [items]="dataModel" [closeOnSelect]="true"
+    [(ngModel)]="selectedADContacts"> </ng-select>
+    <div class="ws_break--short"></div>
+    
+    <div class="ws_text-center">
+        <span class="ws_alert alert--error" *ngIf="isError">{{errorMessage}}</span>
+
+        <div class="ws_break--short"></div>
+    </div>
+
+    <div class="ws_break--short"></div>
+    <div class="ws_text-center">
+        <button type="button" class="ws_button--small ws_button--cancel" (click)="back()" >CANCEL</button>
+        <button class="ws_button--small" (click)="update()" >UPDATE</button>
+       
+    </div>
+</div>
+</div>

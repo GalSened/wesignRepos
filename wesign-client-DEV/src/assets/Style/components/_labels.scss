@@ -1,0 +1,70 @@
+// labels
+.ct-span-add-minus-before::before{
+   content: "- "
+}
+.ct-label {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 0 0 10px;
+  background: $color--label;
+  border: solid 1px $color--grey-light;
+  border-radius: 50px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  white-space: nowrap;
+
+  span {
+    overflow: hidden;
+    position: relative;
+    top: 1px;
+    text-overflow: ellipsis;
+  }
+
+  i-feather {
+    width: 16px;
+    height: 16px;
+    color: $color--error;
+  }
+}
+
+/*common labels*/
+.ws_label {
+  position: relative;
+  max-width: 80%;
+  margin: 0px 5px 3px 5px;
+  padding: 4px 25px 4px 5px;
+  display: inline-block;
+  background-color: #B3E5FC;
+  border: solid 1px #FAFAFA;
+  border-radius: 50px;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+}
+
+.ws_label div {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ws_label div span {
+  color: #455A64;
+  font-size: 13px;
+}
+
+.ws_label button {
+  position: absolute;
+  right: 5px;
+  top: 2px;
+}
+
+.ws_error_msg_big_font{
+  font-size: 16px !important;
+}
+button.ws_button--icon {
+  width: auto;
+  padding: 2px 0 0 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}

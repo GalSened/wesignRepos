@@ -1,0 +1,8 @@
+<!-- is-confirm / is-error -->
+<div class="ct-c-alert is-error ct-animate-fadein" [class.is-error]="isError" [class.is-confirm]="isConfirm">
+    <span>{{message}}</span>
+
+    <button class="ct-button--icon ct-float-right" (click)="closeAlert()">
+        <i-feather name="x"></i-feather>
+    </button>
+</div>

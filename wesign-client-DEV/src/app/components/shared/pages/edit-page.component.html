@@ -1,0 +1,93 @@
+<!-- <div class="doc__zoom" [style.transform]="'scale(' + zmodel.ZoomLevel + ')'"> -->
+<div style="width: 100%; height: 100%;" *ngIf="pageData" (mouseenter)="onMouseEnter()"  (touchenter)="onMouseEnter()" >
+    <div class="doc-image__numbering ct-float-right">
+        <h3>{{displayPageNumber}}</h3>
+    </div>
+
+    <div
+    [innerHTML]="ocrHtml"
+    ></div>
+    <!--field text"-->
+    <!-- <div [bounds]="el.nativeElement.parentElement" [inBounds]="true" class="doc__field field-input"
+        style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'" [rzContainment]="el.nativeElement.parentElement"
+        [ngDraggable]="isDraggable" [ngResizable]="isResizable" textField *ngFor="let textField of textFields"
+        [data]="textField" attr.data-fieldName="{{textField.name}}">
+    </div> -->
+    <div class="doc__field field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [ngResizable]="isResizable" [rzMaxWidth]="600" [rzMinWidth]="40"
+        [rzMaxHeight]="150" [rzMinHeight]="20" textField *ngFor="let textField of textFields" [data]="textField"
+        attr.data-fieldName="{{textField.name}}">
+    </div>
+
+    <div class="doc__field field-signature" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="135" [rzMaxHeight]="150" [rzMinHeight]="40"
+        [ngResizable]="isResizable" signatureField *ngFor="let signatureField of signatureFields"
+        [data]="signatureField" attr.data-fieldName="{{signatureField.name}}">
+    </div>
+
+    <div class="doc__field field-input" style="position: absolute;" [ngResizable]="isResizable"
+        [rzHandles]="'n,e,s,w,se,sw,ne,nw'" [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40"
+        [rzMaxHeight]="150" [rzMinHeight]="20" choiceField *ngFor="let choiceField of choiceFields" [data]="choiceField"
+        attr.data-fieldName="{{choiceField.name}}">
+    </div>
+
+
+    <div class="doc__field field-input" style="position: absolute;" [rzHandles]="'e,s,se,sw'"
+        [ngResizable]="isResizable" [rzMaxWidth]="75" [rzMinWidth]="25" [rzMaxHeight]="75" [rzMinHeight]="25"
+        [rzAspectRatio]="aspectRatio" [rzContainment]="el.nativeElement" checkBoxField
+        *ngFor="let checkBoxField of checkBoxFields" [data]="checkBoxField"
+        attr.data-fieldName="{{checkBoxField.name}}">
+    </div>
+
+    <div class="doc__field field-ui" style="position: absolute;" [rzHandles]= "'e,s,se,sw'"
+         [ngResizable]="isResizable" [rzMaxWidth]="88" [rzMinWidth]="25" [rzMaxHeight]="75" [rzMinHeight]="25"
+        [rzAspectRatio]="aspectRatio" [rzContainment]="el.nativeElement" radioField 
+        *ngFor="let radioField of radioFields" [data]="radioField" attr.data-fieldName="{{radioField.name}}">
+    </div>
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" multiline-text-field *ngFor="let multilineField of multilineTextFields"
+        [data]="multilineField" attr.data-fieldName="{{multilineField.name}}">
+    </div>
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" emailField *ngFor="let emailField of emailFields" [data]="emailField"
+        attr.data-fieldName="{{emailField.name}}">
+    </div>
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" phoneField *ngFor="let phoneField of phoneFields" [data]="phoneField"
+        attr.data-fieldName="{{phoneField.name}}">
+    </div>
+
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" numberField *ngFor="let numberField of numberFields" [data]="numberField"
+        attr.data-fieldName="{{numberField.name}}">
+    </div>
+
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="140" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" dateField *ngFor="let dateField of dateFields" [data]="dateField"
+        attr.data-fieldName="{{dateField.name}}">
+    </div>
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" timeField *ngFor="let timeField of timeFields" [data]="timeField"
+        attr.data-fieldName="{{timeField.name}}">
+    </div>
+
+
+    <div class="doc__field field-ui field-input" style="position: absolute;" [rzHandles]="'n,e,s,w,se,sw,ne,nw'"
+        [rzContainment]="el.nativeElement" [rzMaxWidth]="600" [rzMinWidth]="40" [rzMaxHeight]="150" [rzMinHeight]="20"
+        [ngResizable]="isResizable" customField *ngFor="let customField of customFields" [data]="customField"
+        attr.data-fieldName="{{customField.name}}">
+    </div>
+
+</div>

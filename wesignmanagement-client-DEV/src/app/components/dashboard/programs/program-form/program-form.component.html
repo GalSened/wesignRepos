@@ -1,0 +1,476 @@
+<ngx-spinner></ngx-spinner>
+
+<div class="ws_body__wrapper">
+    <div class="ws_wrapper--1024px ws_margin-auto">
+        <div class="ws_break--short"></div>
+
+        <h1>Manage Programs</h1>
+
+        <div class="ws_break--short"></div>
+
+        <div class="ws_separator"></div>
+
+        <form method="post">
+            <span>Program Name*</span>
+
+            <input type="text" required minlength="2" maxlength="50" #programName="ngModel" name="programName"
+                [(ngModel)]="program.name" [class.ws_input--error]="programName.invalid && submited">
+
+            <div class="ws_break--shorter"></div>
+
+            <span>Number of Users*</span>
+            <div class="ws_break--shorter"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" #usersUnlimited="ngModel" name="usersUnlimited" [(ngModel)]="isUnlimitedUsers"
+                    [class.ws_input--error]="serverSignature.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Unlimited</span>
+            <div class="ws_break--short"></div>
+
+            <input type="number" min=0 required value="0" #users="ngModel" name="users" [(ngModel)]="program.users"
+                *ngIf="!isUnlimitedUsers" [class.ws_input--error]="users.invalid && submited">
+
+            <div class="ws_break--short"></div>
+
+            <span>Templates*</span>
+            <div class="ws_break--shorter"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" #templatesUnlimited="ngModel" name="templatesUnlimited"
+                    [(ngModel)]="isUnlimitedTemplates" [checked]="program.templates == -1"
+                    [class.ws_input--error]="serverSignature.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Unlimited</span>
+            <div class="ws_break--short"></div>
+
+            <input type="text" min=-1 required value="0" #templates="ngModel" name="templates"
+                [(ngModel)]="program.templates" *ngIf="!isUnlimitedTemplates"
+                [class.ws_input--error]="templates.invalid && submited">
+
+            <div class="ws_break--short"></div>
+
+            <span>Documents Per Month*</span>
+
+            <div class="ws_break--shorter"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" #documentsUnlimited="ngModel" name="documentsUnlimited"
+                    [(ngModel)]="isUnlimitedDocuments" [checked]="program.documentsPerMonth == -1"
+                    [class.ws_input--error]="serverSignature.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Unlimited</span>
+            <div class="ws_break--short"></div>
+
+            <input type="text" min=-1 required value="0" #documentsPerMonth="ngModel" name="documentsPerMonth"
+                [(ngModel)]="program.documentsPerMonth" *ngIf="!isUnlimitedDocuments"
+                [class.ws_input--error]="documentsPerMonth.invalid && submited">
+
+            <div class="ws_break--short"></div>
+
+            <span>SMS Per Month*</span>
+
+            <div class="ws_break--shorter"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" #smsUnlimited="ngModel" name="smsUnlimited" [(ngModel)]="isUnlimitedSms"
+                    [checked]="program.smsPerMonth == -1" [class.ws_input--error]="serverSignature.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Unlimited</span>
+            <div class="ws_break--shorter"></div>
+
+            <input type="text" min=-1 required value="0" #smsPerMonth="ngModel" name="smsPerMonth"
+                [(ngModel)]="program.smsPerMonth" *ngIf="!isUnlimitedSms"
+                [class.ws_input--error]="smsPerMonth.invalid && submited">
+
+            <div class="ws_break--short"></div>
+
+            <span>Visual Identifications Per Month*</span>
+
+            <div class="ws_break--shorter"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" #visualIdentificationsUnlimited="ngModel" name="visualIdentificationsUnlimited"
+                    [(ngModel)]="isUnlimitedVisualIdentifications" [checked]="program.visualIdentificationsPerMonth == -1"
+                    [class.ws_input--error]="serverSignature.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Unlimited</span>
+            <div class="ws_break--short"></div>
+
+            <input type="text" min=-1 required value="0" #visualIdentificationsPerMonth="ngModel" name="visualIdentificationsPerMonth"
+                [(ngModel)]="program.visualIdentificationsPerMonth" *ngIf="!isUnlimitedVisualIdentifications"
+                [class.ws_input--error]="visualIdentificationsPerMonth.invalid && submited">
+
+
+
+
+
+
+            
+
+                <div class="ws_break--short"></div>
+
+                <span>Video Conference Per Month*</span>
+    
+                <div class="ws_break--shorter"></div>
+                
+                <label class="ws_switch">
+                    <input type="checkbox" #videoConferenceUnlimited="ngModel" name="videoConferenceUnlimited"
+                        [(ngModel)]="isUnlimitedVideoConference" [checked]="program.videoConferencePerMonth == -1"
+                        [class.ws_input--error]="serverSignature.invalid && submited">
+    
+                    <div></div>
+                </label>
+    
+                <span>Unlimited</span>
+                <div class="ws_break--short"></div>
+    
+                <input type="text" min=-1 required value="0" #videoConferencePerMonth="ngModel" name="videoConferencePerMonth"
+                    [(ngModel)]="program.videoConferencePerMonth" *ngIf="!isUnlimitedVideoConference"
+                    [class.ws_input--error]="videoConferencePerMonth.invalid && submited">
+
+                    
+
+
+
+            <div class="ws_break--short"></div>
+
+            <div class="ws_separator"></div>
+            <h3>Signature Type Support</h3>
+            <div class="ws_break--short"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" required #serverSignature="ngModel" name="serverSignature"
+                    [(ngModel)]="program.serverSignature" [class.ws_input--error]="serverSignature.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Server Signature*</span>
+
+            <div class="ws_break--short"></div>
+
+            <label class="ws_switch">
+                <input type="checkbox" required #smartCard="ngModel" name="smartCard" [(ngModel)]="program.smartCard"
+                    [class.ws_input--error]="smartCard.invalid && submited">
+
+                <div></div>
+            </label>
+
+            <span>Smart Card*</span>
+
+            <div class="ws_break--short"></div>
+
+            <div class="ws_separator"></div>
+            <h3>UI Views</h3>
+
+            <div class="ws_break--short"></div>
+            <div id="uiView" style="display: flex;">
+                <div style="margin-right: 40px;">
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowSelfSign="ngModel" name="shouldShowSelfSign"
+                            [(ngModel)]="program.uiViewLicense.shouldShowSelfSign"
+                            [class.ws_input--error]="shouldShowSelfSign.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Self Sign View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowGroupSign="ngModel" name="shouldShowGroupSign"
+                            [(ngModel)]="program.uiViewLicense.shouldShowGroupSign"
+                            [class.ws_input--error]="shouldShowGroupSign.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Group Sign View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowContacts="ngModel" name="shouldShowContacts"
+                            [(ngModel)]="program.uiViewLicense.shouldShowContacts"
+                            [class.ws_input--error]="shouldShowContacts.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Contacts View*</span>
+                    <div class="ws_break--short"></div>
+
+                </div>
+
+                <div style="margin-right: 40px;">
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowLiveMode="ngModel" name="shouldShowLiveMode"
+                            [(ngModel)]="program.uiViewLicense.shouldShowLiveMode"
+                            [class.ws_input--error]="shouldShowLiveMode.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Live Mode View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowTemplates="ngModel" name="shouldShowTemplates"
+                            [(ngModel)]="program.uiViewLicense.shouldShowTemplates"
+                            [class.ws_input--error]="shouldShowTemplates.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Templates View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowAddNewTemplate="ngModel"
+                            name="ShouldShowAddNewTemplate" [(ngModel)]="program.uiViewLicense.shouldShowAddNewTemplate"
+                            [class.ws_input--error]="ShouldShowAddNewTemplate.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Add New Template View*</span>
+                    <div class="ws_break--short"></div>
+                </div>
+
+                <div style="margin-right: 40px;">
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowDocuments="ngModel" name="shouldShowDocuments"
+                            [(ngModel)]="program.uiViewLicense.shouldShowDocuments"
+                            [class.ws_input--error]="shouldShowDocuments.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Documents View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowProfile="ngModel" name="shouldShowProfile"
+                            [(ngModel)]="program.uiViewLicense.shouldShowProfile"
+                            [class.ws_input--error]="shouldShowProfile.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Profile View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowUploadAndsign="ngModel"
+                            name="shouldShowUploadAndsign" [(ngModel)]="program.uiViewLicense.shouldShowUploadAndsign"
+                            [class.ws_input--error]="shouldShowUploadAndsign.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Upload And Sign View*</span>
+                    <div class="ws_break--short"></div>
+                </div>
+                <div style="margin-right: 40px;">
+                    <label class="ws_switch">
+                        <input type="checkbox" required #shouldShowDistribution="ngModel" name="shouldShowDistribution"
+                            [(ngModel)]="program.uiViewLicense.shouldShowDistribution"
+                            [class.ws_input--error]="shouldShowDistribution.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Distribution View*</span>
+                    <div class="ws_break--short"></div>
+                </div>
+            </div>
+
+            <div class="ws_separator"></div>
+            <h3>Fields UI Views</h3>
+            <div class="ws_break--short"></div>
+
+            <div id="fieldsUIView" style="display: flex;">
+
+                <div style="margin-right: 40px;">
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditTextField="ngModel"
+                            name="ShouldShowEditTextField" [(ngModel)]="program.uiViewLicense.shouldShowEditTextField"
+                            [class.ws_input--error]="ShouldShowEditTextField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Text Field View*</span>
+                    <div class="ws_break--short"></div>
+
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditSignatureField="ngModel"
+                            name="ShouldShowEditSignatureField"
+                            [(ngModel)]="program.uiViewLicense.shouldShowEditSignatureField"
+                            [class.ws_input--error]="ShouldShowEditSignatureField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Signature Field View*</span>
+                    <div class="ws_break--short"></div>
+
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditEmailField="ngModel"
+                            name="ShouldShowEditEmailField" [(ngModel)]="program.uiViewLicense.shouldShowEditEmailField"
+                            [class.ws_input--error]="ShouldShowEditEmailField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Email Field View*</span>
+                    <div class="ws_break--short"></div>
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowMultilineText="ngModel"
+                            name="ShouldShowMultilineText" [(ngModel)]="program.uiViewLicense.shouldShowMultilineText"
+                            [class.ws_input--error]="ShouldShowEditTextField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Multiline Text Field View*</span>
+                    <div class="ws_break--short"></div>
+
+                </div>
+
+                <div style="margin-right: 40px;">
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditPhoneField="ngModel"
+                            name="ShouldShowEditPhoneField" [(ngModel)]="program.uiViewLicense.shouldShowEditPhoneField"
+                            [class.ws_input--error]="ShouldShowEditPhoneField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Phone Field View*</span>
+                    <div class="ws_break--short"></div>
+
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditDateField="ngModel"
+                            name="ShouldShowEditDateField" [(ngModel)]="program.uiViewLicense.shouldShowEditDateField"
+                            [class.ws_input--error]="ShouldShowEditDateField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Date Field View*</span>
+                    <div class="ws_break--short"></div>
+
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditNumberField="ngModel"
+                            name="ShouldShowEditNumberField"
+                            [(ngModel)]="program.uiViewLicense.shouldShowEditNumberField"
+                            [class.ws_input--error]="ShouldShowEditNumberField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Number Field View*</span>
+                    <div class="ws_break--short"></div>
+                </div>
+
+
+                <div style="margin-right: 40px;">
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditListField="ngModel"
+                            name="ShouldShowEditListField" [(ngModel)]="program.uiViewLicense.shouldShowEditListField"
+                            [class.ws_input--error]="ShouldShowEditListField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit List Field View*</span>
+                    <div class="ws_break--short"></div>
+
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditCheckboxField="ngModel"
+                            name="ShouldShowEditCheckboxField"
+                            [(ngModel)]="program.uiViewLicense.shouldShowEditCheckboxField"
+                            [class.ws_input--error]="ShouldShowEditCheckboxField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Checkbox Field View*</span>
+                    <div class="ws_break--short"></div>
+
+
+                    <label class="ws_switch">
+                        <input type="checkbox" required #ShouldShowEditRadioField="ngModel"
+                            name="ShouldShowEditRadioField" [(ngModel)]="program.uiViewLicense.shouldShowEditRadioField"
+                            [class.ws_input--error]="ShouldShowEditRadioField.invalid && submited">
+
+                        <div></div>
+                    </label>
+
+                    <span>Edit Radio Field View*</span>
+                    <div class="ws_break--short"></div>
+                </div>
+
+            </div>
+
+
+            <div class="ws_break--medium"></div>
+
+            <span>Notes</span>
+
+            <textarea #note="ngModel" name="note" [(ngModel)]="program.note"></textarea>
+        </form>
+
+        <div class="ws_break--short"></div>
+
+        <div class="ws_text-center">
+            <span class="ws_alert alert--error" *ngIf="isError">{{errorMessage}}</span>
+
+            <div class="ws_break--short"></div>
+        </div>
+
+        <div class="ws_text-center">
+            <button class="ws_button--small ws_button--cancel" (click)="cancel()" [disabled]="isBusy">CANCEL</button>
+
+            <button class="ws_button--small" (click)="update()" [disabled]="isBusy">UPDATE</button>
+            <div id="ws_button--preloader" *ngIf="isBusy">
+                <span class="button-preloader__dot"></span>
+                <span class="button-preloader__dot"></span>
+                <span class="button-preloader__dot"></span>
+            </div>
+        </div>
+    </div>
+    <app-alert [class.ws_is-hidden]="!showUpdateAlert" [class.ws_is-shown]="showUpdateAlert"
+        (removeDeletionAlert)="hideAlert()" (deleteOperation)="updateProgram()" [itemName]='program.name'
+        [itemType]="'Program'" [operationType]="'update'">
+    </app-alert>
+
+    <div class="ws_break--short"></div>
+</div>

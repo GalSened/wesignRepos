@@ -1,0 +1,45 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down modal__container__wide" style="width: 95% !important ">
+            <input type="text" #searchInput class="ct-input--primary" placeholder="{{'MANAGEMENT.GROUP' | translate}}"
+                [(ngModel)]="contactsGroupFilter.key">
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-c-list">               
+                <table cellpadding="0" cellspacing="0" class="ct-text-left" *ngIf="contactsGroups$ | async as contactsGroups">
+                    <tr>
+
+                        
+                        <th>{{'REGISTER.FULL_NAME' | translate}}</th>
+                        <th>{{'CONTACTS.CONTACT_GROUP_SIZE' | translate}}</th>                        
+                        <th>
+                            <div paginator class="ct-c-pagination" *ngIf="pageCalc" [currentPage]="currentPage"
+                            [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                        </th>
+                    </tr>
+                    <ng-container *ngFor="let contactsGroup of contactsGroups ">
+                        <tr>
+                            <td (click)="sendContactToParent(contactsGroup)">{{contactsGroup.name}}</td>
+                            <td (click)="sendContactToParent(contactsGroup)">{{contactsGroup?.contactsGroupMembers?.length ?? 0}}</td>                                                    
+                            <td ></td>
+                        </tr>
+                    </ng-container>
+
+                </table>
+            </div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

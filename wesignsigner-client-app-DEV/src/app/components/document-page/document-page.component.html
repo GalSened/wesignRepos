@@ -1,0 +1,68 @@
+<div class="doc__image" id="page-{{pageNumber}}" style="position: relative;"
+    [style.background-image]="'url('+page.pageImage+')'" [style.width.px]="page.pageWidth"
+    [style.height.px]="page.pageHeight" (mouseenter)="onMouseEnter()"  (touchenter)="onMouseEnter()" >
+
+<div  [innerHTML]="page.ocrHtml"></div>
+
+    <div class="doc-image__numbering ct-float-right">
+        <h3>{{pageNumber}}</h3>
+    </div>
+    <ng-container *ngFor="let textfield of page.signerFields.textFields">
+        <app-text-field [documentId]="page.documentId" [textfield]="textfield" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="isSender">
+        </app-text-field>
+    </ng-container>
+ 
+    <ng-container *ngFor="let textfield of page.otherFields.textFields">
+        <app-text-field [documentId]="page.documentId" [textfield]="textfield" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="true">
+        </app-text-field>
+    </ng-container>
+   
+
+    <ng-container *ngFor="let checkbox of page.signerFields.checkBoxFields">
+        <app-check-box-field [documentId]="page.documentId" [checkbox]="checkbox" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="isSender">
+        </app-check-box-field>
+    </ng-container>
+    <ng-container *ngFor="let checkbox of page.otherFields.checkBoxFields">
+        <app-check-box-field [documentId]="page.documentId" [checkbox]="checkbox" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="true">
+        </app-check-box-field>
+    </ng-container>
+
+
+    <ng-container *ngFor="let choice of page.signerFields.choiceFields">
+        <app-choice-field [documentId]="page.documentId" [choice]="choice" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="isSender">
+        </app-choice-field>
+    </ng-container>
+
+    <ng-container *ngFor="let choice of page.otherFields.choiceFields">
+        <app-choice-field [documentId]="page.documentId" [choice]="choice" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="true">
+        </app-choice-field>
+    </ng-container>
+    <ng-container *ngFor="let radiogroup of page.signerFields.radioGroupFields">
+        <app-radio-group-field [radiogroup]="radiogroup" [documentId]="page.documentId" [pageHeight]="page.pageHeight" [pageWidth]="page.pageWidth" [disabled]="isSender">
+        </app-radio-group-field>
+    </ng-container>
+
+    <ng-container *ngFor="let radiogroup of page.otherFields.radioGroupFields">
+        <app-radio-group-field [radiogroup]="radiogroup" [documentId]="page.documentId" [pageHeight]="page.pageHeight" [pageWidth]="page.pageWidth" [disabled]="true"> 
+        </app-radio-group-field>
+    </ng-container>
+
+
+    <ng-container *ngFor="let signature of page.signerFields.signatureFields">
+        <app-signature-field [documentId]="page.documentId" [signature]="signature" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="isSender">
+        </app-signature-field>
+    </ng-container>
+    <ng-container *ngFor="let signature of page.otherFields.signatureFields">
+        <app-signature-field [documentId]="page.documentId" [signature]="signature" [pageHeight]="page.pageHeight"
+            [pageWidth]="page.pageWidth" [disabled]="true">
+        </app-signature-field>
+    </ng-container>
+
+</div>

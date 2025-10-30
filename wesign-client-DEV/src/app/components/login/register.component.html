@@ -1,0 +1,140 @@
+<div class="ct-p-login">
+    <main>
+        <div class="main__img"></div>
+
+        <div class="main__content">
+            <header>
+                <div class="header__logo"  [routerLink]="['/dashboard','main']"></div>
+                <sgn-lang-selector  #lang></sgn-lang-selector>
+            </header>
+
+            <div class="content__form ct-animate-fadein" *ngIf="showIntro">
+                <h2>{{'REGISTER.HOW_WOULD_YOU' | translate}}</h2>
+                <div class="ct-break--medium"></div>
+                <button class="ct-button--outline ct-button--large"
+                    [routerLink]="['/login']">{{'REGISTER.EXISTING_USER' | translate}}</button>
+                <button class="ct-button--outline ct-button--large"
+                    (click)="showIntro=!showIntro">{{'REGISTER.NEW_USER' | translate}}</button>
+            </div>
+
+            <div class="content__form ct-animate-fadein" *ngIf="!showIntro">
+
+                <div class="form__plan" *ngIf="selectedPlan && !trialCheck && tiny">
+                    <h3>{{isRtl? selectedPlan.hebtitle : selectedPlan.title}}</h3>
+                    <h3>{{getSelectdSign}}{{getSelectedPricePerMonth}} {{'GLOBAL.FOR' | translate}} {{selectedPlan.documentsPerMonth}}
+                        {{'GLOBAL.DOCUMENTS' | translate}}</h3>
+                    <a (click)="changePlan()">{{'TINY.PAYMENT.CHANGE_PLAN' | translate}}</a>
+                </div>
+
+                <label *ngIf="trialCheck">
+                    <h2>{{'TINY.TRIAL_TITLE' | translate }}</h2>
+                    <span>{{"TINY.TRIAL_REGISTER" | translate }}</span>
+      
+                </label>
+
+                <h2>{{'REGISTER.REGISTER' | translate}}</h2>
+
+                <div class="ct-break--short"></div>
+
+                <form [formGroup]="registerForm" #ngForm="ngForm" (ngSubmit)="register()">
+
+                    <div class="ct-input--secondary__container">
+                        <input class="ct-input--secondary" formControlName="fullName" required minlength="2"
+                            maxlength="50" type="text" pattern="^[א-ת'a-zA-Z\s\-]{1,50}"
+                            [class.is-error]="registerForm.get('fullName').invalid && (ngForm.submitted && ngForm.invalid)"
+                            placeholder="{{'REGISTER.FULL_NAME' | translate }}">
+
+                        <label *ngIf="registerForm.get('fullName').invalid && (ngForm.submitted && ngForm.invalid)"
+                            class=" is-error">{{'ERROR.INPUT.I_NAME' | translate}}</label>
+                    </div>
+
+                    <div class="ct-break--short"></div>
+
+                    <div class="ct-input--secondary__container">
+                        <input class="ct-input--secondary" formControlName="email" required email minlength="2"
+                            maxlength="50" type="email"
+                            [class.is-error]="registerForm.get('email').invalid && (ngForm.submitted && ngForm.invalid)"
+                            placeholder="{{'REGISTER.EMAIL' | translate }}">
+
+                        <label *ngIf="registerForm.get('email').invalid && (ngForm.submitted && ngForm.invalid)"
+                            class=" is-error">{{'ERROR.INPUT.I_EMAIL' | translate}}</label>
+                    </div>
+
+                    <div class="ct-break--short"></div>
+
+                    <div class="ct-input--secondary__container ct-tooltip--password">
+                        <input class="ct-input--secondary" required minlength="8" type="password"
+                            formControlName="password" #password placeholder="{{'REGISTER.PASSWORD' | translate }}"
+                            [class.is-error]="registerForm.get('password').invalid && (ngForm.submitted && ngForm.invalid)">
+
+                        <label *ngIf="registerForm.get('password').invalid && (ngForm.submitted && ngForm.invalid)"
+                            class=" is-error">{{'ERROR.INPUT.E_CRED' | translate}}</label>
+
+                        <div class="ct-float-right">
+                           
+                            <button class="ct-button--icon show-password" [togglePass]="password"
+                                [(eyeIconProp)]="eyeIcon">
+                                <span  class="tooltiptext">{{"REGISTER.PASSWORD_CONSTRAIN" | translate}}</span> 
+
+                                <i-feather [name]="eyeIcon">
+                                    
+                                </i-feather>
+                            </button>
+                        </div>
+
+                        
+                      
+                    </div>
+
+                    <div class="ct-break--short"></div>
+
+
+                    <div class="ct-break--short"></div>   
+
+                    <div class="ct-break--short"></div>
+
+                    <label class="ct-checkbox ct-text-left"
+                        [class.is-error]="registerForm.get('isConfirmTerms').invalid && (ngForm.submitted && ngForm.invalid)">
+                        <span>{{"REGISTER.CONFIRM_TERMS" | translate}}<a target="_blank" [routerLink]="['/terms']"
+                                target="_blank">{{"REGISTER.TERMS" | translate}}</a>
+                            {{"REGISTER.AND" | translate}}<a target="_blank" [routerLink]="['/privacy']"
+                                target="_blank">{{"REGISTER.PRIVACY" | translate}}</a></span>
+                        <input formControlName="isConfirmTerms" type="checkbox">
+                        <span class="ct-checkbox__checkmark"></span>
+                    </label>
+
+                    <div class="ct-break--short"></div>
+ 
+                    <re-captcha *ngIf="shouldUseReCaptchaInRegistration"  (resolved)="resolved($event)"                                 
+                                siteKey="{{reCaptchaKey}}">  
+                    </re-captcha>
+
+                    <label *ngIf="registerForm.get('isConfirmTerms').invalid && (ngForm.submitted && ngForm.invalid)"
+                        class=" is-error">{{'ERROR.INPUT.R_TERM' | translate}}</label>
+
+                    <div class="ct-break--short"></div>
+
+                    <ng-container *ngIf="errorsArr && errorsArr.length > 0">
+                        <ng-container *ngFor="let err of errorsArr">
+                            <label class="is-error">{{err | translate}}</label>
+                            <br />
+                        </ng-container>
+                    </ng-container>
+
+                    <div class="ct-break--medium"></div>
+
+                    <input type="submit" [disabled]="isBusy" value="{{'REGISTER.REGISTER' | translate }}">
+
+                    <div *ngIf="isBusy" class="ct-c-loader ct-float-right">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+
+                </form>
+            </div>
+
+            <sgn-footer-component [isFullClass]="false"></sgn-footer-component>
+        </div>
+    </main>
+</div>

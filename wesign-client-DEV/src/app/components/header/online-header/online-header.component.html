@@ -1,0 +1,24 @@
+<ng-container *ngIf="appState$ | async as state">
+    <div class="ws_content-doc__progress">
+        <div class="ws_inline"
+            [class.ws_icon__list-disabled]="state.FlowStep != FLOW_STEP.ONLINE_SELECT" 
+            [class.ws_icon__list-enabled]="state.FlowStep == FLOW_STEP.ONLINE_SELECT"
+        ></div>
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text"
+            [class.active]="state.FlowStep == FLOW_STEP.ONLINE_SELECT"
+            >
+            <span>Select & Assign</span>
+        </div>
+        <div class="ws_inline ws_icon__progress-arrow-disabled"></div>
+        <div class="ws_inline ws_icon__signature-disabled"
+            [class.ws_icon__signature-disabled]="state.FlowStep != FLOW_STEP.ONLINE_SEND_GUIDE" 
+            [class.ws_icon__signature-enabled]="state.FlowStep == FLOW_STEP.ONLINE_SEND_GUIDE"
+        ></div>
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text"
+            [class.active]="state.FlowStep == FLOW_STEP.ONLINE_SEND_GUIDE"
+        >
+            <span>Guide & Sign</span>
+        </div> 
+
+    </div>
+</ng-container>

@@ -1,0 +1,56 @@
+// header
+header {
+  height: 75px;
+  z-index: 5000;
+
+  @include respond-to('small') {
+    height: 50px;
+  }
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    right: 0;
+    margin: 25px 5px;
+    font-size: 21px;
+
+    @include respond-to('medium') {
+      width: 75%;
+    }
+
+    @include respond-to('small') {
+      width: 70%;
+      margin-top: 17px;
+      font-size: 15px;
+    }
+  }
+
+  .ng-select {
+    width: 10rem;
+    span {
+      position: relative;
+    }
+  }
+
+  .header__logo {
+    display: inline-block;
+    outline: none !important;
+    width: 275px;
+    height: 75px;
+    margin: 0 10px;
+    background-image: url(../../images/images/ws_logo.png);
+    background-repeat: no-repeat;
+    background-position: left 15px;
+
+    @include respond-to('small') {
+      width: 175px;
+      background-size: 50%;
+      background-position: left 10px;
+    }
+  }
+
+  .header__logo:hover {
+    cursor: pointer;
+  }
+}

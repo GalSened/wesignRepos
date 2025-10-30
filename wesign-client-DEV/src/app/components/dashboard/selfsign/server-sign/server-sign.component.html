@@ -1,0 +1,52 @@
+<div class="ct-c-modal" *ngIf="showServerCredentialForm()">
+  <div class="modal__overlay">
+    <div class="modal__container ct-animate-slide-down">
+      <h3>{{'GLOBAL.SERVER_SIGN' | translate}}</h3>
+
+      <div class="ct-separator"></div>
+
+      <div class="ct-break--shorter"></div>
+
+      <div class="ct-input--secondary__container">
+        <div class="cert-id__container">
+          <input [class.is-error]="isEmptyCertId" [(ngModel)]="certId" name="certId" type="text"
+            class="ct-input--primary" id="id" name="cert" autocomplete="off" placeholder="Cert ID">
+          <label *ngIf="isEmptyCertId" class="is-error">{{'ERROR.INPUT.3' | translate}}</label>
+          <span class="input-border"></span>
+        </div>
+      </div>
+
+      <div class="ct-break--short"></div>
+      <div class="password__container">
+        <input #passwordEl [class.is-error]="isEmptyPassword" [(ngModel)]="password" name="password" type="password"
+          class="ct-input--primary" id="password" name="password" autocomplete="off" placeholder="Password">
+        <label *ngIf="isEmptyPassword" class="is-error">{{'ERROR.INPUT.3' | translate}}</label>
+        <div class="ct-float-right">
+          <button class="ct-button--icon show-password" [togglePass]="passwordEl" [(eyeIconProp)]="eyeIcon">
+            <i-feather [name]="eyeIcon"></i-feather>
+          </button>
+        </div>
+      </div>
+
+      <div class="ct-break--medium"></div>
+
+      <div class="ct-text-center" *ngIf="showErrorMessage">
+        <label class="is-error">{{errorMessage}}</label>
+        <div class="ct-break--shorter"></div>
+      </div>
+
+      <div class="ct-separator"></div>
+
+      <div class="ct-break--shorter"></div>
+
+      <div class="ct-float-right">
+        <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+        <button class="ct-button--primary" [disabled]="isBusy" (click)="continue()">{{'BUTTONS.SUBMIT' |
+          translate}}</button>
+      </div>
+
+      <div class="ct-is-clear"></div>
+    </div>
+  </div>
+</div>

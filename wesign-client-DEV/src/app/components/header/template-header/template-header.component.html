@@ -1,0 +1,24 @@
+<ng-container *ngIf="appState$ | async as state">
+    <div class="ws_content-doc__progress progress_full" *ngIf="state.FlowName == 'template'">
+        <div class="ws_inline"
+            [class.ws_icon__upload-disabled]="state.FlowStep != FLOW_STEP.TEMPLATE_UPLOAD" 
+            [class.ws_icon__upload-enabled]="state.FlowStep == FLOW_STEP.TEMPLATE_UPLOAD"
+            ></div>
+
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text"
+            [class.active]="state.FlowStep == FLOW_STEP.TEMPLATE_UPLOAD">
+            <span>Upload</span>
+        </div>
+
+        <div class="ws_inline ws_icon__progress-arrow-disabled"></div>
+
+        <div class="ws_inline"
+            [class.ws_icon__place-disabled]="state.FlowStep != FLOW_STEP.TEMPLATE_EDIT" 
+            [class.ws_icon__place-enabled]="state.FlowStep == FLOW_STEP.TEMPLATE_EDIT"
+        ></div>
+
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text" [class.active]="state.FlowStep == FLOW_STEP.TEMPLATE_EDIT">
+            <span>Place</span>
+        </div>
+    </div>
+</ng-container>

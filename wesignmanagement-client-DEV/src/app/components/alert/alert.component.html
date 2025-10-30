@@ -1,0 +1,24 @@
+<div class="ws_overlay" id="js-modal-delete">
+
+    <div class="ws_c-modal ws_text-center ws_animate-slide-down">
+        <div class="ws_break--short"></div>
+
+        <h1>{{title}} Confirmation</h1>
+
+        <div class="ws_break--short"></div>
+
+        <h3>Are you sure? {{itemName}} and all it's data will be {{operationType}}d.</h3>
+
+        <div class="ws_break--short"></div>
+
+        <button class="ws_button--small ws_button--outline" (click)="$event.preventDefault(); doOperation()">
+            Yes, {{operationType}} this {{itemType}} and all it's data</button>
+
+        <div class="ws_break--short"></div>
+
+        <a (click)="cancel()" class="a--error a--underline">
+            No, take me back</a>
+
+        <div class="ws_break--short"></div>
+    </div>
+</div>

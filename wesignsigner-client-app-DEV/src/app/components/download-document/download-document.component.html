@@ -1,0 +1,22 @@
+<body class="ct-p-home">
+    <header>
+        <div class="header__logo"></div>
+        <app-lang></app-lang>
+    </header>
+
+    <main class="ct-text-center ct-animate-fadein">
+
+        <div class="ct-break--medium"></div>
+        
+        <h2>{{'GLOBAL.DOWNLOAD_PAGE' | translate}}</h2>
+        
+        <div class="ct-break--medium"></div>
+        
+        <button class="ct-button--primary" [disabled]="isBusy" (click)="download()">{{'BUTTONS.DOWNLOAD_DOCUMENT' | translate}}</button>
+
+        <div class="ct-break--large"></div>
+
+        <img class="img--is-signed"  />
+
+    </main>
+</body>

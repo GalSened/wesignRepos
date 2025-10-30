@@ -1,0 +1,29 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <h3>{{title}}</h3>
+
+            <div class="ct-separator"></div>
+            <div class="ct-break--short"></div>
+
+            <span *ngIf="message != ''">{{message}}</span>
+
+            <div *ngIf="message != ''" class="ct-break--shorter"></div>
+            <span class="bold_text" *ngIf="messageBold != ''">{{messageBold}}</span>
+            <div  *ngIf="messageBold != ''" class="ct-break--shorter"></div>
+
+            <span *ngIf="message2 != ''">{{message2}}</span>
+
+            <div *ngIf="message2 != ''" class="ct-break--shorter"></div>
+            <div class="ct-separator"></div>
+            <div class="ct-break--short"></div>
+
+            <div class="ct-float-right">
+             
+                <button class="ct-button--primary" (click)="Close()">{{'BUTTONS.CLOSE' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

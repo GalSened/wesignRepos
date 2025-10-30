@@ -1,0 +1,52 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <span>{{'GLOBAL.OTP_YOU_MAY_LOCK' | translate}}</span>
+
+            <div class="ct-break--short"></div>
+
+            <label class="ct-checkbox ct-text-left">
+                <span>{{'GLOBAL.REQUIRE_6_DIGIT_CODE' | translate}}</span>
+                <input id="shouldUseOtpCode" type="checkbox" [(ngModel)]="shouldUseOtpCode">
+
+                <span class="ct-checkbox__checkmark"></span>
+            </label>
+
+            <div class="ct-break--shorter"></div>
+
+            <label class="ct-checkbox ct-text-left">
+                <span>{{'GLOBAL.REQUIRE_PASSWORD' | translate}}</span>
+                <input id="shouldUsePassword" type="checkbox" [(ngModel)]="shouldUsePassword">
+                <span class="ct-checkbox__checkmark"></span>
+            </label>
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'GLOBAL.PASSWORD_IF_CHECKED' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <input type="text" class="ct-input--primary" [(ngModel)]="otpPassword" value="" placeholder="" maxlength="50" [disabled]="!shouldUsePassword"
+                [class.is-error]="submitted && shouldUsePassword">
+
+            <div class="ct-separator"></div>
+
+            <ng-container *ngIf="hasError">
+                <div class="ct-text-center">
+                    <label class="is-error">{{'ERROR.INPUT.0' | translate}}</label>
+                </div>
+            </ng-container>
+            <div class="ct-break--short"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+                <button class="ct-button--primary" (click)="send()">{{'BUTTONS.SUBMIT' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

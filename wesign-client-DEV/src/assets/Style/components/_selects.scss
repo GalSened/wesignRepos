@@ -1,0 +1,278 @@
+// selects
+select {
+  height: 42px;
+  padding: 5px;
+  color: $color--text;
+  border: solid 1px $color--border;
+  background-image: url(../../assets/icons/icon-chevron-down.png);
+  background-repeat: no-repeat;
+  background-position: right 5px top 50%, 0 0;
+  background-color: white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+select:disabled {
+  opacity: .6;
+  cursor: not-allowed !important;
+  // opacity: .5;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+select.is-confirm {
+  border-color: $color--confirm !important;
+}
+
+select.is-error {
+  border-color: $color--error !important;
+}
+
+// select primary
+select.ct-select--primary {
+  border: solid 1px $color--border;
+}
+
+.ngselect-ct-select--primary {
+  border: solid 1px $color--border;
+}
+
+.reports_doc-status_select{
+  width: fit-content !important;
+}
+
+// select colored
+select.ct-select--colored {
+  width: 100%;
+  height: 45px;
+  border: 0;
+  border: solid 2px lightskyblue;
+  color: $color--grey-dark;
+}
+
+// select custom
+
+.select--custom {
+  position: relative; }
+  .select--custom select {
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    -o-appearance: none !important;
+    appearance: none !important;
+    color: transparent; }
+    
+select.select--custom {
+  position: relative;
+
+  select {
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+    color: transparent;
+  }
+}
+
+// select custom
+.select--custom :hover {
+  background: white;
+}
+
+.select-custom--selected {
+  border: solid 1px $color--border;
+  background: white;
+}
+
+.select-custom--selected:after {
+  position: absolute;
+  content: "";
+  top: 19px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-color: $color--grey-dark transparent transparent transparent;
+}
+
+.select-custom--selected.select-custom__arrow-active:after {
+  border-color: transparent transparent $color--grey-light transparent;
+  top: 13px;
+}
+
+
+.select--custom.select-custom--register__tel-code {
+  display: inline-block;
+  vertical-align: middle;
+  top: -1px;
+  width: 100px;
+}
+
+.select--custom.select-custom--profile__tel-code {
+  display: inline-block;
+  vertical-align: middle;
+  top: -1px;
+  width: 121px;
+}
+
+.select--custom.select-custom--calendar {
+  display: inline-block;
+  vertical-align: middle;
+  width: 75px;
+}
+
+
+.select-custom__items div,
+.select-custom--selected {
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  height: 40px;
+  padding: 10px 7px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+}
+
+.select-custom__items {
+  position: absolute;
+  overflow-y: auto;
+  max-height: 300px;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: solid 1px $color--border;
+  background: white;
+  z-index: 99;
+}
+
+.select-custom-hide {
+  display: none;
+}
+
+.select-custom__items div:hover,
+.same-as-selected {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.select-custom__items 
+.disabled {
+ cursor: default;
+ opacity: 0.25;
+ pointer-events: none;
+}
+
+
+// select short
+select.ct-select--short {
+  display: inline-block;
+  width: 325px;
+  margin: 0 1px;
+  
+
+  @include respond-to('medium') {
+    width: 100%;
+    margin-top: 5px;
+  }
+}
+
+.ngselect-ct-select--short {
+  display: inline-block;
+  width: 325px;
+  margin: 0 1px;
+  
+
+  @include respond-to('medium') {
+    width: 100%;
+    margin-top: 5px;
+  }
+}
+
+.ct-ngSelect-templateContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.ct-ngSelect-label-text {
+  align-self: center;
+  margin-right: auto;
+}
+
+.ct-ngSelect-img {
+ align-self: center;
+}
+
+
+// select forRows
+.ct-c-rowAmountSelector {
+  width:3rem;
+  height: 75%;
+  align-self: center;
+  font-size: 12px;
+}
+
+.ct-c-select-searchParameter-container { 
+  display: flex;
+  column-gap: 5px;
+  justify-self: flex-start;
+  height: 39px;
+}
+
+.ct-c-select-searchParameter {
+  width: 170px;
+  border-radius: 5px; 
+  height: 39px;
+}
+
+.ct-c-select-searchParameter-beforeText {
+flex: 0 1 120px;
+}
+
+
+.hebFlag{
+background-image: url(../../assets/images/il.png);
+}
+.engFlag{
+  background-image: url(../../assets/images/us.svg);
+}
+
+img.ngSelect-icon-israel{
+  content: url('../../assets/images/israel.png');
+}
+
+img.ngSelect-icon-usa{
+  content: url('../../assets/images/usa.png');
+}
+

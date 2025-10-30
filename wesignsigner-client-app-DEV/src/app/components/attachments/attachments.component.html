@@ -1,0 +1,32 @@
+<div class="ct-c-modal" *ngIf="showAttachments">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <h3>{{'ATTACHMENTS.TITLE' | translate}}</h3>
+
+            <div class="ct-separator"></div>
+
+            <span>{{'ATTACHMENTS.UPLOAD' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <ng-container *ngFor="let attachment of attachments">
+                <div class="ct-break--short"></div>
+                <app-attachment [attachment]="attachment"></app-attachment>
+            </ng-container>
+
+            <div class="ct-is-clear"></div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+                <button class="ct-button--primary" (click)="submit()">{{'BUTTONS.SUBMIT' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+// lists
+.ct-c-list {
+    overflow: scroll;
+    height: 200px;
+
+    a {
+        display: block;
+        margin-bottom: 5px;
+        color: $color--text;
+    }
+
+    a:hover {
+        color: $color--primary;
+        text-decoration: none;
+    }
+}

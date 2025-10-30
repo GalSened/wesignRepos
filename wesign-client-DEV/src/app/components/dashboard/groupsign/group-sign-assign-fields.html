@@ -1,0 +1,80 @@
+<div class="ct-p-edit-document">
+
+    <sgn-alert-component></sgn-alert-component>
+
+    <sgn-assign-modal [pages$]="pages$" [pagesCount]="pagesCount" [signers]="signers"></sgn-assign-modal>
+    <sgn-pop-up-confirm [data]="ascribeFieldsToSignersModal" (submitEvent)="doAscribeFields()"
+    (cancelEvent)="cancelAscribeFields()"></sgn-pop-up-confirm>
+
+    <sgn-pop-up-ok [data]="showConfirmWhenUsingMeaningOfSignature" (submitEvent)="showConfirmWhenUsingMeaningOfSignature.showModal = false"></sgn-pop-up-ok>
+    <sgn-top-header-title [title]="'SIGNERS.EDIT_DOCUMENT' | translate" [nextButtonText]="nextButtonText"
+        (nextButton)="next($event)" (backButton)="back()">
+    </sgn-top-header-title>
+
+    <main>
+        <ng-container *ngIf="showOpenLink">
+
+            <div class="ct-c-modal ct-is-shown">
+                <div class="modal__overlay">
+                    <div class="modal__container">
+                        <h3>{{'DOCUMENT.LIVE_SESSION_MODE' | translate}}</h3>
+
+                        <div class="ct-separator"></div>
+
+                        <div class="ct-break--short"></div>
+
+
+                        <span>{{'DOCUMENT.YOU_ARE_REDIRECTED' | translate}}</span>
+
+                        <div class="ct-break--shorter"></div>
+
+                        <span> {{'DOCUMENT.CLICK_OC_PROCEED' | translate}}</span>
+
+                        <div class="ct-break--medium"></div>
+
+                        <div class="ct-float-right">
+
+                            <button class="ct-button--primary" (click)="openLiveLink()"> {{'DOCUMENT.PROCEED' |
+                                translate}} </button>
+
+                        </div>
+
+                        <div class="ct-is-clear"></div>
+
+                        <div class="ct-break--shorter"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ct-c-alert ct-animate-fadein">
+
+            </div>
+        </ng-container>
+
+
+        <sgn-add-fileds-sidebar [signers]="signers"></sgn-add-fileds-sidebar>
+
+        <div class="main__content" *ngIf="pages$ | async as pages">
+
+
+            <sgn-zoom [totalPages]="pages.length" [(zmodel)]="zmodel" [currentPage]="currentPage"
+                (changeBackgroundEvent)="isDark = !isDark"></sgn-zoom>
+
+            <sgn-server-sign [errorMessage]="signErrorMessage" [showErrorMessage]="showSignErrorMessage"
+                (hide)="showServerSign=false" *ngIf="showServerSign"></sgn-server-sign>
+
+            <div class="ct-c-document" [class.bg-is-dark]="isDark" [class.bg-is-light]="!isDark">
+
+                <div class="doc__image" [ngStyle]="{'zoom': zmodel.ZoomLevel}"
+                    *ngFor="let page of pages; let i = index;" editpage [ocrHtml]="templatePages[page-1]?.ocrHtml" [pageNumber]="templatePages[page-1].pageNumber"
+                    [pageData]="templatePages[page-1]" [templateId]="templatePages[page-1].templateId"
+                    [displayPageNumber]="i+1" (changePageScroll)="changePageNumber($event)">
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>

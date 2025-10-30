@@ -1,0 +1,23 @@
+// paignation
+.ct-c-pagination {
+    display: flex;
+    align-items: center;
+
+    span {
+        margin: 0 1px;
+    }
+
+    h2 {
+        margin: 0;
+        color: white;
+    }
+
+    input {
+        height: 25px;
+        width: 35px;
+        margin: 0 3px;
+        text-align: center;
+        border: solid 1px $color--border;
+        background: transparent;
+    }
+}

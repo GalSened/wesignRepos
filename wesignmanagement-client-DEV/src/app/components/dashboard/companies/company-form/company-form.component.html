@@ -1,0 +1,841 @@
+<ngx-spinner></ngx-spinner>
+
+<div class="ws_body__wrapper">
+
+
+    <app-banner-alert #bannerAlert></app-banner-alert>
+
+    <app-active-directory-mapper *ngIf="isADSettingActiveInLicense" [class.ws_is-hidden]="!isFormShown"
+        [class.ws_is-shown]="isFormShown" (hideGroupForm)="hideGroupForm($event)" [company]="company">
+    </app-active-directory-mapper>
+
+
+    <div class="ws_wrapper--1024px ws_margin-auto" [class.ws_is-hidden]="isFormShown"
+        [class.ws_is-shown]="!isFormShown">
+
+        <div class="ws_break--short"></div>
+
+        <h1>Manage Companies</h1>
+
+        <div class="ws_break--short"></div>
+
+        <div class="ws_separator"></div>
+
+        <form method="post">
+            <h3>Company</h3>
+
+            <div class="ws_break--short"></div>
+
+            <span>Company Name*</span>
+
+            <input type="text" required minlength="2" maxlength="50" #companyName="ngModel" name="companyName"
+                [(ngModel)]="company.companyName" [class.ws_input--error]="companyName.invalid && submited">
+
+
+            <div class="ws_break--shorter"></div>
+
+            <span>Language*</span>
+
+            <app-custom-drop-down [options]="languagesOptions" [currentSelection]="company.language"
+                (currentSelectionChange)="dropDownUpdate($event,company,'language')">
+            </app-custom-drop-down>
+            <div class="ws_break--short"></div>
+
+            <div class="ws_separator"></div>
+
+            <div class="ws_break--short"></div>
+
+            <h3>Program</h3>
+
+            <div class="ws_break--short"></div>
+
+            <span>Program*</span>
+
+            <app-custom-drop-down [options]="programsOptions" [currentSelection]="company.programId" [enableSearch]="true"
+                (currentSelectionChange)="dropDownUpdate($event,company,'program')">
+            </app-custom-drop-down>
+
+            <div class="ws_break--short"></div>
+
+            <span>Expiration Date*</span>
+
+            <input type="date" required #expirationTime="ngModel" name="expirationTime"
+                [ngModel]="company.expirationTime| date:'yyyy-MM-dd' " (ngModelChange)="company.expirationTime = $event"
+                [class.ws_input--error]="expirationTime.invalid && submited">
+
+
+
+            <div class="ws_separator"></div>
+            <h3>User</h3>
+
+            <div class="ws_break--short"></div>
+
+            <span>User Name*</span>
+
+            <input type="text" required maxlength="50" #userName="ngModel" name="userName"
+                [(ngModel)]="company.user.userName" [class.ws_input--error]="userName.invalid && submited">
+
+
+            <div class="ws_break--shorter"></div>
+
+            <span>User Email*</span>
+
+            <input type="email" required minlength="2" maxlength="50" #email="ngModel" name="email"
+                [(ngModel)]="company.user.email" [class.ws_input--error]="email.invalid && submited">
+
+            <div class="ws_break--shorter"></div>
+            <div class="ws_separator"></div>
+            <span>Group Name*</span>
+
+            <div class="ws_break--shorter"></div>
+
+            <ng-container *ngIf="operation ==1 ">
+                <input style="width: 72%;" type="text" required minlength="2" maxlength="50"
+                    placeholder="Add new group group Name" #newGroupName="ngModel" name="newGroupName"
+                    [(ngModel)]="newGroup" [class.ws_input--error]="newGroupName.invalid && submited">
+            </ng-container>
+            <ng-container *ngIf="operation != 1 ">
+                <app-custom-drop-down [options]="CollectionToOptions(company.groups)" [enableSearch]="true"
+                    [currentSelection]="GetGroupsSelection(company.groups)"
+                    (currentSelectionChange)="dropDownUpdate($event, company, 'groups')">
+                </app-custom-drop-down>
+            </ng-container>
+
+            <div class="ws_break--short"></div>
+
+            <div class="ws_separator"></div>
+
+            <button type="button" style="width: 98%;" class="ws_button--small" *ngIf="isADSettingActiveInLicense"
+                (click)="isShownActiveDirectorySettings = !isShownActiveDirectorySettings">
+                Active Directory Groups Settings
+            </button>
+
+            <div *ngIf="isShownActiveDirectorySettings">
+                <ng-container *ngIf="operation !=1">
+                    <div class="ws_break--short"></div>
+                    <div class="ws_text-center">
+                        <span>&nbsp;</span>
+
+                        <button class="" *ngIf="this.company.groups.length > 0" (click)="createGroupMapCompany()">New
+                            group map</button>
+                    </div>
+                    <div class="ws_break--short"></div>
+                    <div class="ws_break--short"></div>
+
+                    <table cellpadding="0" cellspacing="0" class="ws_animate-slide-down">
+                        <tr class="header">
+                            <th>Group Name
+                                <button class="ws_button--icon ws_align-vert--middle">
+                                    <div class="ws_icon__sort"></div>
+                                </button>
+                            </th>
+                            <th>Users Active Directory Name
+                                <button class="ws_button--icon ws_align-vert--middle">
+                                    <div class="ws_icon__sort"></div>
+                                </button>
+                            </th>
+                            <th>Contacts Active Directory Name
+                                <button class="ws_button--icon ws_align-vert--middle">
+                                    <div class="ws_icon__sort"></div>
+                                </button>
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                        <ng-container>
+                            <ng-container *ngFor="let group of company.groupsADMapper; index as i">
+                                <tr class="ws_tr__menu">
+                                    <td><span>{{group.groupName}}</span></td>
+                                    <td><span>{{group.activeDirectoryUsersGroupName}}</span></td>
+                                    <td><span>{{group.activeDirectoryContactsGroupName}}</span></td>
+
+                                    <td class="ws_text-right outer">
+                                        <div class="ws_table-menu">
+
+                                            <div class="table-menu__icon ws_tooltip">
+                                                <button class="ws_button--icon" (click)="deleteGroupMap(group)">
+                                                    <div class="ws_icon__delete"></div>
+                                                    <span class="ws_tooltip--delete">Delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </table>
+                </ng-container>
+                <ng-container *ngIf="operation ==1">
+                    <div class="ws_break--short"></div>
+                    <div class="ws_text-center">
+                        Active Directory configuration avilable only while editing existing company
+                    </div>
+                    <div class="ws_break--short"></div>
+                </ng-container>
+
+            </div>
+
+            <div class="ws_separator"></div>
+            <div class="ws_break--shorter"></div>
+
+            <div class="ws_break--short"></div>
+
+            <button type="button" style="width: 98%;" class="ws_button--small"
+                (click)="isShownOptionalSetting = !isShownOptionalSetting">
+                Optional Settings
+            </button>
+
+            <div *ngIf="isShownOptionalSetting">
+
+                <!-- start
+     Change--->
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="shouldSendWithOTPByDefault"
+                        [(ngModel)]="this.company.shouldSendWithOTPByDefault">
+
+                    <div></div>
+                </label>
+
+                <span>Should Send a OTP To User By Default When Sending a Document&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.shouldSendWithOTPByDefault"></app-tool-tip>
+
+
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="enableVisualIdentityFlow"
+                        [(ngModel)]="this.company.enableVisualIdentityFlow">
+
+                    <div></div>
+                </label>
+
+                <span>Should Enable IDP Authontication Using An External Comsign IDP&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.enableVisualIdentityFlow"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="enableDisplaySignerNameInSignature"
+                        [(ngModel)]="this.company.enableDisplaySignerNameInSignature">
+
+                    <div></div>
+                </label>
+
+                <span>Should Display The Name Of The Signers In The Signature Field&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.enableDisplaySignerNameInSignature"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="enablePersonalizedPFX"
+                        [(ngModel)]="this.company.isPersonalizedPFX">
+
+                    <div></div>
+                </label>
+
+                <span>Should Enable Personalized PFX&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.enablePersonalizedPFX"></app-tool-tip>
+                
+                
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="shouldForceOTPInLogin"
+                        [(ngModel)]="this.company.shouldForceOTPInLogin">
+
+                    <div></div>
+                </label>
+
+                <span>Should force user for OTP in login (2FA)&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.shouldForceOTPInLogin"></app-tool-tip>
+
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="shouldAddAppendicesAttachmentsToSendMail"
+                        [(ngModel)]="this.company.shouldAddAppendicesAttachmentsToSendMail">
+
+                    <div></div>
+                </label>
+
+                <span>Appendix attachments as a file in an email sent to the recipient&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.shouldAddAppendicesAttachmentsToSendMail"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="ShouldEnableMeaningOfSignatureOption"
+                        [(ngModel)]="this.company.shouldEnableMeaningOfSignatureOption">
+
+                    <div></div>
+                </label>
+
+                <span>Should enable Meaning of signature option&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.shouldEnableMeaningOfSignatureOption"></app-tool-tip>
+
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="shouldEnableVideoConference"
+                        [(ngModel)]="this.company.shouldEnableVideoConference">
+
+                    <div></div>
+                </label>
+
+                <span>Should enable Video conference&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.shouldEnableVideoConference"></app-tool-tip>
+
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="enableTabletsSupport"
+                        [(ngModel)]="this.company.enableTabletsSupport">
+
+                    <div></div>
+                </label>
+
+                <span>Should enable tablet support&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.enableTabletsSupport"></app-tool-tip>
+
+                <!-- <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="shouldEnableGovernmentSignatureFormat"
+                        [(ngModel)]="this.company.shouldEnableGovernmentSignatureFormat">
+
+                    <div></div>
+                </label>
+
+                <span>Should enable government signature format (.signed)&nbsp;</span> -->
+
+                <div class="ws_break--short"></div>
+                <span>Previous Passwords Count</span>
+                <input type="number" min="0" max="15"
+                name="recentPasswordsAmount"
+                [(ngModel)]="company.recentPasswordsAmount">
+
+                <div class="ws_break--short"></div>
+                <span>Password Expiration In Days</span>
+                <input type="number" min="0" max="180"
+                name="passwordExpirationInDays"
+                [(ngModel)]="company.passwordExpirationInDays">
+
+                <div class="ws_break--short"></div>
+                <span>Minimum Password Length</span>
+                <input type="number" min="8" max="16"
+                name="minimumPasswordLength"
+                [(ngModel)]="company.minimumPasswordLength">
+                
+                <div class="ws_break--short"></div>
+                <span>Default Signature Type</span>
+                <app-custom-drop-down [options]="signtureType" [currentSelection]="company.defaultSigningType"
+                    (currentSelectionChange)="dropDownUpdate($event,company,'signtureType')">
+                </app-custom-drop-down>
+                <!-- end Change--->
+                <div class="ws_break--short"></div>
+
+                <span>Company Logo&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.logo"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+                <span *ngIf="this.company.logoBase64String != null && this.company.logoBase64String != ''">Company logo
+                    exist, you can click download it in order to view your logo</span>
+
+                <input #companyLogo name="companyLogo" type="file" class="ws_c-file-upload" accept="image/*"
+                    (change)="logoDropped()" value="test">
+                <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                    (click)="removeLogo()">
+                    <div class="ws_icon__remove"></div>
+                </button>
+                <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                    (click)="downloadLogo()">
+                    <div class="ws_icon__download"></div>
+                </button>
+
+
+                <span>Signature Color</span>
+
+                <input type="color" value="#3949AB" name="sigColor" [(ngModel)]="company.signatureColor">
+
+
+
+                <div class="ws_break--short"></div>
+
+                <span>Message before signing&nbsp;</span>
+
+                <app-tool-tip [text]="this.toolTipInfo.messageBefore"></app-tool-tip>
+
+                <textarea name="messageBefore" #messageBefore="ngModel" name="messageBefore"
+                    [(ngModel)]="company.messageBefore"></textarea>
+
+
+                <div class="ws_break--short"></div>
+
+                <span>Message before signing (Hebrew)&nbsp;</span>
+
+                <app-tool-tip [text]="this.toolTipInfo.messageBeforeHebrew"></app-tool-tip>
+
+                <textarea name="messageBeforeHebrew" #messageBeforeHebrew="ngModel" name="messageBeforeHebrew"
+                    [(ngModel)]="company.messageBeforeHebrew"></textarea>
+
+
+                <div class="ws_break--short"></div>
+
+
+                <span>Message after signing&nbsp;</span>
+
+                <app-tool-tip [text]="this.toolTipInfo.messageAfter"></app-tool-tip>
+
+                <textarea name="messageAfter" #messageAfter="ngModel" name="messageAfter"
+                    [(ngModel)]="company.messageAfter"></textarea>
+
+                <div class="ws_break--short"></div>
+
+                <span>Message after signing (Hebrew)&nbsp;</span>
+
+                <app-tool-tip [text]="this.toolTipInfo.messageAfterHebrew"></app-tool-tip>
+
+                <textarea name="messageAfterHebrew" #messageAfterHebrew="ngModel" name="messageAfterHebrew"
+                    [(ngModel)]="company.messageAfterHebrew"></textarea>
+
+                <div class="ws_break--short"></div>
+
+            </div>
+
+            <div class="ws_separator"></div>
+
+
+            <button type="button" style="width: 98%;" class="ws_button--small"
+                (click)="isShownOptionalEmailSetting = !isShownOptionalEmailSetting">
+                Optional Email Settings
+            </button>
+
+            <div *ngIf="isShownOptionalEmailSetting">
+
+                <div class="ws_break--short"></div>
+
+                <span>HTML Template Before Signing&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.htmlTemplateBeforeSigning"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+                <span
+                    *ngIf="this.company.smtpConfiguration.beforeSigningHtmlTemplateBase64String != null && this.company.smtpConfiguration.beforeSigningHtmlTemplateBase64String != ''">
+                    HTML Template Before Signing exist, you can click download it in order to view your logo</span>
+
+                <input #emailBeforeHtmlTemplate name="emailBeforeHtmlTemplate" type="file" accept=".html"
+                    class="ws_c-file-upload" (change)="fileDropped(1)">
+                <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                    (click)="removeEmailTemplate(1)">
+                    <div class="ws_icon__remove"></div>
+                </button>
+                <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                    (click)="downloadHtml(1)">
+                    <div class="ws_icon__download"></div>
+                </button>
+
+                <div class="ws_break--shorter"></div>
+
+                <span>HTML Template After Signing&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.htmlTemplateAfterSigning"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+                <span
+                    *ngIf="this.company.smtpConfiguration.afterSigningHtmlTemplateBase64String != null && this.company.smtpConfiguration.afterSigningHtmlTemplateBase64String != ''">
+                    HTML Template After Signing exist, you can click download it in order to view your logo</span>
+
+                <input #emailAfterHtmlTemplate name="emailAfterHtmlTemplate" type="file" accept=".html"
+                    class="ws_c-file-upload" (change)="fileDropped(2)">
+                <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                    (click)="removeEmailTemplate(2)">
+                    <div class="ws_icon__remove"></div>
+                </button>
+                <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                    (click)="downloadHtml(2)">
+                    <div class="ws_icon__download"></div>
+                </button>
+
+                <div class="ws_break--shorter"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked name="smtpEnableSsl"
+                        [(ngModel)]="company.smtpConfiguration.smtpEnableSsl">
+
+                    <div></div>
+                </label>
+
+                <span>Enable SSL&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.defaultSMTPSSL"></app-tool-tip>
+                <div class="ws_break--short"></div>
+
+                <span>From</span>
+
+                <input type="text" maxlength="150" #smtpFrom="ngModel" name="smtpFrom"
+                    [(ngModel)]="company.smtpConfiguration.smtpFrom">
+
+                <div class="ws_break--shorter"></div>
+
+                <span>Port&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.defaultSMTPPort"></app-tool-tip>
+                <input type="number" value="0" maxlength="150" #smtpPort="ngModel" name="smtpPort"
+                    [(ngModel)]="company.smtpConfiguration.smtpPort">
+
+                <div class="ws_break--shorter"></div>
+
+                <span>Server</span>
+
+                <input type="text" maxlength="150" #smtpServer="ngModel" name="smtpServer"
+                    [(ngModel)]="company.smtpConfiguration.smtpServer">
+
+                <div class="ws_break--shorter"></div>
+
+                <span>User Name</span>
+
+                <input type="text" maxlength="150" #smtpUser="ngModel" name="smtpUser"
+                    [(ngModel)]="company.smtpConfiguration.smtpUser">
+
+                <div class="ws_break--shorter"></div>
+
+                <span>Password</span>
+
+                <input type="password" maxlength="150" #smtpPassword="ngModel" name="smtpPassword"
+                    [(ngModel)]="company.smtpConfiguration.smtpPassword">
+
+                <div class="ws_break--short"></div>
+
+            </div>
+
+
+            <div class="ws_separator"></div>
+
+
+            <button type="button" style="width: 98%;" class="ws_button--small"
+                (click)="isShownOptionalSmsSetting = !isShownOptionalSmsSetting">
+                Optional SMS Settings
+            </button>
+
+            <div *ngIf="isShownOptionalSmsSetting">
+
+                <div class="ws_break--short"></div>
+                <span>Provider</span>
+
+                <app-custom-drop-down [options]="smsProvidersOptions"
+                    [currentSelection]="company.smsConfiguration.provider"
+                    (currentSelectionChange)="dropDownUpdate($event,company,'smsProvider')">
+                </app-custom-drop-down>
+
+                <div class="ws_break--shorter"></div>
+                <span>From</span>
+
+                <input type="text" maxlength="150" #smsFrom="ngModel" name="smsFrom"
+                    [(ngModel)]="company.smsConfiguration.from">
+
+                <div class="ws_break--shorter"></div>
+
+                <span>User Name</span>
+                <input type="text" maxlength="150" #smsUser="ngModel" name="smsUser"
+                    [(ngModel)]="company.smsConfiguration.user">
+
+                <div class="ws_break--shorter"></div>
+
+                <span>Password</span>
+
+                <input type="password" maxlength="150" #smsPassword="ngModel" name="smsPassword"
+                    [(ngModel)]="company.smsConfiguration.password">
+
+                <div class="ws_break--short"></div>
+            </div>
+
+            <div class="ws_separator"></div>
+
+            <button type="button" style="width: 98%;" class="ws_button--small"
+                (click)="isShownNotifications = !isShownNotifications">
+                Optional Notifications
+            </button>
+
+            <div *ngIf="isShownNotifications">
+
+                <div class="ws_break--short"></div>
+
+                <h3>Notifications </h3>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked #shouldSendSignedDocument="ngModel" name="shouldSendSignedDocument"
+                        [(ngModel)]="company.notifications.shouldSendSignedDocument">
+
+                    <div></div>
+                </label>
+
+                <span>Send document file as attachment after signer has signed</span>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked #shouldNotifyWhileSignerSigned="ngModel"
+                        name="shouldNotifyWhileSignerSigned"
+                        [(ngModel)]="company.notifications.shouldNotifyWhileSignerSigned">
+
+                    <div></div>
+                </label>
+
+                <span>Send notification to sender after each signer has signed</span>
+
+                <div class="ws_break--short"></div>
+
+
+                <label class="ws_switch">
+                    <input (change)="EnableRemindersChecked()" type="checkbox" #shouldEnableSignReminders="ngModel" name="shouldEnableSignReminders"
+                        [(ngModel)]="company.notifications.shouldEnableSignReminders">
+
+                    <div></div>
+                </label>
+         
+                <span>Sending auto reminders to receipients who have not yet signed &nbsp;</span>
+    
+                <app-tool-tip [text]="this.toolTipInfo.enableReminders"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+
+
+
+
+                <ng-container *ngIf="company.notifications.shouldEnableSignReminders">
+                    <label class="ws_switch">
+                        <input [(ngModel)]="invertedReminderSetting" (change)="TakeUserControlCheck()" type="checkbox" 
+                            name="canUserControlReminderSettings">
+
+                        <div></div>
+                    </label>
+
+                    <span>Configure for the users to automatically send a reminder to receipients who have not yet
+                        signed &nbsp;</span>
+                        <app-tool-tip [text]="this.toolTipInfo.disableUserReminderControl"></app-tool-tip>
+                </ng-container>
+                <div class="ws_break--short"></div>
+
+                <ng-container *ngIf="!company.notifications.canUserControlReminderSettings  && company.notifications.shouldEnableSignReminders">
+                    <span>Reminder Frequency In days (1-25) &nbsp;</span>
+                    <app-tool-tip [text]="this.toolTipInfo.signReminderFrequency"></app-tool-tip>
+
+
+                    <input type="text" required maxlength="2" #signReminderFrequencyInDays="ngModel" name="signReminderFrequencyInDays"
+                        [(ngModel)]="company.notifications.signReminderFrequencyInDays">
+                </ng-container>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input (change)="ShouldSendDocumentNotificationsChanged()" type="checkbox" checked #shouldSendDocumentNotifications="ngModel"
+                        name="shouldSendDocumentNotifications"
+                        [(ngModel)]="company.notifications.shouldSendDocumentNotifications">
+
+                    <div></div>
+                </label>
+
+                <span>Enable sending document notifications &nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.enableDocumentNotifications"></app-tool-tip>
+
+                <div class="ws_break--short"></div>
+
+                <ng-container *ngIf="company.notifications.shouldSendDocumentNotifications">
+                    <span>Endpoint for document notifications: &nbsp;</span>
+                    <app-tool-tip [text]="this.toolTipInfo.documentNotificationsEndpoint"></app-tool-tip>
+
+
+                <input type="text" required  #documentNotificationsEndpoint="ngModel" name="documentNotificationsEndpoint"
+                        [(ngModel)]="company.notifications.documentNotificationsEndpoint">
+                </ng-container>
+
+                <div class="ws_break--short"></div>
+                
+                <span>Signer link expiration time in hours</span>
+                <input type="number" value="0" maxlength="150" #signerLinkExpirationInHours="ngModel"
+                name="signerLinkExpirationInHours"
+                [(ngModel)]="company.notifications.signerLinkExpirationInHours">
+                <div class="ws_break--short"></div>
+
+            </div>
+
+
+            <div class="ws_separator"></div>
+
+            <button type="button" style="width: 98%;" class="ws_button--small"
+                (click)="onShownOptionalDeleteSettings()">
+                Optional Delete Settings
+            </button>
+
+            <div *ngIf="isShownOptionalDeleteSettings">
+
+                <div class="ws_break--short"></div>
+
+                <span>Days to delete signed documents from system</span>
+
+                <div class="ws_break--shorter"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" #deleteSignedDocumentsUnlimited="ngModel"
+                        name="deleteSignedDocumentsUnlimited" [(ngModel)]="isUnlimitedDeleteSignedDocuments">
+                    <div></div>
+                </label>
+
+                <span>Never</span>
+                <div class="ws_break--shorter"></div>
+
+                <input type="number" min=0 required value="0" #deleteSignedDocumentAfterXDays="ngModel"
+                    name="deleteSignedDocumentAfterXDays"
+                    [(ngModel)]="company.deletionDetails.deleteSignedDocumentAfterXDays"
+                    *ngIf="!isUnlimitedDeleteSignedDocuments"
+                    [class.ws_input--error]="deleteSignedDocumentAfterXDays.invalid ">
+                <div class="ws_break--shorter"></div>
+
+                <div class="ws_break--short"></div>
+
+                <span>Days to delete unsigned documents from system</span>
+
+                <div class="ws_break--shorter"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" #deleteUnsignedDocumentsUnlimited="ngModel"
+                        name="deleteUnsignedDocumentsUnlimited" [(ngModel)]="isUnlimitedDeleteUnsignedDocuments">
+                    <div></div>
+                </label>
+
+                <span>Never</span>
+                <div class="ws_break--shorter"></div>
+
+                <input type="number" min=0 required value="0" #deleteUnsignedDocumentAfterXDays="ngModel"
+                    name="deleteUnsignedDocumentAfterXDays"
+                    [(ngModel)]="company.deletionDetails.deleteUnsignedDocumentAfterXDays"
+                    *ngIf="!isUnlimitedDeleteUnsignedDocuments"
+                    [class.ws_input--error]="deleteUnsignedDocumentAfterXDays.invalid ">
+                <div class="ws_break--shorter"></div>
+            </div>
+
+
+            <!--
+                Starttt
+            -->
+            <div class="ws_separator"></div>
+
+            <button type="button" style="width: 98%;" class="ws_button--small"
+                (click)="isSigner1Details = !isSigner1Details">
+                Optional Signer1 Details
+            </button>
+
+            <div *ngIf="isSigner1Details">
+
+                <div class="ws_break--short"></div>
+                <div class="ws_break--short"></div>
+
+                <h3>Company Specific Signer1 Configuration</h3>
+
+                <div class="ws_break--short"></div>
+                <span>Signer1 Endpoint&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.signer1Endpoint"></app-tool-tip>
+                <input type="text" maxlength="150" name="signer1Endpoint"
+                    placeholder="https://signer1.comsign.co.il/signature/signature.svc"
+                    [(ngModel)]="company.companySigner1Details.signer1Configuration.endpoint">
+
+                <span>User&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.signer1User"></app-tool-tip>
+                <input type="text" maxlength="150" name="signer1User"
+                    [(ngModel)]="company.companySigner1Details.signer1Configuration.user">
+
+                <span>Password&nbsp;</span>
+                <app-tool-tip [text]="this.toolTipInfo.signer1Password"></app-tool-tip>
+                <input type="password" maxlength="150" name="signer1Password"
+                    [(ngModel)]="company.companySigner1Details.signer1Configuration.password">
+                <div class="ws_break--short"></div>
+
+                <div class="ws_break--short"></div>
+
+                <h3>Signing document after signing flow using signer1</h3>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked #shouldShowInUI="ngModel" name="shouldShowInUI"
+                        [(ngModel)]=" company.companySigner1Details.shouldShowInUI">
+
+                    <div></div>
+                </label>
+
+                <span>Should show in UI</span>
+
+                <div class="ws_break--short"></div>
+
+                <label class="ws_switch">
+                    <input type="checkbox" checked #shouldSignAsDefaultValue="ngModel" name="shouldSignAsDefaultValue"
+                        [(ngModel)]=" company.companySigner1Details.shouldSignAsDefaultValue">
+
+                    <div></div>
+                </label>
+
+                <span>Should sign as default value</span>
+
+                <div class="ws_break--short"></div>
+                <span>Certificate id</span>
+
+                <input type="text" #certId="ngModel" name="certId"
+                    [(ngModel)]="company.companySigner1Details.certId">
+
+                <div class="ws_break--short"></div>
+
+                <div class="ws_break--short"></div>
+                <span>Password</span>
+
+                <input type="password" #certPassword="ngModel" name="certPassword"
+                    [(ngModel)]=" company.companySigner1Details.certPassword">
+
+                <div class="ws_break--short"></div>
+
+                <div class="ws_separator"></div>
+
+
+
+            </div>
+
+            <!--
+                ENDDDDDD
+            -->
+            <div class="ws_break--short"></div>
+            <div class="ws_break--short"></div>
+            <div class="ws_text-center">
+                <span class="ws_alert alert--error" *ngIf="isError">{{errorMessage}}</span>
+
+                <div class="ws_break--short"></div>
+            </div>
+
+            <div class="ws_text-center">
+                <button type="button" class="ws_button--small ws_button--cancel" (click)="cancel()"
+                    [disabled]="isBusy">CANCEL</button>
+
+                <button type="submit" class="ws_button--small" (click)="update()" [disabled]="isBusy">UPDATE</button>
+                <div id="ws_button--preloader" *ngIf="isBusy">
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                </div>
+            </div>
+            <app-alert [class.ws_is-hidden]="!showUpdateAlert" [class.ws_is-shown]="showUpdateAlert"
+                (removeDeletionAlert)="hideAlert()" (deleteOperation)="updateCompany()" [itemName]='company.companyName'
+                [itemType]="'Company'" [operationType]="'update'">
+            </app-alert>
+
+
+
+        </form>
+
+    </div>
+
+    <div class="ws_break--short"></div>
+</div>

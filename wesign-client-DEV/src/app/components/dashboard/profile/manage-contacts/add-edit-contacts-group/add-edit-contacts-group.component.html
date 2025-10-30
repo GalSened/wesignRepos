@@ -1,0 +1,84 @@
+<div class="ct-c-modal">
+   
+    <div class="modal__overlay">
+        <div class="modal__container manage_group ct-animate-slide-down">     
+            
+            <sgn-select-contact *ngIf="showContacts" [ngClass]="showContacts?'ct-is-shown':'ct-is-hidden'"
+  (hide)="showContacts=!showContacts" (sendContact)="updateSigner($event, false,-1)">
+</sgn-select-contact>
+
+            <h3>{{'GLOBAL.MANAGE_CONTACTS_GROUP' | translate}}</h3>
+            <div class="ct-separator"></div>
+            <div class="ct-break--short"></div>
+            <input type="text" class="ct-input--primary" id="group_name" name="group_name" autocomplete="off"
+            [(ngModel)]="contactsGroup.name" placeholder="{{'GLOBAL.GROUP_NAME' | translate}}*" maxlength="50"
+            [class.is-error]="submitted && (!contactsGroup.name || contactsGroup.name=='')">
+            <div class="ct-break--short"></div>
+
+            <ng-container *ngFor="let contactGroupMember of contactsGroup.contactsGroupMembers ; let i = index">         
+                <div style="padding: 0 30px 0 30px;display: flex">
+                    <td  >
+                        <tr>
+                        <button class="ct-button--icon"  style="border: solid 1px #E0E0E0;" *ngIf="i != 0"  (click)="moveSigner(i,-1)">
+                            <i-feather name="chevron-up"></i-feather>
+                        </button>
+                        </tr>
+                        <tr>
+                        <button class="ct-button--icon" style="border: solid 1px #E0E0E0;" *ngIf="i+1!=contactsGroup?.contactsGroupMembers?.length ?? 0"  (click)="moveSigner(i,1)">
+                            <i-feather name="chevron-down"></i-feather>
+                        </button>
+                        </tr>
+                    </td>  
+                <div class="ct-c-add-signers is-order">   
+                          
+                  
+                    <div class="add-signers__container" >
+                        <div class="signer_numbering ct-float-right">
+                            <h3>{{i + 1}}</h3>
+                        </div>                    
+                        <input type="text" class="ct-input--primary" id="group_name{{i}}" name="group_name{{i}}" autocomplete="off"
+                          value="{{contactGroupMember.name}}"  disabled >
+                          <div class="ct-float-right">                                                  
+                            <button class="ct-button--icon ct-tooltip--table-icons" (click)="openContactsBook(contactGroupMember)">
+                          <i-feather name="book-open"></i-feather>
+              
+                          <span class="tooltiptext">{{'CONTACTS.ADDRESS_BOOK' | translate}}</span>
+                        </button>
+                            <button class="ct-button--icon ct-tooltip--table-icons" (click)="remove(contactGroupMember)">
+                                <i-feather name="minus-circle" ></i-feather>                  
+                                <span class="tooltiptext">{{'CONTACTS.REMOVE_CONTACT_FROM_GROUP' | translate}}</span>
+                            </button>
+                          </div>   
+                    </div>
+                </div>
+            </div>   
+                <div class="ct-break--short"></div>
+            </ng-container>
+            <div class="ct-text-center">
+                <div class="ct-break--short"></div>
+                <button class="ct-button--outline ct-button--small" (click)="addSigner();">{{'SIGNERS.ADD_RECIPIENT' |
+                  translate}}</button>
+            </div>
+            <div class="ct-break--short"></div>
+        
+
+        
+        <div class="modal-container__footer" style="position: inherit;padding-top: 10px;">
+           
+            <ng-container *ngIf="errorMsg">
+                <div class="ct-text-center">
+                    <label class="is-error">{{errorMsg}}</label>
+                </div>
+            </ng-container>
+            <div class="ct-break--short"></div>
+            <button class="ct-button--outline" (click)="back()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+            <button class="ct-button--primary" (click)="save()">{{'BUTTONS.SUBMIT' | translate}}</button>
+        
+        <div class="ct-break--short"></div>
+
+        </div>
+    </div>
+
+    </div>
+</div>

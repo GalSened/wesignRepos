@@ -1,0 +1,10 @@
+<form>
+    <input type="file" #fileInput id="fileInput" name="fileInput" accept="{{acceptTypes}}"
+        (click)="fileInput.value = null" (change)="fileUpload()" [disabled]="isFileLoded">
+
+    <span id="mtxt">{{'SIGN_PAD.DROP' | translate}}</span>
+
+    <div class="ct-is-clear"></div>
+
+    <button class="ct-button--outline" (click)="fileInput.click()">{{'BUTTONS.UPLOAD' | translate}}</button>
+</form>

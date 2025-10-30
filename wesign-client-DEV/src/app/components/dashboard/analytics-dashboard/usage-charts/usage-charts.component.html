@@ -1,0 +1,187 @@
+<!-- Usage Charts Container -->
+<div class="usage-charts-container">
+
+  <!-- Chart Controls -->
+  <div class="chart-controls">
+    <div class="control-group">
+      <h3 class="section-title">{{ 'ANALYTICS.USAGE.TITLE' | translate }}</h3>
+      <p class="section-subtitle">{{ 'ANALYTICS.USAGE.SUBTITLE' | translate }}</p>
+    </div>
+
+    <div class="chart-actions">
+      <button class="btn btn-sm btn-outline-secondary" (click)="refreshCharts()" title="Refresh Charts">
+        <i class="feather" data-feather="refresh-cw"></i>
+      </button>
+
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <i class="feather" data-feather="download"></i>
+          Export
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="downloadChart('documents')">Documents Chart</a></li>
+          <li><a class="dropdown-item" (click)="downloadChart('users')">Users Chart</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+
+    <!-- Documents Trend Chart -->
+    <div class="chart-container documents-chart">
+      <div class="chart-header">
+        <h4>Document Processing Trends</h4>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-color created"></span>
+            <span>Created</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color sent"></span>
+            <span>Sent</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color signed"></span>
+            <span>Signed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #documentsChart></canvas>
+      </div>
+
+      <!-- Chart Summary Stats -->
+      <div class="chart-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total Created</span>
+          <span class="stat-value">
+            {{ (usageData.documentCreatedSeries.reduce((sum, point) => sum + point.value, 0)) | number }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total Signed</span>
+          <span class="stat-value">
+            {{ (usageData.documentSignedSeries.reduce((sum, point) => sum + point.value, 0)) | number }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Success Rate</span>
+          <span class="stat-value">
+            {{ ((usageData.documentSignedSeries.reduce((sum, point) => sum + point.value, 0) /
+                 usageData.documentCreatedSeries.reduce((sum, point) => sum + point.value, 0)) * 100) | number:'1.1-1' }}%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Activity Chart -->
+    <div class="chart-container users-chart">
+      <div class="chart-header">
+        <h4>User Activity Trends</h4>
+        <div class="chart-info">
+          <i class="feather" data-feather="info"></i>
+          <span>Daily active users who created or signed documents</span>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #usersChart></canvas>
+      </div>
+
+      <!-- User Activity Stats -->
+      <div class="chart-stats">
+        <div class="stat-item">
+          <span class="stat-label">Peak Day</span>
+          <span class="stat-value">
+            {{ getPeakUserDay() }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Average Daily</span>
+          <span class="stat-value">
+            {{ getAverageDaily() | number }}
+          </span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Growth</span>
+          <span class="stat-value" [ngClass]="getGrowthClass()">
+            {{ getGrowthPercentage() }}%
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Usage Insights Panel -->
+  <div class="usage-insights" *ngIf="usageData.documentCreatedSeries.length > 0">
+    <h4>{{ 'ANALYTICS.INSIGHTS.USAGE_PATTERNS' | translate }}</h4>
+
+    <div class="insights-grid">
+
+      <!-- Peak Hours Analysis -->
+      <div class="insight-card" *ngIf="usageData.peakHours.length > 0">
+        <div class="insight-header">
+          <i class="feather" data-feather="clock"></i>
+          <h5>Peak Usage Hours</h5>
+        </div>
+        <div class="insight-content">
+          <div class="peak-hours">
+            <div *ngFor="let hour of usageData.peakHours.slice(0, 3)" class="hour-item">
+              <span class="hour-time">{{ formatHour(hour.hour) }}</span>
+              <span class="hour-docs">{{ hour.documentsCount }} docs</span>
+              <div class="hour-bar">
+                <div class="bar-fill" [style.width.%]="(hour.documentsCount / getMaxHourDocs()) * 100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Pattern -->
+      <div class="insight-card" *ngIf="usageData.peakDays.length > 0">
+        <div class="insight-header">
+          <i class="feather" data-feather="calendar"></i>
+          <h5>Weekly Patterns</h5>
+        </div>
+        <div class="insight-content">
+          <div class="weekly-pattern">
+            <div *ngFor="let day of usageData.peakDays" class="day-item">
+              <span class="day-name">{{ formatDayName(day.dayOfWeek) }}</span>
+              <span class="day-activity">{{ day.documentsCount }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend Analysis -->
+      <div class="insight-card">
+        <div class="insight-header">
+          <i class="feather" data-feather="trending-up"></i>
+          <h5>Trend Analysis</h5>
+        </div>
+        <div class="insight-content">
+          <div class="trend-items">
+            <div class="trend-item">
+              <span class="trend-label">Documents</span>
+              <span class="trend-value" [ngClass]="getDocumentTrendClass()">
+                {{ getDocumentTrend() }}%
+              </span>
+            </div>
+            <div class="trend-item">
+              <span class="trend-label">User Activity</span>
+              <span class="trend-value" [ngClass]="getUserTrendClass()">
+                {{ getUserTrend() }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,54 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down modal__container__wide" style="width: 95% !important ">
+            <input type="text" #searchInput class="ct-input--primary" placeholder="{{'CONTACTS.SEARCH' | translate}}"
+                [(ngModel)]="contactsFilter.key">
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-c-list">
+                <table cellpadding="0" cellspacing="0" class="ct-text-left" *ngIf="contacts$ | async as contacts">
+                    <tr>
+                        <th>{{'REGISTER.FULL_NAME' | translate}}</th>
+                        <th>{{'REGISTER.EMAIL' | translate}}</th>
+                        <th>{{'REGISTER.PHONE_NUMBER' | translate}}</th>
+                        <th>{{'REGISTER.SEND_BY' | translate}}</th>
+                        <th>{{'REGISTER.SEARCH_TAGS' | translate}}</th>
+                        <th>
+                            <div paginator class="ct-c-pagination" *ngIf="pageCalc" [currentPage]="currentPage"
+                            [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                        </th>
+                    </tr>
+                    <ng-container *ngFor="let contact of contacts">
+                        <tr>
+                            <td (click)="sendContactToParent(contact)">{{contact.name}}</td>
+                            <td (click)="sendContactToParent(contact)">{{contact.email}}</td>
+                            <td (click)="sendContactToParent(contact)">{{contact.phone}}</td>
+                            <td>
+                                <select class="ct-select--primary" (change)="onContactMethodChanged($event, contact)">
+                                    <option [disabled]="!contact.phone" [selected]="contact.defaultSendingMethod==1">SMS</option>
+                                    <option [disabled]="!contact.email" [selected]="contact.defaultSendingMethod==2">Email</option>
+                                </select>
+                            </td>
+                            <td (click)="sendContactToParent(contact)">{{contact.searchTag}}</td>
+                            <td ></td>
+                        </tr>
+                    </ng-container>
+
+                </table>
+            </div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

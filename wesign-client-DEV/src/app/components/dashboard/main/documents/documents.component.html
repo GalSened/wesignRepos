@@ -1,0 +1,433 @@
+<sgn-alert-component></sgn-alert-component>
+
+<sgn-share-doc *ngIf="showShare" (hide)="showShare=false" [docId]="currDocumentCollectionId"></sgn-share-doc>
+<sgn-replace-signer *ngIf="showReplaceSigner" (hide)="hideReplaceSignerForm()" [oldSignerId]="oldSignerId"
+    [docId]="currDocumentCollectionId"></sgn-replace-signer>
+<sgn-pop-up-confirm [data]="deleteAllPopupData" (submitEvent)="doDeleteAllDocsEvent()"
+    (cancelEvent)="deleteAllPopupData.showModal = false">
+</sgn-pop-up-confirm>
+<div class="main__content ct-animate-fadein">
+    <ng-container *ngIf="shouldOpenLiveSigning">
+
+        <div class="ct-c-modal ct-is-shown">
+            <div class="modal__overlay">
+                <div class="modal__container">
+                    <h3>{{'DOCUMENT.LIVE_SESSION_MODE' | translate}}</h3>
+
+                    <div class="ct-separator"></div>
+
+                    <div class="ct-break--short"></div>
+
+                    <span>{{'DOCUMENT.YOU_ARE_REDIRECTED' | translate}}</span>
+
+                    <div class="ct-break--shorter"></div>
+
+                    <span> {{'DOCUMENT.CLICK_OC_PROCEED' | translate}}</span>
+
+                    <div class="ct-break--medium"></div>
+
+                    <div class="ct-float-right">
+
+                        <button class="ct-button--primary" (click)="liveSigningRedirect()"> {{'DOCUMENT.PROCEED' |
+                            translate}} </button>
+                    </div>
+
+                    <div class="ct-is-clear"></div>
+
+                    <div class="ct-break--shorter"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ct-c-alert ct-animate-fadein">
+
+        </div>
+    </ng-container>
+    <div class="ct-c-filter ct-c-filter-documents">
+
+        <div class="ct-c-select-searchParameter-container">
+            <p class="ct-c-select-searchParameter-beforeText">{{'GLOBAL.SEARCH_CRITERIA' | translate }}:</p>
+            <select class="ct-select--primary ct-c-select-searchParameter" (change)="onSearchParameterChange()"
+                [(ngModel)]="docFilter.searchParameter">
+                <option *ngFor="let searchParm of searchParameters | keyvalue" [value]="searchParm.key">
+                    {{'GLOBAL.SEARCH_PARAMETERS.' + searchParm.value | translate}}
+                </option>
+            </select>
+        </div>
+
+        <input type="search" class="ct-input--primary ct-input--docSearch" [class.loading]="showSearchSpinner"
+            placeholder="{{'GLOBAL.SEARCH' | translate}} {{'GLOBAL.DOCUMENTS' | translate}}" [(ngModel)]="docFilter.key"
+            debounce [delay]="500" (func)="pageChanged(1)">
+
+
+        <div class="ws_c-calendar">
+            <div style>
+                <div class="calendar__picker" tabindex="0" (click)="showFromCalendardWrapper()"
+                    (clickOutside)="isFromCalendarShown = false">
+
+                    <div class="ws_icon__calendar" (click)="showFromCalendar()"></div>
+                    <span (click)="showFromCalendar()">{{'DATA.FILTER.FROM' | translate}}</span>
+                    <sgn-calendar-component [isShown]="isFromCalendarShown" (selected)="fromSelected($event)">
+                    </sgn-calendar-component>
+
+                </div>
+                <div class="ws_label ws_label--filter" id="removeFrom" *ngIf="docFilter.from">
+                    <div><span>{{docFilter.from | date:'mediumDate'}}</span></div>
+                    <button class="ws_button--icon" (click)="removeDate($event,'from')">
+                        <div class="ws_icon__remove--small"></div>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <div class="calendar__picker" tabindex="0" (click)="showToCalendardWrapper()"
+                    (clickOutside)="isToCalendarShown = false">
+                    <div (click)="showToCalendar()" class="ws_icon__calendar"></div>
+                    <span (click)="showToCalendar()">{{'DATA.FILTER.TO' | translate}}</span>
+
+                    <sgn-calendar-component [isShown]="isToCalendarShown" (selected)="toSelected($event)">
+                    </sgn-calendar-component>
+
+                </div>
+                <div class="ws_label ws_label--filter" id="removeTo" *ngIf="docFilter.to">
+                    <div><span>{{docFilter.to | date:'mediumDate'}}</span></div>
+                    <button class="ws_button--icon" (click)="removeDate($event,'to')">
+                        <div class="ws_icon__remove--small"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ct-c-filter-rowAmount">
+            <p>{{'GLOBAL.ROWS_PER_PAGE' | translate }}:</p>
+            <select class="ct-c-rowAmountSelector" #select (change)="onDropDownSelect(select.value)">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+    </div>
+
+    <button class="ct-button--icon ct-tooltip--table-icons" *ngIf="selectedDocuments.length > 1"
+        (click)="deleteDocumentAllSelected($event)">
+        <i-feather name="trash-2"></i-feather>
+        <span class="tooltiptext">{{'GLOBAL.DELETE_ALL_SELECTED' | translate}}</span>
+        <div class="ct-horizontal-break--medium"></div>
+    </button>
+
+    <button class="ct-button--icon ct-tooltip--table-icons" *ngIf="selectedDocuments.length > 1 && path=='signed'"
+        (click)="downloadAllSelectedDocuments($event)">
+        <i-feather name="download-cloud"></i-feather>
+        <span class="tooltiptext">{{'GLOBAL.DOWNLOAD_ALL_SELECTED' | translate}}</span>
+    </button>
+
+    <div class="content__table">
+        <table cellpadding="0" cellspacing="0" style="padding: 1px;" class="ct-text-left">
+            <tbody>
+                <tr>
+                    <th class="sticky_header" width="40">
+                        <label class="ct-checkbox ct-text-left  ct-tooltip--table-icons">
+                            <span>&nbsp;</span>
+                            <input type="checkbox" value="1" [checked]="allSelected" (change)="selectedALL()">
+                            <span class="ct-checkbox__checkmark"></span>
+                            <span class="tooltiptext" *ngIf="!allSelected">{{'BUTTONS.SELECT_ALL' | translate}}</span>
+                            <span class="tooltiptext" *ngIf="allSelected">{{'BUTTONS.UNSELECT_ALL' | translate}}</span>
+                        </label>
+                    </th>
+
+                    <th class="sticky_header" width="80"></th>
+
+                    <th class="sticky_header"><a (click)="orderByFunction('name')">{{'DATA.DOCUMENTS_TITLE' |
+                            translate}}</a></th>
+                    <th class="sticky_header"><a (click)="orderByFunction('signers[0].name')">{{'DATA.SENDER' |
+                            translate}}</a></th>
+                    <th class="sticky_header" width="200"><a (click)="orderByFunction('creationTime')">{{'FIELDS.DATE' |
+                            translate}}</a>
+                    </th>
+                    <th class="sticky_header" width="75"><a (click)="orderByFunction('documentStatus')">{{'DATA.STATUS'
+                            | translate}}</a>
+                    </th>
+                    <th class="sticky_header" width="240">
+
+                        <div paginator class="ct-c-pagination ct-float-right" *ngIf="pageCalc"
+                            [currentPage]="currentPage" [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                    </th>
+                </tr>
+
+                <ng-container *ngIf="docStatusData">
+                    <ng-container
+                        *ngFor="let docData of docStatusData.documentCollections | orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i ">
+
+                        <tr [class.is-active]="activeDocumentId === docData.documentCollectionId"
+                            [class.is-alert]="docData.isWillDeletedIn24Hours"
+                            (click)="onRowClick(docData.documentCollectionId,docData.signers)">
+
+                            <td align="center">
+
+                                <label class="ct-checkbox ct-text-left">
+                                    <span>&nbsp;</span>
+
+                                    <input id="{{docData.documentCollectionId}}" type="checkbox" value="1"
+                                        [checked]="isDocSelected(docData.documentCollectionId)"
+                                        (change)="selecteDoc($event, docData.documentCollectionId)"
+                                        name="checkboxOverlay[]">
+
+                                    <span class="ct-checkbox__checkmark"></span>
+                                </label>
+                            </td>
+
+                            <td align="center">
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="onRowClick(docData.documentCollectionId,docData.signers)">
+                                    <i-feather
+                                        *ngIf="(docData.documentStatus==DocStatus.Created || docData.documentStatus==DocStatus.Sent || docData.documentStatus==DocStatus.Viewed) && !docData.isWillDeletedIn24Hours"
+                                        name="user-plus"></i-feather>
+                                    <i-feather class="color--confirm"
+                                        *ngIf="(docData.documentStatus==DocStatus.Signed || docData.documentStatus==DocStatus.ExtraServerSigned) && !docData.isWillDeletedIn24Hours"
+                                        name="user-check"> </i-feather>
+                                    <i-feather class="color--error"
+                                        *ngIf="(docData.documentStatus==DocStatus.Declined || docData.documentStatus==DocStatus.SendingFailed) && !docData.isWillDeletedIn24Hours"
+                                        name="user-x">
+                                    </i-feather>
+                                    <i-feather class="color--error"
+                                        *ngIf=" docData.documentStatus==DocStatus.Canceled && !docData.isWillDeletedIn24Hours"
+                                        name="user-minus">
+                                    </i-feather>
+
+                                    <i-feather class="color--alert" *ngIf="docData.isWillDeletedIn24Hours"
+                                        name="alert-triangle"> </i-feather>
+                                    <span class="tooltiptext"
+                                        *ngIf="docData.isWillDeletedIn24Hours">{{'DOCUMENT.DOCUMENT_IS_AVAILABLE_FOR_ONE_DAY_ONLY'
+                                        | translate}}</span>
+                                </button>
+                            </td>
+
+                            <td>
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.documentsIds.length > 1">
+                                    <i-feather style="width: 15px;" name="info"></i-feather>
+
+                                    <span class="tooltiptext">
+                                        {{'DOCUMENT.CONTAINS_SEVERAL_DOCUMENTS' | translate}}
+                                    </span>
+                                </button>
+
+                                {{docData.name}}
+                            </td>
+
+                            <td>{{docData.user?.name || ''}}</td>
+                            <td>{{getLocalTime(docData.creationTime) | date:'MMM d, y, HH:mm'}}</td>
+                            <td class="color--confirm" *ngIf="docData.documentStatus==DocStatus.Signed">
+                                {{'DATA.FILTER.SIGNED' | translate}}
+                            </td>
+                            <td class="color--confirm" *ngIf="docData.documentStatus==DocStatus.ExtraServerSigned">
+                                {{'DATA.FILTER.SERVER_SIGNED' | translate}}
+                            </td>
+                            <td class="color--error"
+                                *ngIf="docData.documentStatus==DocStatus.Declined || docData.documentStatus==DocStatus.SendingFailed">
+                                {{ (docData.documentStatus==DocStatus.Declined ?
+                                'DATA.FILTER.DECLINED':'DATA.FILTER.FAILED') | translate}}
+                            </td>
+                            <td
+                                *ngIf="docData.documentStatus==DocStatus.Created || docData.documentStatus==DocStatus.Sent || docData.documentStatus==DocStatus.Viewed">
+                                {{'DATA.FILTER.PENDING' | translate}}
+                            </td>
+                            <td class="color--error" *ngIf="docData.documentStatus==DocStatus.Canceled">
+                                {{'DATA.FILTER.CANCELED' | translate}}
+                            </td>
+                            <td class="ct-text-right-no-direction ">
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.documentStatus==DocStatus.Declined"
+                                    (click)="reactivateDocument($event, docData.documentCollectionId)">
+                                    <i-feather name="refresh-cw"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.REACTIVATE' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.mode!=100 || (docData.mode == 100 && docData.documentStatus==DocStatus.Signed)"
+                                    (click)="openDocumentView($event, docData.documentCollectionId, docData.documentsIds[0])">
+                                    <i-feather name="eye"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.VIEW' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.shouldSignUsingSigner1AfterDocumentSigningFlow && docData.documentStatus==DocStatus.Signed"
+                                    (click)="extraServerSign($event, docData.documentCollectionId)">
+                                    <i-feather name="hard-drive"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.EXTRA_SERVER_SIGN' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.mode == 100 && docData.documentStatus!=DocStatus.Signed"
+                                    (click)="selfSignSigning($event, docData.documentCollectionId, docData.documentsIds[0])">
+                                    <i-feather name="edit"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.SIGN' | translate}}</span>
+                                </button>
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.documentStatus==DocStatus.Signed || docData.documentStatus==DocStatus.ExtraServerSigned"
+                                    (click)="$event.stopPropagation(); downloadFile(docData.documentCollectionId)">
+                                    <i-feather name="download-cloud"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.DOWNLOAD_DOCUMENT' | translate}}</span>
+
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.documentStatus==DocStatus.Signed || docData.documentStatus==DocStatus.ExtraServerSigned"
+                                    (click)="$event.stopPropagation(); downloadTraceDocument(docData.documentCollectionId)">
+                                    <i-feather name="clipboard"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.DOWNLOAD_TRACE' | translate}}</span>
+
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="$event.stopPropagation(); exportfields(docData.documentCollectionId)">
+                                    <i-feather name="layers"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.EXPORT_DATA' | translate}}</span>
+
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.documentStatus == DocStatus.Signed || docData.documentStatus==DocStatus.ExtraServerSigned"
+                                    (click)="share($event, docData.documentCollectionId, docData.name)">
+                                    <i-feather name="share-2"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.SHARE' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="deleteDocument($event,docData)">
+                                    <i-feather name="trash-2"></i-feather>
+                                    <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="docData.documentStatus != DocStatus.Canceled && docData.documentStatus != DocStatus.Signed && docData.documentStatus!=DocStatus.ExtraServerSigned"
+                                    (click)="cancelDocument($event,docData)">
+                                    <i-feather name="x-circle"></i-feather>
+                                    <span class="tooltiptext">{{'REGISTER.CANCEL' | translate}}</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr class="collapsed" *ngIf="activeDocumentId === docData.documentCollectionId">
+                            <td colspan="7">
+                                <table cellpadding="0" cellspacing="0" class="collapsed ct-text-left">
+                                    <tbody>
+                                        <tr>
+                                            <th width="175"></th>
+                                            <th width="175">{{'FIELDS.EMAIL' | translate}}\{{'FIELDS.PHONE' |
+                                                translate}}</th>
+                                            <th width="175">{{'DATA.FILTER.SENT' | translate}}</th>
+                                            <th width="175">{{'DATA.FILTER.VIEWED' | translate}}</th>
+                                            <th width="175">{{'DATA.FILTER.SIGNED' | translate}}</th>
+                                            <th>{{'DATA.SIGNER_NOTES' | translate}}</th>
+                                            <th width="10"></th>
+                                            <th width="10"></th>
+                                            <th width="10"></th>
+                                        </tr>
+                                        <tr *ngFor="let signer of docData.signers; let j = index">
+                                            <td [class.color--confirm]="signer.status == 3">
+                                                {{signer.name}}
+                                            </td>
+                                            <ng-container *ngIf="signer.sendingMethod == 1">
+                                                <td>
+                                                    {{signer.contact.phone}}
+                                                </td>
+                                            </ng-container>
+                                            <ng-container *ngIf="signer.sendingMethod == 2">
+                                                <td>
+                                                    {{signer.contact.email}}
+                                                </td>
+                                            </ng-container>
+                                            <ng-container
+                                                *ngIf="signer.sendingMethod != 1 && signer.sendingMethod != 2">
+                                                <td>
+
+                                                </td>
+                                            </ng-container>
+                                            <td>
+                                                <ng-container
+                                                    *ngIf="signer.timeSent && !dateIsDefault(signer.timeSent)">
+                                                    {{getLocalTime(signer.timeSent) | date:'MMM d, y, HH:mm'}}
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <ng-container
+                                                    *ngIf="signer.timeViewed && !dateIsDefault(signer.timeViewed)">
+                                                    {{getLocalTime(signer.timeViewed) | date:'MMM d, y, HH:mm'}}
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <ng-container
+                                                    *ngIf="signer.timeSigned && !dateIsDefault(signer.timeSigned)">
+                                                    {{getLocalTime(signer.timeSigned) | date:'MMM d, y, HH:mm'}}
+                                                </ng-container>
+                                            </td>
+                                            <td>
+                                                <textarea readonly="">{{signer.signerNote}}</textarea>
+                                            </td>
+                                            <td>
+                                                <button *ngIf="(docData.documentStatus==DocStatus.Created ||
+                                                                docData.documentStatus==DocStatus.Sent ||
+                                                                docData.documentStatus==DocStatus.Viewed ||
+                                                                docData.documentStatus==DocStatus.SendingFailed) &&
+                                                                (signer.status == 1 || signer.status == 2 ) &&
+                                                                docData.mode != SignMode.SelfSign" [disabled]="isBusy"
+                                                    (click)="resend($event, docData.documentCollectionId,docData.name, signer)"
+                                                    class="ct-button--icon ct-tooltip--table-icons">
+                                                    <i-feather name="send"></i-feather>
+                                                    <span class="tooltiptext">{{'DATA.RESEND' | translate}}</span>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button *ngIf="signer.attachments.length > 0"
+                                                    class="ct-button--icon ct-tooltip--table-icons" [disabled]="isBusy"
+                                                    (click)="downloadAttchment($event, docData.documentCollectionId,docData.name, signer)">
+                                                    <i-feather name="paperclip"></i-feather>
+                                                    <span class="tooltiptext">{{'DATA.DOWNLOAD_ATTACHMENTS' |
+                                                        translate}}</span>
+
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button *ngIf="docData.mode==3 && (docData.documentStatus== DocStatus.Viewed|| 
+                                                 docData.documentStatus==DocStatus.Sent)"
+                                                    class="ct-button--icon ct-tooltip--table-icons" [disabled]="isBusy"
+                                                    (click)="openSenderLiveSigning(docData.documentCollectionId, signer.id)">
+                                                    <i-feather name="link"></i-feather>
+                                                    <span class="tooltiptext">{{'DATA.OPEN_LIVE_LINK' |
+                                                        translate}}</span>
+
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button *ngIf="(docData.documentStatus==DocStatus.Created ||
+                                                docData.documentStatus==DocStatus.Sent ||
+                                                docData.documentStatus==DocStatus.Viewed ||
+                                                docData.documentStatus==DocStatus.SendingFailed) &&
+                                                (signer.status == 1 || signer.status == 2 ) &&
+                                                docData.mode != SignMode.SelfSign"
+                                                    class="ct-button--icon ct-tooltip--table-icons" [disabled]="isBusy"
+                                                    (click)="replaceSigner($event, docData.documentCollectionId, signer.id)">
+                                                    <i-feather name="repeat"></i-feather>
+                                                    <span class="tooltiptext">{{'SIGNERS.REPLACE_SIGNER' |
+                                                        translate}}</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="ct-break-short"></div>
+    <div class="ct-float-left">
+        <h3>{{'DOCUMENT.DOCUMENTS_AMOUNT' | translate}}{{this.documentsCount}}</h3>
+    </div>
+</div>

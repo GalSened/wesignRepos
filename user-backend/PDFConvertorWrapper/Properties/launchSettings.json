@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PDFConvertorWrapper": {
+      "commandName": "Project",
+      "commandLineArgs": "--convert-to pdf --outdir \\\"C:\\Users\\adia\\WordTester\\22-22-22.pdf\\\" \\\"C:\\Users\\adia\\WordTester\\22-22-22.docx\\\""
+    }
+  }
+}

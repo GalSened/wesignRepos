@@ -1,0 +1,165 @@
+// login
+.ct-p-edit-document {
+    background: white;
+
+    main {
+        display: table;
+
+        aside {
+            width: 250px;
+            padding: 45px 20px 0 20px;
+            background: white;
+
+            @include respond-to('medium') {
+                width: 100px;
+                padding: 10px;
+            }
+
+            @include respond-to('small') {
+                width: 50px;
+                padding: 0 4px 1px 0;
+                background: $color--grey-dark
+            }
+
+            .ct-add-fields {
+                margin-top: 25px;
+
+                @include respond-to('small') {
+                    padding-top: 3px;
+                    margin-top: 0;
+                }
+            }
+
+            span {
+                @include respond-to('small') {
+                    display: none;
+                }
+            }
+
+            // button add fields
+            button.ct-button--add-field {
+                width: 115px;
+                margin: 0px 3px 10px 3px;
+                font-size: 15px;
+                font-weight: 400;
+                border: solid 1px $color--border;
+                border-radius: 0;
+                color: $color--grey-dark;
+                text-transform: initial;
+                background: white;
+
+                svg {
+                    stroke-width: 1.8px !important;
+
+                    @include respond-to('small') {
+                        color: white;
+                    }
+                }
+
+                @include respond-to('medium') {
+                    width: 95%;
+                }
+
+                @include respond-to('small') {
+                    height: 40px;
+                    margin: 0px 3px 2px 3px;
+                    border-color: $color--grey-dark;
+                    background: $color--grey-dark;
+                }
+            }
+
+            // button add fields *lite
+            button.ct-button--add-field-lite {
+                width: 100%;
+                height: 75px;
+                font-size: 25px;
+                font-weight: 400;
+
+                @include respond-to('medium') {
+                    padding: 0;
+                    font-size: 15px;
+                }
+
+                @include respond-to('small') {
+                    position: absolute;
+                    top: 57px;
+                    width: 125px;
+                    height: 35px;
+                    margin: 0 10px;
+                    color: $color--primary;
+                    border: solid 1px white;
+                    background: white;
+                }
+            }
+
+            button:hover {
+                @include respond-to('small') {
+                    color: white;
+                    border-color: white;
+                    background: $color--primary;
+                    ;
+                }
+            }
+
+            select {
+                @include respond-to('small') {
+                    // position: absolute;
+                    // top: 135px;
+                    // width: 50%;
+                    // height: 35px;
+                    // margin: 0 5px;
+                }
+            }
+        }
+
+        // aside *lite
+        aside.aside-lite {
+            @include respond-to('small') {
+                width: 0;
+                padding: 0;
+            }
+        }
+
+        .main__content {
+            display: table-cell;
+            vertical-align: top;
+            width: 100%;
+            border-left: solid 1px $color--border;
+            border-right: solid 1px $color--border;
+            background-color: $color--grey-dark;
+
+            @include respond-to('medium') {
+                max-width: 80vw;
+            }
+
+            @include respond-to('small') {
+                max-width: 100vw;
+            }
+
+            nav {
+                height: 40px;
+                padding-top: 5px;
+                text-align: center;
+                border-bottom: solid 1px $color--border;
+
+                span {
+                    color: white;
+                }
+
+                select {
+                    vertical-align: top;
+                    width: 75px;
+                    height: 35px;
+
+                    @include respond-to('small') {
+                        display: none;
+                    }
+                }
+
+                svg {
+                    color: white;
+                }
+            }
+        }
+    }
+}

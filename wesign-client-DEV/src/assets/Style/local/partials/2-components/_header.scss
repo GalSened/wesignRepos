@@ -1,0 +1,43 @@
+/*header*/
+.ws_c-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 55px;
+    padding: 15px 0;
+    background: $color--primary;
+    background: -moz-linear-gradient(90deg, $color--primary 0%, #5c6bc0 100%);
+    background: -webkit-linear-gradient(90deg, $color--primary 0%, #5c6bc0 100%);
+    background: linear-gradient(90deg, $color--primary 0%, #5c6bc0 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="$color--primary", endColorstr="#5c6bc0", GradientType=1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 5000;
+
+    .header__image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 150px;
+        height: 55px;
+        background-image: url(../../../../images/images/ws_logo.png);
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+
+    .header__nav {
+        margin: 0 15px;
+    }
+  
+    h3 {
+        margin: 3px 10px !important;
+        color: white;
+    }
+
+    .ws_text-ellipsis {
+        display: inline-block;
+        max-width: 85% !important;
+    }
+}

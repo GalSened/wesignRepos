@@ -1,0 +1,184 @@
+<app-user-form #appUserForm [class.ws_is-hidden]="!isFormShown" [class.ws_is-shown]="isFormShown"
+        (bannerAlertEvent)="showBannerAlert($event)" (hideUserForm)="hideForm($event)"></app-user-form>
+
+<app-html-template-form #appHtmlTemplateForm [class.ws_is-hidden]="!isHtmlTemplateFormShown"
+        [class.ws_is-shown]="isHtmlTemplateFormShown" (hideUserForm)="hideForm($event)">
+</app-html-template-form>
+
+<div [class.ws_is-hidden]="isFormShown||isHtmlTemplateFormShown"
+        [class.ws_is-shown]="!isFormShown&&!isHtmlTemplateFormShown">
+
+        <div class="ws_body__wrapper">
+                <!--alert-->
+                <app-banner-alert #bannerAlert></app-banner-alert>
+
+                <!--filters-->
+                <div class="ws_c-table-filter">
+                        <div class="table-filter__icon">
+                                <div class="ws_icon__filter"></div>
+                        </div>
+
+                        <input type="text" class="ws_search ws_search--table-filter" placeholder="Search..."
+                                #searchInput [(ngModel)]="filter.key">
+                </div>
+        </div>
+
+
+        <!--info-->
+        <div class="ws_c-table-info">
+                <span>&nbsp;</span>
+
+                <button class="ws_button--table-info ws_float-right" [disabled]="!appState.IsActivated"
+                        (click)="createUser()">New User</button>
+        </div>
+
+
+        <!--table-->
+        <table cellpadding="0" cellspacing="0" class="ws_animate-slide-down">
+                <tr class="header">
+                        <th>Name
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="nameSort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th>Email
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="emailSort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                      
+                        <th>Creation Time
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="creationTimeSort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th>Language
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="languageSort()"> 
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th>Type
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="typeSort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th>Company
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="companySort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th>Group
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="groupSort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th>Program
+                                <button class="ws_button--icon ws_align-vert--middle" (click)="programSort()">
+                                        <div class="ws_icon__sort"></div>
+                                </button>
+                        </th>
+                        <th width="180">
+                                <!--pagination-->
+                                <div class="ws_pagination ws_float-right">
+                                        <div paginator class="ws_float-right" *ngIf="pageCalc" [last]="pageCalc.endPage"
+                                                (changed)="pageChanged($event)"></div>
+                                </div>
+                        </th>
+                </tr>
+
+                <ng-container *ngIf="users$ | async as users">
+                        <ng-container *ngFor="let user of users; index as i">
+
+                                <tr class="ws_tr__menu">
+                                        <td><span>{{user.name}}</span></td>
+                                        <td><span>{{user.email}}</span></td>
+                                  
+                                        
+                                        <td><span>{{user.creationTime | date:'MMM d, y, HH:mm'}}</span></td>
+                                        <td><span>{{user.language == 1 ? "English":"Hebrew"}}</span></td>
+                                        <td>
+                                                <span>{{usertypes[user.type]}}</span>
+                                        </td>
+
+                                        <td><span>{{user.companyName}}</span></td>
+                                        <td><span>{{user.groupName}}</span></td>
+                                        <td><span>{{user.programName}}</span></td>
+
+                                        <td class="ws_text-right outer">
+                                                <div class="ws_table-menu">
+                                                        <div class="table-menu__icon ws_tooltip"
+                                                                *ngIf="appState.IsDevUser">
+                                                                <button class="ws_button--icon"
+                                                                        [disabled]="!appState.IsActivated"
+                                                                        (click)="openHtmlTemplateForm(user)">
+                                                                        <div class="ws_icon__doc"></div>
+                                                                        <span class="ws_tooltip--resend-alt">Add HTML
+                                                                                Template</span>
+                                                                </button>
+                                                        </div>
+
+                                                        <div class="table-menu__icon ws_tooltip">
+                                                                <button class="ws_button--icon"
+                                                                        [disabled]="!appState.IsActivated"
+                                                                        (click)="openResendAlert(user)">
+                                                                        <div class="ws_icon__resend"></div>
+                                                                        <span class="ws_tooltip--resend-alt">Resend
+                                                                                Password</span>
+                                                                </button>
+                                                        </div>
+
+                                                        <div class="table-menu__icon ws_tooltip">
+                                                                <button class="ws_button--icon"
+                                                                        [disabled]="!appState.IsActivated"
+                                                                        (click)="openUpdateUserForm(user)">
+                                                                        <div class="ws_icon__edit"></div>
+                                                                        <span class="ws_tooltip--edit">Edit</span>
+                                                                </button>
+                                                        </div>
+
+                                                        <div class="table-menu__icon ws_tooltip">
+                                                                <button class="ws_button--icon"
+                                                                        [disabled]="!appState.IsActivated"
+                                                                        (click)="openDeletionAlert(user)">
+                                                                        <div class="ws_icon__delete"></div>
+                                                                        <span class="ws_tooltip--delete">Delete</span>
+                                                                </button>
+                                                        </div>
+                                                </div>
+                                        </td>
+                                </tr>
+
+                                <app-alert [class.ws_is-hidden]="!showDeletionAlert"
+                                        [class.ws_is-shown]="showDeletionAlert" (removeDeletionAlert)="hideAlert()"
+                                        (deleteOperation)="deleteUser()" [itemName]='userName' [itemType]="'User'"
+                                        [operationType]="'delete'">
+                                </app-alert>
+
+                        </ng-container>
+                </ng-container>
+
+        </table>
+
+        <!--modal resend password-->
+        <div class="ws_overlay" [class.ws_is-hidden]="!showResendAlert" [class.ws_is-shown]="showResendAlert"
+                id="js-modal-resend">
+                <div class="ws_c-modal ws_text-center ws_animate-slide-down">
+                        <div class="ws_break--short"></div>
+
+                        <h1>Resend Password</h1>
+
+                        <div class="ws_break--short"></div>
+
+                        <h3>Would you like to resend password?</h3>
+
+                        <div class="ws_break--short"></div>
+
+                        <button class="ws_button--small ws_button--outline" (click)="closeResendAlert()">cancel</button>
+
+                        <button class="ws_button--small" (click)="resendResetPassword()">Resend</button>
+
+                        <div class="ws_break--short"></div>
+                </div>
+        </div>
+
+</div>

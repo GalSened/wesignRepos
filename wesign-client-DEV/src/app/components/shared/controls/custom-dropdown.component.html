@@ -1,0 +1,22 @@
+<div class="select--custom" [draggable]="isNativeDraggable" [ngClass]="additionalClass"
+    (clickOutside)="outSideClick($event)">
+    <!--  (dragstart)="nativeDragStartFunc($event)"
+    (dragend)="nativeDragEndFunc($event)" -->
+    <select tabindex="{{tabindex}}" [disabled]="isDisabled" (click)="clickEventFunc($event)"
+        (keydown.enter)="$event.preventDefault(); $event.stopPropagation(); showDropDown=!showDropDown;">
+        <!-- <ng-container *ngFor="let option of options | keyvalue">
+            <option [selected]="currentSelection==option.key" value="{{option.key}}">{{option.value}}</option>
+        </ng-container> -->
+    </select>
+    <div class="select-custom--selected" [class.select-custom__arrow-active]="showDropDown"
+        (click)="$event.preventDefault(); $event.stopPropagation(); showDropDown=!showDropDown; clickEventFunc($event);">
+        <!-- (click)="$event.stopPropagation(); showDropDown=!showDropDown; clickEventFunc();" -->
+        {{options ? options[currentSelection]:''}}
+    </div>
+    <div class="select-custom__items" *ngIf="options" [class.select-custom-hide]="!showDropDown">
+        <ng-container *ngFor="let option of options | keyvalue">
+            <div [class.same-as-selected]="currentSelection==option.key" (click)="setCurrentSelection(option)">
+                {{option.value}}</div>
+        </ng-container>
+    </div>
+</div>

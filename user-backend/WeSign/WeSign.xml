@@ -1,0 +1,1821 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WeSign</name>
+    </assembly>
+    <members>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.CreateGroup(WeSign.Models.Admins.AdminCreateGroupDTO)">
+            <summary>
+            Create Group
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.GetAllGroups">
+            <summary>
+            Get all groups in my company
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.UpdateGroup(System.Guid,WeSign.Models.Admins.AdminCreateGroupDTO)">
+            <summary>
+            Update  group
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.DeleteGroup(System.Guid)">
+            <summary>
+            Delete group
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.CreateUser(WeSign.Models.Admins.AdminCreateUserDTO)">
+            <summary>
+            Create user
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+             UserType: Basic = 1, Editor = 2, CompanyAdmin = 3 <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.GetAllUsers(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all users in my company
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+             UserType: Basic = 1, Editor = 2, CompanyAdmin = 3 <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.Update(System.Guid,WeSign.Models.Admins.AdminCreateUserDTO)">
+            <summary>
+            Update user
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.Delete(System.Guid)">
+            <summary>
+            Delete user
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.AdminsController.UpdatePasswordByDevAdminUser(WeSign.Models.Users.RenewPasswordByDevAdminUserDTO)">
+            <summary>
+            Update password by dev admin user
+            </summary>
+            <remarks>
+            Authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ConfigurationController.ReadInitConfiguration">
+            <summary>
+            Read init configuration 
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ConfigurationController.ReadTablesConfiguration(System.String)">
+            <summary>
+            Read tablets list 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.Create(WeSign.Models.Contacts.ContactDTO)">
+            <summary>
+            Create new contact
+            </summary>
+            <remarks> 
+            An authorized API call. The token should be passed via the request header.<br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.CreateBulk(WeSign.Models.Contacts.ContactsDTO)">
+            <summary>
+            Create bulk of contacts from XLSX file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.DeleteBatch(WeSign.Models.Documents.BatchRequestDTO)">
+            <summary>
+            Delete a batch of contacts by their IDs
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input">Batch of contact IDs to delete</param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.Read(System.String,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Search contacts
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            key: key to search if contains in contact details - name\email\phone <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.Read(System.Guid)">
+            <summary>
+            Get contact by ID
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.Update(System.Guid,WeSign.Models.Contacts.ContactDTO)">
+            <summary>
+            Update contact
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.Delete(System.Guid)">
+            <summary>
+            Delete contact
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.ReadSignaturesImages(System.Guid)">
+            <summary>
+            Get saved signature images for a specific document collection
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="docCollectionId">The document collection ID</param>
+            <returns>List of signature images</returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.UpdateSignaturesImages(WeSign.Models.Contacts.SignaturesImagesDTO)">
+            <summary>
+            Update saved signature images for a specific document collection
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input">Signature images update data</param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.GetGroups(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all contact groups
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="key">Search key for group name or member</param>
+            <param name="offset">Offset for pagination</param>
+            <param name="limit">Limit for pagination</param>
+            <returns>List of contact groups</returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.GetGroup(System.Guid)">
+            <summary>
+            Get a specific contact group by ID
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id">Contact group ID</param>
+            <returns>Contact group details</returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.DeleteGroup(System.Guid)">
+            <summary>
+            Delete a contact group by ID
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id">Contact group ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.UpdateGroup(System.Guid,WeSign.Models.Contacts.ContactsGroupDTO)">
+            <summary>
+            Update a contact group by ID
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id">Contact group ID</param>
+            <param name="input">Updated group data</param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ContactsController.CreateGroup(WeSign.Models.Contacts.ContactsGroupDTO)">
+            <summary>
+            Create a new contact group
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input">Contact group data</param>
+            <returns>Created group ID</returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DashboardController.GetDashboardView">
+            <summary>
+            Read dashboard view
+            </summary>
+            <param name="groupId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.ReadSignersFromFile(WeSign.Models.Distribution.Requests.SignersForDistributionMechanismDTO)">
+            <summary>
+            Extract signers from excel file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            <br/>
+            Excel file columns representation : <br/> 
+            <b>Mandatory columns:</b><br/> 
+            column 1 - FirstName, column 2 - LastName, column 3 - Phone/Email <br/> 
+            <b>Optional columns:</b><br/> 
+            column 4 --to-- column N - FieldName <br/>
+            <br/>
+            Expected files type: <br/> 
+            xls ----- data:application/vnd.ms-excel;base64,.... <br/> 
+            xlsx ------ data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,....<br/> 
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.DistributionMechanism(WeSign.Models.Distribution.Requests.CreateDistributionDocumentsDTO)">
+            <summary>
+            Send new document collection for each signer and set all fields in document collection to signer
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.Read(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all distribution document collections by search criteria
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/><br/>
+            Request <br/>
+            offset number start from 1 <br/> 
+            limit number start from 1 <br/> <br/>
+            Response <br/>
+            </remarks>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.Read(System.Guid,System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all documents of distribution id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/><br/>
+            Request <br/>
+            offset number start from 1 <br/> 
+            limit number start from 1 <br/> <br/>
+            Response <br/>
+            DocumentStatus: Created = 1, Sent = 2, Viewed = 3, Signed = 4, Declined = 5, SendingFailed = 6, Deleted = 7, Canceled = 8 <br/>
+            SignerStatus:  Sent = 1, Viewed = 2, Signed = 3, Rejected = 4 <br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.Delete(System.Guid)">
+            <summary>
+            Delete all documents of distribution id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.Resend(System.Guid)">
+            <summary>
+            Resend all unsigned documents of distribution id to there signers
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DistributionController.Download(System.Guid)">
+            <summary>
+            Download all signed documents of distribution id
+            As zip file, every document name inside zip file will be the signer name
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.Read(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.Int32,System.Int32,Common.Enums.Documents.SearchParameter)">
+            <summary>
+            Get all document collections by search criteria
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/><br/>
+            Request <br/>
+            offset number start from 1 <br/> 
+            limit number start from 1 <br/> <br/>
+            Response <br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            DocumentStatus: Created = 1, Sent = 2, Viewed = 3, Signed = 4, Declined = 5, SendingFailed = 6, Deleted = 7, Canceled = 8 <br/>
+            Mode: OrderedGroupSign = 1, GroupSign = 2, Online = 3, SelfSign = 100 <br/>
+            SignerStatus:  Sent = 1, Viewed = 2, Signed = 3, Rejected = 4 <br/>
+            </remarks>
+            <param name="sent"></param>
+            <param name="viewed"></param>
+            <param name="signed"></param>
+            <param name="declined"></param>
+            <param name="userId"></param>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <param name="searchParameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.DownloadDocument(System.Guid)">
+            <summary>
+            Download document collection
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            If documentCollection contain 1 document, it will download as PDF file. <br/>
+            If documentCollection contain more than 1 document, it will download as ZIP file. <br/>
+            </remarks>
+            <param name="id">Document Collection ID</param>
+            <returns>File stream of PDF or ZIP</returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.DownloadAttchment(System.Guid,System.Guid)">
+            <summary>
+            Download signer attachments of specified document collection id 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.GetDocumentCollectionData(System.Guid)">
+            <summary>
+            Get info for document collection 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>        
+            </remarks>/// <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.GetDocumentCollectionLiveSenderLink(System.Guid,System.Guid)">
+            <summary>
+            Get sender signing link for live mode document collection 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>        
+            </remarks>/// <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.DownloadTraceDocument(System.Guid,System.Int32)">
+            <summary>
+             Download document collection trace as separate file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            offset of client in hours from UTC time <br/>
+            for example in order to get Israel time you should pass '-3'
+            </remarks>
+            <param name="id"></param>
+            <param name="offset"></param>        
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.CreateDocument(WeSign.Models.Documents.CreateDocumentCollectionDTO)">
+            <summary>
+            Create document collection from template/s
+            </summary> 
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            Mode: OrderedGroupSign = 1, GroupSign = 2, Online = 3 <br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>        
+            OtpMode: None = 0, CodeRequired = 1, PasswordRequired = 2, CodeAndPasswordRequired = 3 <br/>
+            AuthenticationMode: None = 0, IDP = 1 ,VisualIDP = 2,  <br/>
+            If RediretUrl contains [docId] placeholder, this placeholder will replace by original document collection id <br/>
+            For each signer you must attach contactId with sendingMethod or contactMeans with contactName<br/><br/>
+            
+            
+            Response<br/>
+            In case of documentCollection mode is OrderedGroupSign we will return link for first signer only
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.CreateSimpleDocument(WeSign.Models.Documents.CreateSimpleDocumentDTO)">
+            <summary>
+            Document for "Lite" production version
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            If RediretUrl contains [docId] placeholder, this placeholder will replace by original document collection id <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.GetPagesCountByDocumentId(System.Guid,System.Guid)">
+            <summary>        
+             Get pages count by document id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="documentId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.GetDocumentPageInfo(System.Guid,System.Guid,System.Int32)">
+            <summary>
+            Get information about specific page in document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            Page number start from 1 <br/> 
+            </remarks>
+            <param name="id"></param>
+            <param name="documentId"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.GetDocumentPagesInfo(System.Guid,System.Guid,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Get information about pages range in document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            offset number start from 1 <br/> 
+            limit number start from 0 <br/> 
+            </remarks>
+            <param name="id"></param>
+            <param name="documentId"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.DeleteDocumentCollection(System.Guid)">
+            <summary>
+            Delete document collection by id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.CancelDocumentCollection(System.Guid)">
+            <summary>
+            Cancel document collection by id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ResendDocument(System.Guid,System.Guid,Common.Enums.Documents.SendingMethod,System.Boolean)">
+            <summary>
+            Resend document collection link to signer
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <param name="sendingMethod"></param>
+            <param name="shouldSend"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ReactivateDocument(System.Guid,System.Boolean)">
+            <summary>
+            Reactivate document collection to signer
+            </summary>
+            <remarks>An authorized API call. The token should be passed via the request header.</remarks>
+            <param name="collectionId"></param>
+            <param name="signerId"></param>
+            <param name="shouldSend"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.GetDocumentSigningLinks(System.Guid)">
+            <summary>
+            Get signing links for document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ShareDocument(WeSign.Models.Documents.ShareDTO)">
+            <summary>
+            Share document collection to contact
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="contactId"></param>
+            <param name="shouldSendSignedDocument"></param>
+            <param name="sendingMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.Export(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,Common.Enums.Users.Language)">
+            <summary>
+            Export documents collections details to CSV file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ExportPdfFields(System.Guid)">
+            <summary>
+            Export document collection fields to XML file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ExportPdfFieldsCSVAndXML(System.Guid)">
+            <summary>
+            Export document collection fields to XML file and to csv file in a zip file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ReplaceSigner(System.Guid,System.Guid,WeSign.Models.Documents.ReplaceSignerDTO)">
+            <summary>
+            Replace old signer with new signer
+            </summary>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.DocumentCollectionsController.ExtraServerSigning(System.Guid)">
+            <summary>
+            Extra server document collection signing by id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.LinksController.GetSigningLinks(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get current user links to sign on all documents that not sign already
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="key"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ReportsController.ReadUsageData(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Collections.Generic.List{Common.Enums.Documents.DocumentStatus},System.Collections.Generic.List{System.Guid},System.Boolean,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Read user usage data reports
+            </summary>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="docStatuses"></param>
+            <param name="groupIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ReportsController.CreateFrequencyReports(Common.Enums.Reports.ReportFrequency,System.String)">
+            <summary>
+            Create frequency reports
+            </summary>
+            <param name="frequency"></param>
+            <param name="reportTypeStr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ReportsController.ReadFrequencyReports">
+            <summary>
+            Read frequency reports
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ReportsController.DeleteFrequencyReports">
+            <summary>
+            Delete frequency reports
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.ReportsController.DownloadFrequencyReports(System.Guid)">
+            <summary>
+            Download frequency reports
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.SelfSignController.CreateDocument(WeSign.Models.SelfSign.CreateSelfSignDocumentDTO)">
+            <summary>
+            Create SelfSign document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.SelfSignController.UpdateDocument(WeSign.Models.SelfSign.UpdateSelfSignDocumentDTO)">
+            <summary>
+            Update SelfSign document
+            </summary>
+            <remarks>   
+            An authorized API call. The token should be passed via the request header.<br/>
+            DocumentOperation :  Save = 1, Decline = 2, Close = 3. <br/>
+            Close will sign document
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.SelfSignController.Delete(System.Guid)">
+            <summary>
+            Delete SelfSign document 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.SelfSignController.DownloadSmartCardDesktopClientInstaller">
+            <summary>
+            Download smartCard desktop client installer
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.SignersController.ReplaceSigner(System.Guid,System.Guid,WeSign.Models.Signers.ReplaceSignerWithDetailsDTO)">
+            <summary>
+            Replace old signer with new signer
+            </summary>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.Create(WeSign.Models.Templates.CreateTemplateDTO)">
+            <summary>
+            Create new template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            XML Base64(optional-value) allow you to embed fields from pdf-meta-data<br /> 
+            Encoding UTF-8 <br/>
+            Type="Graphic_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="SmartCard_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="Server_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="Server_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="Checkbox" properties Fieldname , IsMandatory<br /> 
+            Type="Text" properties Fieldname , IsMandatory<br /> 
+            Type="Email" properties Fieldname , IsMandatory<br /> 
+            Type="Phone" properties Fieldname , IsMandatory<br /> 
+            Type="Time" properties Fieldname , IsMandatory<br /> 
+            Type="Number" properties Fieldname , IsMandatory<br /> 
+            Type="Date" properties Fieldname , IsMandatory<br /> 
+            Type="ChoiceGroup" properties Fieldname , IsMandatory<br /> 
+            Type="ChoiceGroup" Contains Choice field , Option and IsSelected<br /> 
+            Type="RadioGroup" Contains RadioField field , Option , IsSelected and Value<br /> 
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.Read(System.String,System.String,System.String,System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Get all templates by search criteria
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <param name="popular"></param>
+            <param name="recent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.Update(System.Guid,WeSign.Models.Templates.UpdateTemplateDTO)">
+            <summary>
+            Update template fields
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            TextFieldType: Text = 1, Date = 2, Number = 3, Phone = 4, Email = 5, Custom = 6, Time = 7 <br/>
+            SignaturFieldType: Graphic = 1, SmartCard = 2, Server = 3 <br/>
+            Date format: dd/MM/yyyy , for example 02/08/2019 <br/>
+            Time format: HH:MM , for example 15:59 <br/>
+            X , Y should be value between 0 to 1 (not include) <br/>
+            Width of textField, choiceField and signatureField should be value between 0.08 to 0.51 (not include) <br/>
+            Height of textField, choiceField and signatureField should be value between 0.01 to 0.09 (not include) <br/>
+            Width of radio and checkBoxField should be value between 0.01 to 0.65 (not include) <br/>
+            Height of radio and checkBoxField should be value between 0.007 to 0.045 (not include) <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.Delete(System.Guid)">
+            <summary>
+            Delete template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.GetPagesCountByTemplateId(System.Guid)">
+            <summary>
+            Get pages count by template id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.GetPageInfoByTemplateId(System.Guid,System.Int32)">
+            <summary>
+            Get page details by template id, first page is '1'.
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            page number start from 1 <br/> <br/> 
+            Response <br/> 
+            TextFieldType: Text = 1, Date = 2, Number = 3, Phone = 4, Email = 5, Custom = 6, Time = 7 <br/>
+            SignaturFieldType: Graphic = 1, SmartCard = 2, Server = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.GetPagesInfoByTemplateId(System.Guid,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Get page details by template id, first page is '1'.
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            offset number start from 1 <br/> 
+            limit number start from 0 <br/> <br/> 
+            Response <br/> 
+            TextFieldType: Text = 1, Date = 2, Number = 3, Phone = 4, Email = 5, Custom = 6, Time = 7 <br/>
+            SignaturFieldType: Graphic = 1, SmartCard = 2, Server = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.DuplicateTemplate(System.Guid,WeSign.Models.Templates.DuplicateTemplateDTO)">
+            <summary>
+            Duplicate existing template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.TemplatesController.DownloadTemplate(System.Guid)">
+            <summary>
+            Download template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.SignUpAsync(WeSign.Models.Users.CreateUserDTO)">
+            <summary>
+            User Sign up
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            UserLanguage: en = 1, he = 2 <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.UpdateUser(WeSign.Models.Users.UpdateUserDTO)">
+            <summary>
+            Update User
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            UserLanguage: en = 1, he = 2<br/>
+            UserType : Basic = 1, Editor = 2, CompanyAdmin = 3<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.GetUser">
+            <summary>
+            Get your own user details
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            Language: en = 1, he = 2 <br/>
+            UserType : Basic = 1, Editor = 2, CompanyAdmin = 3<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.Login(WeSign.Models.Users.LoginRequestDTO)">
+            <summary>
+            User login case the company force OTP will return token for OTP
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WeSign.areas.api.Controllers.UsersController.Activation(WeSign.Models.Users.ActivationDTO)" -->
+        <member name="M:WeSign.areas.api.Controllers.UsersController.ExternalLogin(WeSign.Models.Users.ExternalLoginDTO)">
+            <summary>
+            External login for login using AD or SAML login
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.ResendActivationLink(WeSign.Models.Users.BaseUserDTO)">
+            <summary>
+            Resend activation link
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.ResetPassword(WeSign.Models.Users.BaseUserDTO)">
+            <summary>
+            Reset password, send reset password mail to user
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.UpdatePassword(WeSign.Models.Users.RenewPasswordDTO)">
+            <summary>
+            Update password
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.Refresh(WeSign.Models.Users.TokensDTO)">
+            <summary>
+            Refresh token 
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.api.Controllers.UsersController.ChangePassword(WeSign.Models.Users.ChangePasswordDTO)">
+            <summary>
+            Change password
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.CreateGroup(WeSign.Models.Admins.AdminCreateGroupDTO)">
+            <summary>
+            Create Group
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.GetAllGroups">
+            <summary>
+            Get all groups in my company
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.UpdateGroup(System.Guid,WeSign.Models.Admins.AdminCreateGroupDTO)">
+            <summary>
+            Update  group
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.DeleteGroup(System.Guid)">
+            <summary>
+            Delete group
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.CreateUser(WeSign.Models.Admins.AdminCreateUserDTO)">
+            <summary>
+            Create user
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+             UserType: Basic = 1, Editor = 2, CompanyAdmin = 3 <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.GetAllUsers(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all users in my company
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+             UserType: Basic = 1, Editor = 2, CompanyAdmin = 3 <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.Update(System.Guid,WeSign.Models.Admins.AdminCreateUserDTO)">
+            <summary>
+            Update user
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.Delete(System.Guid)">
+            <summary>
+            Delete user
+            </summary>
+            <remarks>
+            An authorized API call for CompanyAdmin user only. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.AdminsController.UpdatePasswordByDevAdminUser(WeSign.Models.Users.RenewPasswordByDevAdminUserDTO)">
+            <summary>
+            Update password by dev admin user
+            </summary>
+            <remarks>
+            Authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ConfigurationController.ReadInitConfiguration">
+            <summary>
+            Read init configuration 
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ConfigurationController.ReadTablesConfiguration(System.String)">
+            <summary>
+            Read tablets list 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ContactsController.Create(WeSign.Models.Contacts.ContactDTO)">
+            <summary>
+            Create new contact
+            </summary>
+            <remarks> 
+            An authorized API call. The token should be passed via the request header.<br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ContactsController.CreateBulk(WeSign.Models.Contacts.ContactsDTO)">
+            <summary>
+            Create bulk of contacts from XLSX file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ContactsController.Read(System.String,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Search contacts
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            key: key to search if contains in contact details - name\email\phone <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ContactsController.Read(System.Guid)">
+            <summary>
+            Get contact by ID
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ContactsController.Update(System.Guid,WeSign.Models.Contacts.ContactDTO)">
+            <summary>
+            Update contact
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ContactsController.Delete(System.Guid)">
+            <summary>
+            Delete contact
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DashboardController.GetDashboardView">
+            <summary>
+            Read dashboard view
+            </summary>
+            <param name="groupId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.ReadSignersFromFile(WeSign.Models.Distribution.Requests.SignersForDistributionMechanismDTO)">
+            <summary>
+            Extract signers from excel file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            <br/>
+            Excel file columns representation : <br/> 
+            <b>Mandatory columns:</b><br/> 
+            column 1 - FirstName, column 2 - LastName, column 3 - Phone/Email <br/> 
+            <b>Optional columns:</b><br/> 
+            column 4 --to-- column N - FieldName <br/>
+            <br/>
+            Expected files type: <br/> 
+            xls ----- data:application/vnd.ms-excel;base64,.... <br/> 
+            xlsx ------ data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,....<br/> 
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.DistributionMechanism(WeSign.Models.Distribution.Requests.CreateDistributionDocumentsDTO)">
+            <summary>
+            Send new document collection for each signer and set all fields in document collection to signer
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.Read(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all distribution document collections by search criteria
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/><br/>
+            Request <br/>
+            offset number start from 1 <br/> 
+            limit number start from 1 <br/> <br/>
+            Response <br/>
+            </remarks>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.Read(System.Guid,System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Get all documents of distribution id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/><br/>
+            Request <br/>
+            offset number start from 1 <br/> 
+            limit number start from 1 <br/> <br/>
+            Response <br/>
+            DocumentStatus: Created = 1, Sent = 2, Viewed = 3, Signed = 4, Declined = 5, SendingFailed = 6, Deleted = 7, Canceled = 8 <br/>
+            SignerStatus:  Sent = 1, Viewed = 2, Signed = 3, Rejected = 4 <br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.Delete(System.Guid)">
+            <summary>
+            Delete all documents of distribution id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.Resend(System.Guid)">
+            <summary>
+            Resend all unsigned documents of distribution id to there signers
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DistributionController.Download(System.Guid)">
+            <summary>
+            Download all signed documents of distribution id
+            As zip file, every document name inside zip file will be the signer name
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.Read(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.String,System.String,System.String,System.Int32,System.Int32,Common.Enums.Documents.SearchParameter)">
+            <summary>
+            Get all document collections by search criteria
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/><br/>
+            Request <br/>
+            offset number start from 1 <br/> 
+            limit number start from 1 <br/> <br/>
+            Response <br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            DocumentStatus: Created = 1, Sent = 2, Viewed = 3, Signed = 4, Declined = 5, SendingFailed = 6, Deleted = 7, Canceled = 8 <br/>
+            Mode: OrderedGroupSign = 1, GroupSign = 2, Online = 3, SelfSign = 100 <br/>
+            SignerStatus:  Sent = 1, Viewed = 2, Signed = 3, Rejected = 4 <br/>
+            </remarks>
+            <param name="sent"></param>
+            <param name="viewed"></param>
+            <param name="signed"></param>
+            <param name="declined"></param>
+            <param name="userId"></param>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <param name="searchParameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.DownloadDocument(System.Guid)">
+            <summary>
+            Download document collection
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            If documentCollection contain 1 document, it will download as PDF file. <br/>
+            If documentCollection contain more than 1 document, it will download as ZIP file. <br/>
+            </remarks>
+            <param name="id">Document Collection ID</param>
+            <returns>File stream of PDF or ZIP</returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.DownloadAttchment(System.Guid,System.Guid)">
+            <summary>
+            Download signer attachments of specified document collection id 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.GetDocumentCollectionData(System.Guid)">
+            <summary>
+            Get info for document collection 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>        
+            </remarks>/// <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.GetDocumentCollectionLiveSenderLink(System.Guid,System.Guid)">
+            <summary>
+            Get sender signing link for live mode document collection 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>        
+            </remarks>/// <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.DownloadTraceDocument(System.Guid,System.Int32)">
+            <summary>
+             Download document collection trace as separate file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            offset of client in hours from UTC time <br/>
+            for example in order to get Israel time you should pass '-3'
+            </remarks>
+            <param name="id"></param>
+            <param name="offset"></param>        
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.CreateDocument(WeSign.Models.Documents.CreateDocumentCollectionDTO)">
+            <summary>
+            Create document collection from template/s
+            </summary> 
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            Mode: OrderedGroupSign = 1, GroupSign = 2, Online = 3 <br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>        
+            OtpMode: None = 0, CodeRequired = 1, PasswordRequired = 2, CodeAndPasswordRequired = 3 <br/>
+            AuthenticationMode: None = 0, IDP = 1 ,VisualIDP = 2,  <br/>
+            If RediretUrl contains [docId] placeholder, this placeholder will replace by original document collection id <br/>
+            For each signer you must attach contactId with sendingMethod or contactMeans with contactName<br/><br/>
+            
+            
+            Response<br/>
+            In case of documentCollection mode is OrderedGroupSign we will return link for first signer only
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.CreateSimpleDocument(WeSign.Models.Documents.CreateSimpleDocumentDTO)">
+            <summary>
+            Document for "Lite" production version
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            If RediretUrl contains [docId] placeholder, this placeholder will replace by original document collection id <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.GetPagesCountByDocumentId(System.Guid,System.Guid)">
+            <summary>        
+             Get pages count by document id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="documentId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.GetDocumentPageInfo(System.Guid,System.Guid,System.Int32)">
+            <summary>
+            Get information about specific page in document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            Page number start from 1 <br/> 
+            </remarks>
+            <param name="id"></param>
+            <param name="documentId"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.GetDocumentPagesInfo(System.Guid,System.Guid,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Get information about pages range in document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            offset number start from 1 <br/> 
+            limit number start from 0 <br/> 
+            </remarks>
+            <param name="id"></param>
+            <param name="documentId"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.DeleteDocumentCollection(System.Guid)">
+            <summary>
+            Delete document collection by id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.CancelDocumentCollection(System.Guid)">
+            <summary>
+            Cancel document collection by id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ResendDocument(System.Guid,System.Guid,Common.Enums.Documents.SendingMethod,System.Boolean)">
+            <summary>
+            Resend document collection link to signer
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            SendingMethod: SMS = 1, Email = 2, Tablet = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <param name="sendingMethod"></param>
+            <param name="shouldSend"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ReactivateDocument(System.Guid,System.Boolean)">
+            <summary>
+            Reactivate document collection to signer
+            </summary>
+            <remarks>An authorized API call. The token should be passed via the request header.</remarks>
+            <param name="collectionId"></param>
+            <param name="signerId"></param>
+            <param name="shouldSend"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.GetDocumentSigningLinks(System.Guid)">
+            <summary>
+            Get signing links for document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ShareDocument(WeSign.Models.Documents.ShareDTO)">
+            <summary>
+            Share document collection to contact
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="contactId"></param>
+            <param name="shouldSendSignedDocument"></param>
+            <param name="sendingMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.Export(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,Common.Enums.Users.Language)">
+            <summary>
+            Export documents collections details to CSV file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ExportPdfFields(System.Guid)">
+            <summary>
+            Export document collection fields to XML file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ExportPdfFieldsCSVAndXML(System.Guid)">
+            <summary>
+            Export document collection fields to XML file and to csv file in a zip file
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ReplaceSigner(System.Guid,System.Guid,WeSign.Models.Documents.ReplaceSignerDTO)">
+            <summary>
+            Replace old signer with new signer
+            </summary>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.DocumentCollectionsController.ExtraServerSigning(System.Guid)">
+            <summary>
+            Extra server document collection signing by id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.LinksController.GetSigningLinks(System.String,System.Int32,System.Int32)">
+            <summary>
+            Get current user links to sign on all documents that not sign already
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="key"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ReportsController.ReadUsageData(System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Collections.Generic.List{Common.Enums.Documents.DocumentStatus},System.Collections.Generic.List{System.Guid},System.Boolean,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Read user usage data reports
+            </summary>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="docStatuses"></param>
+            <param name="groupIds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ReportsController.CreateFrequencyReports(Common.Enums.Reports.ReportFrequency,System.String)">
+            <summary>
+            Create frequency reports
+            </summary>
+            <param name="frequency"></param>
+            <param name="reportTypeStr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ReportsController.ReadFrequencyReports">
+            <summary>
+            Read frequency reports
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ReportsController.DeleteFrequencyReports">
+            <summary>
+            Delete frequency reports
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.ReportsController.DownloadFrequencyReports(System.Guid)">
+            <summary>
+            Download frequency reports
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.SelfSignController.CreateDocument(WeSign.Models.SelfSign.CreateSelfSignDocumentDTO)">
+            <summary>
+            Create SelfSign document
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.SelfSignController.UpdateDocument(WeSign.Models.SelfSign.UpdateSelfSignDocumentDTO)">
+            <summary>
+            Update SelfSign document
+            </summary>
+            <remarks>   
+            An authorized API call. The token should be passed via the request header.<br/>
+            DocumentOperation :  Save = 1, Decline = 2, Close = 3. <br/>
+            Close will sign document
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.SelfSignController.Delete(System.Guid)">
+            <summary>
+            Delete SelfSign document 
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.SelfSignController.DownloadSmartCardDesktopClientInstaller">
+            <summary>
+            Download smartCard desktop client installer
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.SignersController.ReplaceSigner(System.Guid,System.Guid,WeSign.Models.Signers.ReplaceSignerWithDetailsDTO)">
+            <summary>
+            Replace old signer with new signer
+            </summary>
+            <param name="id"></param>
+            <param name="signerId"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.Create(WeSign.Models.Templates.CreateTemplateDTO)">
+            <summary>
+            Create new template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            XML Base64(optional-value) allow you to embed fields from pdf-meta-data<br /> 
+            Encoding UTF-8 <br/>
+            Type="Graphic_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="SmartCard_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="Server_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="Server_Signature" properties Fieldname , IsMandatory<br /> 
+            Type="Checkbox" properties Fieldname , IsMandatory<br /> 
+            Type="Text" properties Fieldname , IsMandatory<br /> 
+            Type="Email" properties Fieldname , IsMandatory<br /> 
+            Type="Phone" properties Fieldname , IsMandatory<br /> 
+            Type="Time" properties Fieldname , IsMandatory<br /> 
+            Type="Number" properties Fieldname , IsMandatory<br /> 
+            Type="Date" properties Fieldname , IsMandatory<br /> 
+            Type="ChoiceGroup" properties Fieldname , IsMandatory<br /> 
+            Type="ChoiceGroup" Contains Choice field , Option and IsSelected<br /> 
+            Type="RadioGroup" Contains RadioField field , Option , IsSelected and Value<br /> 
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.Read(System.String,System.String,System.String,System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Get all templates by search criteria
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="key"></param>
+            <param name="from"></param>
+            <param name="to"></param>
+            <param name="offset"></param>
+            <param name="limit"></param>
+            <param name="popular"></param>
+            <param name="recent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.Update(System.Guid,WeSign.Models.Templates.UpdateTemplateDTO)">
+            <summary>
+            Update template fields
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            TextFieldType: Text = 1, Date = 2, Number = 3, Phone = 4, Email = 5, Custom = 6, Time = 7 <br/>
+            SignaturFieldType: Graphic = 1, SmartCard = 2, Server = 3 <br/>
+            Date format: dd/MM/yyyy , for example 02/08/2019 <br/>
+            Time format: HH:MM , for example 15:59 <br/>
+            X , Y should be value between 0 to 1 (not include) <br/>
+            Width of textField, choiceField and signatureField should be value between 0.08 to 0.51 (not include) <br/>
+            Height of textField, choiceField and signatureField should be value between 0.01 to 0.09 (not include) <br/>
+            Width of radio and checkBoxField should be value between 0.01 to 0.65 (not include) <br/>
+            Height of radio and checkBoxField should be value between 0.007 to 0.045 (not include) <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.Delete(System.Guid)">
+            <summary>
+            Delete template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.GetPagesCountByTemplateId(System.Guid)">
+            <summary>
+            Get pages count by template id
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.GetPageInfoByTemplateId(System.Guid,System.Int32)">
+            <summary>
+            Get page details by template id, first page is '1'.
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            page number start from 1 <br/> <br/> 
+            Response <br/> 
+            TextFieldType: Text = 1, Date = 2, Number = 3, Phone = 4, Email = 5, Custom = 6, Time = 7 <br/>
+            SignaturFieldType: Graphic = 1, SmartCard = 2, Server = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.GetPagesInfoByTemplateId(System.Guid,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Get page details by template id, first page is '1'.
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            offset number start from 1 <br/> 
+            limit number start from 0 <br/> <br/> 
+            Response <br/> 
+            TextFieldType: Text = 1, Date = 2, Number = 3, Phone = 4, Email = 5, Custom = 6, Time = 7 <br/>
+            SignaturFieldType: Graphic = 1, SmartCard = 2, Server = 3 <br/>
+            </remarks>
+            <param name="id"></param>
+            <param name="page"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.DuplicateTemplate(System.Guid,WeSign.Models.Templates.DuplicateTemplateDTO)">
+            <summary>
+            Duplicate existing template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.TemplatesController.DownloadTemplate(System.Guid)">
+            <summary>
+            Download template
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.SignUpAsync(WeSign.Models.Users.CreateUserDTO)">
+            <summary>
+            User Sign up
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            UserLanguage: en = 1, he = 2 <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.UpdateUser(WeSign.Models.Users.UpdateUserDTO)">
+            <summary>
+            Update User
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            UserLanguage: en = 1, he = 2<br/>
+            UserType : Basic = 1, Editor = 2, CompanyAdmin = 3<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.GetUser">
+            <summary>
+            Get your own user details
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            Language: en = 1, he = 2 <br/>
+            UserType : Basic = 1, Editor = 2, CompanyAdmin = 3<br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.Login(WeSign.Models.Users.LoginRequestDTO)">
+            <summary>
+            User login case the company force OTP will return token for OTP
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:WeSign.areas.ui.Controllers.UsersController.Activation(WeSign.Models.Users.ActivationDTO)" -->
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.ExternalLogin(WeSign.Models.Users.ExternalLoginDTO)">
+            <summary>
+            External login for login using AD or SAML login
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.ResendActivationLink(WeSign.Models.Users.BaseUserDTO)">
+            <summary>
+            Resend activation link
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.ResetPassword(WeSign.Models.Users.BaseUserDTO)">
+            <summary>
+            Reset password, send reset password mail to user
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="email"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.UpdatePassword(WeSign.Models.Users.RenewPasswordDTO)">
+            <summary>
+            Update password
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.Refresh(WeSign.Models.Users.TokensDTO)">
+            <summary>
+            Refresh token 
+            </summary>
+            <remarks>
+            Not authorized API <br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WeSign.areas.ui.Controllers.UsersController.ChangePassword(WeSign.Models.Users.ChangePasswordDTO)">
+            <summary>
+            Change password
+            </summary>
+            <remarks>
+            An authorized API call. The token should be passed via the request header.<br/>
+            </remarks>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

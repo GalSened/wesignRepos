@@ -1,0 +1,143 @@
+<sgn-pop-up-confirm [data]="assignAllFieldsModal" (submitEvent)="doAssignAllFields()"
+        (cancelEvent)="cancelAssignAllFields()"></sgn-pop-up-confirm>
+
+
+<div class="ct-c-modal" [ngClass]="isShown ? 'ct-is-shown' : 'ct-is-hidden' " *ngIf="selectedField">
+    <div class="modal__overlay">
+        <div class="modal__container">
+            <h3>{{title}}</h3>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'FIELDS.NAME' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <input type="text" class="ct-input--primary" maxlength="50" (change)="changeFieldName(this)" [(ngModel)]="selectedField.description">
+
+            <div class="ct-break--short"></div>
+
+            <ng-container *ngIf="isSignature">
+                <span>{{'FIELDS.TYPE' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+
+                <select class="ct-select--primary" style="width: 100%" [(ngModel)]="$any(selectedField).signingType">
+                    <option *ngFor="let sigType of SignatureTypeOptions | keyvalue" [value]="sigType.key">
+                        {{sigType.value}}
+                    </option>
+                </select>
+
+                <div class="ct-break--short"></div>
+            </ng-container>
+
+            <ng-container *ngIf="isList">
+                <span>{{'FIELDS.CONTENT' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+
+                <div *ngFor="let selectedoption of $any(selectedField).options; index as i;">
+                    <input type="text" class="ct-input--primary" maxlength="50"   [ngModel]="selectedoption"  (change)="optionChanged($event.target.value, i)">
+                    <div class="ct-float-right">
+                        <button class="ct-button--icon add-remove" *ngIf="i>0"
+                            (click)="removeElement($any(selectedField).options, i)">
+                            <i-feather name="minus-circle"></i-feather>
+                        </button>
+
+                        <button class="ct-button--icon add-remove" (click)="addElement($any(selectedField).options, '')">
+                            <i-feather name="plus-circle"></i-feather>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ct-separator"></div>
+            </ng-container>
+
+            <ng-container *ngIf="isCheckbox">
+                <span>{{'GLOBAL.VALUE' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+
+                <input type="text" class="ct-input--primary" maxlength="50" [value]="$any(selectedField).value">
+
+                <div class="ct-separator"></div>
+            </ng-container>
+
+            <ng-container *ngIf="isRadio">
+                <span>{{'GLOBAL.GROUP_NAME' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+
+                <input type="text" class="ct-input--primary" maxlength="50" 
+                [(ngModel)]="$any(selectedField).groupName">
+
+                <div class="ct-break--shorter"></div>
+
+                <label class="ct-checkbox ct-text-left">
+                    <span>{{'GLOBAL.SET_DEFAULT' | translate}}</span>
+                    <input type="checkbox" [(ngModel)]="$any(selectedField).isDefault">
+                    <span class="ct-checkbox__checkmark"></span>
+                </label>
+                <div class="ct-break--shorter"></div>
+                
+            </ng-container>
+
+            <ng-container *ngIf="signers && flowStep!=9 && flowStep!=2">
+                <span>{{'SIGNERS.ASSIGNED_TO' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+
+                <select class="ct-select--colored" [ngClass]="selectedField.signerId" (change)="SelectedUserChange($event.target.value)"
+                    [(ngModel)]="selectedField.signerId">
+                    <option [ngValue]="">-----</option>
+                    <option *ngFor="let signer of signers" [ngValue]="signer.ClassId">{{signer.FullName}}</option>
+                </select>
+
+                <div class="ct-break--shorter"></div>
+            </ng-container>
+
+            <label class="ct-checkbox ct-text-left" *ngIf="flowStep!=2">
+                <span>{{'GLOBAL.IS_REQUIRED' | translate}}</span>
+
+                <input type="checkbox"   [(ngModel)]="selectedField.mandatory" (change)="mandatoryFieldChanged($event)" >
+
+                <span class="ct-checkbox__checkmark"></span>
+            </label>
+
+            <div class="ct-break--shorter"></div>
+            <ng-container>
+                <label class="ct-checkbox ct-text-left" *ngIf="selectedField.signerId && flowStep!=9">
+                    <span *ngIf="!isSignature">{{'SIGNERS.SET_ALL_FIELDS' | translate}}</span>
+                    <span *ngIf="isSignature">{{'SIGNERS.SET_ALL_SIGNATURES_FIELDS' | translate}}</span>
+
+                    <input type="checkbox" [(ngModel)]="shouldSetAllFieldsToSigner" (change)="this.shouldSetAllFieldsToSignerChanged = !this.shouldSetAllFieldsToSignerChanged;">
+
+                    <span class="ct-checkbox__checkmark"></span>
+                </label>
+            </ng-container>
+
+            <div *ngIf="pagesCount>1">
+                <div class="ct-break--short"></div>
+                <button class="ct-button--primary ct-button--small" *ngIf="ShowDuplicate" (click)="SumbitToAllPages()">{{ "FIELDS.DUPLICATE_FIELD" | translate}}</button>
+            </div>
+            
+            <div class="ct-break--medium"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" *ngIf="!ShowDuplicateFields" (click)="cancel()">{{ "REGISTER.CANCEL" | translate}}</button>
+
+                <button class="ct-button--primary" *ngIf="!ShowDuplicateFields" (click)="submit()">{{'REGISTER.SUBMIT' | translate}}</button>
+
+            </div>
+
+            <div class="ct-is-clear"></div>
+
+            <div class="ct-break--shorter"></div>
+        </div>
+
+
+        <sgn-duplicate-field-to-pages [isShown]="ShowDuplicateFields" (accept)="duplicateFieldToPagesAccept($event)"  (closePopup)="duplicateFieldToPagesClose()"></sgn-duplicate-field-to-pages>
+    </div>
+</div>

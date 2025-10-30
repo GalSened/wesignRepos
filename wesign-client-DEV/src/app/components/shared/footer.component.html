@@ -1,0 +1,36 @@
+<sgn-pop-up-confirm [data]="popUpModal" (submitEvent)="logout()" 
+    (cancelEvent)="popUpModal.showModal = false">
+</sgn-pop-up-confirm>
+
+<footer [ngClass]="{'is-full' : isFullClass}">
+    <span>{{"GLOBAL.APP_VERSION" | translate}} {{appVersion()}}</span>
+
+    <div class="ct-break--shorter"></div>
+    
+    <a [routerLink]="['/terms']">{{"REGISTER.TERMS" | translate}}</a> <span> |
+        </span> <a [routerLink]="['/privacy']">{{"REGISTER.PRIVACY" | translate}}</a> <span> | 
+        </span> <a href="//ComsignTrust.com" target="_blank">ComsignTrust.com</a> <span> | </span>
+        <a href="{{contactUsLink}}" target="_blank">{{"GLOBAL.CONTACT_US" | translate}}</a>
+    <ng-container *ngIf="tiny">
+        <span> | </span>
+        <a href="mailto:{{emailSupport}}">{{"GLOBAL.CONTACT_US" | translate}}</a>
+    </ng-container>
+    <ng-container>
+        <span> | </span>
+        <a href="{{comsignGuidesLink}}" target="_blank">{{"GLOBAL.USER_GUIDES" | translate}}</a>
+    </ng-container>
+    <ng-container *ngIf="showLogOut">
+        <span> | </span>
+        <a (click)="showLogOutPopup()">{{"GLOBAL.TOPMENU.SIGNOUT" | translate}}</a>
+    </ng-container>
+    <ng-container *ngIf="showAAA">
+        <span> | </span>
+        <a (click)="openAAAUrl()">{{"GLOBAL.TOPMENU.AAA" | translate}}</a>
+    </ng-container>
+
+
+    <div class="ct-break--shorter"></div>
+
+    <span>Copyright Ⓒ {{year}} ComsignTrust - Digital Signature and eSignature Software Solutions</span>
+
+</footer>

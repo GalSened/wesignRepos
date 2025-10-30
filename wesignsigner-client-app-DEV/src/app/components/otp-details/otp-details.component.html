@@ -1,0 +1,116 @@
+<app-alert [isConfirm]="isConfirmAlert" [isError]="isErrorAlert" [message]="alertMessage" *ngIf="showAlertMessage"
+  (closeAlertEvent)="closeAlert()">
+</app-alert>
+
+<body class="ct-p-login">
+  <main>
+    <div class="main__img"></div>
+
+    <div class="main__content">
+      <header>
+        <div class="header__logo"></div>
+        <app-lang></app-lang>
+      </header>
+
+      <div class="content__form ct-animate-fadein">
+
+        <div class="ct-break--short"></div>
+
+        <div class="ct-is-shown" *ngIf="mode == 2 || mode == 3">
+          <span>{{'OTP.TITLE' | translate}}</span>
+
+          <div class="ct-break--shorter"></div>
+
+          <form (ngSubmit)="generateOtpCode()">
+            <div class="ct-input--secondary__container">
+              <input [(ngModel)]="otpIdentification" type="text" class="ct-input--primary" id="id" name="id"
+                autocomplete="off">
+            </div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-text-center" *ngIf="showErrorMessage">
+              <label class="is-error">{{errorMessage}}</label>
+              <div class="ct-break--shorter"></div>
+            </div>
+
+            <div class="ct-break--short"></div>
+
+            <input type="submit" [disabled]="isSendRequestBusy || showCode" value="{{'BUTTONS.SUBMIT' | translate}}">
+
+            <div class="ct-c-loader ct-float-right" *ngIf="isSendRequestBusy">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="ct-break--short"></div>
+
+        <div *ngIf="(showCode && ( mode == 2 || mode==3 )) || mode == 1">
+
+          <span>{{'OTP.CODE' | translate}}</span>
+
+          <div class="ct-break--shorter"></div>
+
+          <form (ngSubmit)="isValidCode()">
+            <div class="ct-input--secondary__container">
+              <input [(ngModel)]="otpCode" type="text" class="ct-input--primary" id="auth" name="auth"
+                autocomplete="one-time-code" placeholder="" pattern="[0-9]*" inputtype="numeric">
+
+              <div class="ct-break--shorter"></div>
+
+              <a (click)="generateOtpCode(true)">{{'OTP.RESEND' | translate}}</a>
+
+              <div class="ct-break--shorter"></div>
+
+              <div *ngIf="hasOtpTimeLeft && sentSignerMeans!=''">
+                <label class="is-confirm">{{otpSuccesSentToSignerMeans}}</label>
+                <div class="ct-break--shorter"></div>
+              </div>
+
+              <div *ngIf="hasOtpTimeLeft">
+                <label class="is-confirm">{{'OTP.OTP_EXPIRATION_TIME' | translate}} {{otpLeftTime}}</label>
+                <div class="ct-break--shorter"></div>
+              </div>
+              <div *ngIf="!hasOtpTimeLeft">
+                <label class="is-error">{{'OTP.NO_VALID_OTP' | translate}}</label>
+                <div class="ct-break--shorter"></div>
+              </div>
+
+            </div>
+
+            <div class="ct-break--short"></div>
+
+            <input type="submit" [disabled]="isSubmitBusy" value="{{'BUTTONS.SUBMIT' | translate}}">
+
+            <div class="ct-c-loader ct-float-right" *ngIf="isSubmitBusy">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+
+            <div class="ct-break--short"></div>
+
+            <div class="ct-text-center" *ngIf="showErrorCodeMessage">
+              <label class="is-error">{{errorCodeMessage}}</label>
+              <div class="ct-break--shorter"></div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <footer>
+        <a [routerLink]="[ '/terms']">{{'OTP.TERM_OF_USE' | translate}}</a> <span>|</span> <a
+          [routerLink]="['/privacy']">{{'OTP.PRIVACY_POLICY' | translate}}</a> <span>|</span> <a
+          href="https://www.comsigntrust.com/">ComsignTrust.com</a>
+
+        <div class="ct-break--shorter"></div>
+
+        <span>Copyright Ⓒ {{year}} ComsignTrust - Digital Signature and eSignature Software Solutions</span>
+      </footer>
+    </div>
+  </main>
+</body>

@@ -1,0 +1,338 @@
+// add signers
+.ct-c-add-signers {
+    width: 768px;
+    padding: 25px 0 25px 0;
+    border: solid 1px $color--border;
+    border-radius: 6px;
+    background: white;
+
+    @include respond-to('medium') {
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+
+    @include respond-to('small') {
+        width: 75% !important;
+        padding: 15px 0 15px 0;
+        margin: 0 auto !important;
+    }
+
+    .add-signers__container { 
+        display: flex;
+               
+        @include respond-to('small') {
+            display: block;
+        }
+
+        input {
+            width: 500px;
+
+            @include respond-to('small') {
+                width: 99%;
+            }
+        }
+
+        input.is-telephone {
+            width: 322px;
+
+            @include respond-to('small') {
+                width: 50%;
+            }
+        }
+
+        select {
+            width: 500px;
+            margin-bottom: 10px;
+
+            @include respond-to('small') {
+                width: 100%;
+                margin-top: 7px;
+                margin-bottom: 7px;
+                margin-left: 0;
+            }
+        }
+
+        select.is-telephone {
+            width: 175px;
+        }
+        
+        div.cert-id__container input, div.password__container input{
+          width: 378px;
+          margin: 1px;
+        }
+    }
+
+    .add-signers__container.is-lite {
+        display: block;
+    }
+}
+
+.ct-c-add-signers.is-order {
+    width: 747px;
+    margin: 0 1px;
+    border-left: solid 17px;
+
+    nav {
+        position: absolute;
+        margin-left: -65px;
+        margin-top: -15px;
+        border: solid 1px $color--border;
+
+        @include respond-to('medium') {
+            margin-left: -45px;
+        }
+
+        @include respond-to('small') {
+            margin-top: 25px;
+            margin-left: -45px;
+        }
+
+        button {
+            display: block;
+            border-bottom: solid 1px $color--border;
+            border-radius: 0;
+
+            @include respond-to('medium') {
+                padding: 5px 0px 0 0px;
+            }
+        }
+    }
+
+    .add-signers__dragline {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        margin-top: 17px;
+        margin-left: -14px;
+        background-image: url(../assets/icons/icon-draglines.png);
+        background-repeat: no-repeat;
+        
+        @include respond-to('small') {
+            margin-top: 50px;
+        }
+    }
+
+    button.ct-button--icon.icon-address-book {
+        position: absolute;
+        margin-left: -40px;
+        margin-top: 4px;
+
+        @include respond-to('medium') {
+            margin-left: -13px;
+        }
+    }
+
+    button.ct-button--icon.add-remove {
+        @include respond-to('medium') {
+            top: -100px;
+        }
+
+        @include respond-to('medium') {
+            top: -80px;
+        }
+    }
+
+    svg {
+        width: 24px;
+        color: $color--grey-dark;
+    }
+}
+.ct-is-signer1 {
+  color: deepskyblue !important;
+  border-color: deepskyblue !important;
+}
+.ct-is-signer1.ct-c-field {
+  box-shadow: 0 0 0 2px deepskyblue;
+}
+
+.ct-is-signer2 {
+  color: lightcoral !important;
+  border-color: lightcoral !important;
+}
+.ct-is-signer2.ct-c-field {
+  box-shadow: 0 0 0 2px lightcoral;
+}
+
+.ct-is-signer3 {
+  color: lightgreen !important;
+  border-color: lightgreen !important;
+}
+.ct-is-signer3.ct-c-field {
+  box-shadow: 0 0 0 2px lightgreen;
+}
+
+.ct-is-signer4 {
+  color: lightpink !important;
+  border-color: lightpink !important;
+}
+.ct-is-signer4.ct-c-field {
+  box-shadow: 0 0 0 2px lightpink;
+}
+
+.ct-is-signer5 {
+  color: lightsalmon !important;
+  border-color: lightsalmon !important;
+}
+.ct-is-signer5.ct-c-field {
+  box-shadow: 0 0 0 2px lightsalmon;
+}
+
+.ct-is-signer6 {
+  color: lightseagreen !important;
+  border-color: lightseagreen !important;
+}
+.ct-is-signer6.ct-c-field {
+  box-shadow: 0 0 0 2px lightseagreen;
+}
+
+.ct-is-signer7 {
+  color: lightskyblue !important;
+  border-color: lightskyblue !important;
+}
+.ct-is-signer7.ct-c-field {
+  box-shadow: 0 0 0 2px lightskyblue;
+}
+
+.ct-is-signer8 {
+  color: lightslategray !important;
+  border-color: lightslategray !important;
+}
+.ct-is-signer8.ct-c-field {
+  box-shadow: 0 0 0 2px lightslategray;
+}
+
+.ct-is-signer9 {
+  color: tomato !important;
+  border-color: tomato !important;
+}
+.ct-is-signer9.ct-c-field {
+  box-shadow: 0 0 0 2px tomato;
+}
+
+.ct-is-signer10 {
+  color: lightseagreen !important;
+  border-color: lightseagreen !important;
+}
+.ct-is-signer10.ct-c-field {
+  box-shadow: 0 0 0 2px lightseagreen;
+}
+
+.ct-is-signer11 {
+  color: darkgray !important;
+  border-color: darkgray !important;
+}
+.ct-is-signer11.ct-c-field {
+  box-shadow: 0 0 0 2px darkgray;
+}
+
+.ct-is-signer12 {
+  color: IndianRed !important;
+  border-color: IndianRed !important;
+}
+.ct-is-signer12.ct-c-field {
+  box-shadow: 0 0 0 2px IndianRed;
+}
+
+.ct-is-signer13 {
+  color: black !important;
+  border-color: black !important;
+}
+.ct-is-signer13.ct-c-field {
+  box-shadow: 0 0 0 2px black;
+}
+
+.ct-is-signer14 {
+  color: SeaGreen !important;
+  border-color: SeaGreen !important;
+}
+.ct-is-signer14.ct-c-field {
+  box-shadow: 0 0 0 2px SeaGreen;
+}
+
+.ct-is-signer15 {
+  color: HotPink !important;
+  border-color: HotPink !important;
+}
+.ct-is-signer15.ct-c-field {
+  box-shadow: 0 0 0 2px HotPink;
+}
+
+.ct-is-signer16 {
+  color: MediumPurple !important;
+  border-color: MediumPurple !important;
+}
+.ct-is-signer16.ct-c-field {
+  box-shadow: 0 0 0 2px MediumPurple;
+}
+
+.ct-is-signer17 {
+  color: MediumBlue !important;
+  border-color: MediumBlue !important;
+}
+.ct-is-signer17.ct-c-field {
+  box-shadow: 0 0 0 2px MediumBlue;
+}
+
+.ct-is-signer18 {
+  color: Maroon !important;
+  border-color: Maroon !important;
+}
+.ct-is-signer18.ct-c-field {
+  box-shadow: 0 0 0 2px Maroon;
+}
+
+.ct-is-signer19 {
+  color: Coral !important;
+  border-color: Coral !important;
+}
+.ct-is-signer19.ct-c-field {
+  box-shadow: 0 0 0 2px Coral;
+}
+
+.ct-is-signer20 {
+  color: DarkCyan !important;
+  border-color: DarkCyan !important;
+}
+.ct-is-signer20.ct-c-field {
+  box-shadow: 0 0 0 2px DarkCyan;
+}
+
+.ct-is-signer21 {
+  color: indigo !important;
+  border-color: indigo !important;
+}
+.ct-is-signer21.ct-c-field {
+  box-shadow: 0 0 0 2px indigo;
+}
+
+.ct-is-signer22 {
+  color: saddlebrown !important;
+  border-color: saddlebrown !important;
+}
+.ct-is-signer22.ct-c-field {
+  box-shadow: 0 0 0 2px saddlebrown;
+}
+
+.ct-is-signer23 {
+  color: MidnightBlue !important;
+  border-color: MidnightBlue !important;
+}
+.ct-is-signer23.ct-c-field {
+  box-shadow: 0 0 0 2px MidnightBlue;
+}
+
+.ct-is-signer24 {
+  color: OrangeRed !important;
+  border-color: OrangeRed !important;
+}
+.ct-is-signer24.ct-c-field {
+  box-shadow: 0 0 0 2px OrangeRed;
+}
+
+.ct-is-signer25 {
+  color: SpringGreen !important;
+  border-color: SpringGreen !important;
+}
+.ct-is-signer25.ct-c-field {
+  box-shadow: 0 0 0 2px SpringGreen;
+}

@@ -1,0 +1,80 @@
+[
+    {
+        "title": "Basic",
+        "hebtitle": "Basic",
+        "pricePerMonthUSD": 15,
+        "pricePerMonthEUR": 18,
+        "pricePerMonthILS": 48,        
+        "documentsPerMonth": "10",
+        "isBestPlan": false,        
+        "programID": "E0B45E86-0D4E-4C5C-92C0-08D8B6D3BA1E",
+        "numberOfMonths": 1,
+        "successURLHeb":"https://wesign.comsign.co.il/lpheb1/thankyou/p1",
+        "successURLEng":"https://wesign.comsigntrust.com/lpen1/thankyou/p1"
+    },
+    {
+        "title": "Popular",
+        "hebtitle": "Popular",        
+        "pricePerMonthUSD": 25,
+        "pricePerMonthEUR": 28,
+        "pricePerMonthILS": 79,        
+        "documentsPerMonth": "20",
+        "isBestPlan": true,        
+        "programID": "F21D1B22-C900-49FC-92C1-08D8B6D3BA1E",
+        "numberOfMonths": 1,
+        "successURLHeb":"https://wesign.comsign.co.il/lpheb1/thankyou/p2",
+        "successURLEng":"https://wesign.comsigntrust.com/lpen1/thankyou/p2"
+    },
+    {
+        "title": "Professional",
+        "hebtitle": "Professional",
+        "pricePerMonthUSD": 40,
+        "pricePerMonthEUR": 44,
+        "pricePerMonthILS": 129,
+        "documentsPerMonth": "50",
+        "isBestPlan": false,     
+       "programID": "E1846882-E55F-42EE-92C2-08D8B6D3BA1E",
+        "numberOfMonths": 1,
+        "successURLHeb":"https://wesign.comsign.co.il/lpheb1/thankyou/p3",
+        "successURLEng":"https://wesign.comsigntrust.com/lpen1/thankyou/p3"
+    },
+    {
+        "title": "Basic",
+        "hebtitle": "Basic",
+        "pricePerMonthUSD": 85,
+        "pricePerMonthEUR": 89,
+        "pricePerMonthILS": 275,        
+        "documentsPerMonth": "100",
+        "isBestPlan": false,        
+        "programID": "FF908744-C0A3-4348-F019-08D98BEA8E9E",
+        "numberOfMonths": 12,
+        "successURLHeb":"https://wesign.comsign.co.il/lpheb1/thankyou/p1y",
+        "successURLEng":"https://wesign.comsigntrust.com/lpen1/thankyou/p1y"
+    },
+    {
+        "title": "Popular",
+        "hebtitle": "Popular",        
+        "pricePerMonthUSD": 170,
+        "pricePerMonthEUR": 177,
+        "pricePerMonthILS": 549,        
+        "documentsPerMonth": "250",
+        "isBestPlan": true,        
+        "programID": "CFA693BD-7105-486D-F01A-08D98BEA8E9E",
+        "numberOfMonths": 12,
+        "successURLHeb":"https://wesign.comsign.co.il/lpheb1/thankyou/p2y",
+        "successURLEng":"https://wesign.comsigntrust.com/lpen1/thankyou/p2y"
+    },
+    {
+        "title": "Professional",
+        "hebtitle": "Professional",
+        "pricePerMonthUSD": 225,
+        "pricePerMonthEUR": 230,
+        "pricePerMonthILS": 727,
+        "documentsPerMonth": "500",
+        "isBestPlan": false,     
+       "programID": "39F00D24-ADC7-4C5C-F01B-08D98BEA8E9E",
+        "numberOfMonths": 12,
+        "successURLHeb":"https://wesign.comsign.co.il/lpheb1/thankyou/p3y",
+        "successURLEng":"https://wesign.comsigntrust.com/lpen1/thankyou/p3y"
+    }
+]

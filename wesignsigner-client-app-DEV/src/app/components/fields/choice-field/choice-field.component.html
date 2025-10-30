@@ -1,0 +1,22 @@
+<ng-container *ngIf="hasOption ">
+   
+    <div class="ct-c-field ct-animate-fadein" style="position: absolute;" [style.width.px]="width"
+        [style.height.px]="height" [style.top.px]="top" [style.left.px]="left" [class.is-signed]="disabled"
+       
+         id="{{choice.name}}_parent">
+        <div class="marker" *ngIf="choice.mandatory&& !disabled" ></div>
+
+        <div class="field__icon" *ngIf="!disabled">
+            <i-feather name="list"></i-feather>
+        </div>
+
+        <select class="ct-select--primary" id="{{choice.name}}" name="{{choice.name}}"
+            [(ngModel)]="choice.selectedOption" [disabled]="disabled">
+            <option></option>
+            <ng-container *ngFor="let option of choice.options">
+                <option>{{option}}</option>
+            </ng-container>
+        </select>
+
+    </div>
+</ng-container>

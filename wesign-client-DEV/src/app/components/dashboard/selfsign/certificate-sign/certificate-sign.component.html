@@ -1,0 +1,79 @@
+<div class="ct-p-inner">
+  <sgn-alert-component></sgn-alert-component>
+
+  <sgn-top-header-title [title]="'GLOBAL.DIGITAL_SIGNATURE' | translate" [nextButtonText]=""></sgn-top-header-title>
+  <main class="ct-animate-fadein">
+    <div class="container">
+      <div class="ct-break--short"></div>
+
+      <span>{{'DOCUMENT.NAME' | translate}}</span>
+
+      <div class="ct-break--shorter"></div>
+      <div class="ct-c-file-upload-rename">
+        <div>
+          <i data-feather="edit-2"></i>
+        </div>
+
+        <input type="text" class="ct-input--primary" value="{{name}}" maxlength="50" disabled>
+      </div>
+
+      <div class="ct-break--short"></div>
+
+      <div class="ct-separator"></div>
+
+      <div class="ct-break--short"></div>
+
+      <nav class="add-signers">
+        <button class="tablinks is-active">{{'GLOBAL.SERVER_SIGNATURE' | translate}}</button>
+      </nav>
+
+      <div id="Group" class="tabcontent ct-animate-fadein">
+        <div class="ct-break--short"></div>
+        <ng-container *ngIf="showCertInput">
+          <div class="ct-text-center">
+
+            <span>{{'GLOBAL.PLEASE_ENTER_CERT_ID_PASSWORD' | translate}}</span>
+          </div>
+
+          <div class="ct-break--short"></div>
+
+          <!-- contacts -->
+          <section>
+            <div class="ct-c-add-signers">
+              <div class="add-signers__dragline"></div>
+
+              <div class="add-signers__container">
+                <div class="cert-id__container">
+                  <input [class.is-error]="isEmptyCertId" type="text" class="ct-input--primary ct-input--shorter" id="id"
+                  name="user id" autocomplete="off" [(ngModel)]="certId" placeholder="{{'GLOBAL.CERTIFICATE_ID' | translate}}"
+                  maxlength="50">
+                <label *ngIf="isEmptyCertId" class="is-error">{{'ERROR.INPUT.3' | translate}}</label>
+                </div>
+                <div class="password__container">
+                  <input #passwordEl [class.is-error]="isEmptyPassword" type="password" class="ct-input--primary ct-input--shorter"
+                  id="id" name="password" [(ngModel)]="password" autocomplete="off" placeholder="{{'LOGIN.PASSWORD' | translate}}"
+                  maxlength="50">
+                  <div class="ct-float-right">
+                    <button class="ct-button--icon show-password" [togglePass]="passwordEl"
+                        [(eyeIconProp)]="eyeIcon">
+                        <i-feather [name]="eyeIcon"></i-feather>
+                    </button>
+                </div>
+                <label *ngIf="isEmptyPassword" class="is-error">{{'ERROR.INPUT.3' | translate}}</label>
+              </div>
+              </div>
+            </div>
+          </section>
+        </ng-container>
+
+        <div class="ct-break--short"></div>
+
+        <div class="ct-text-center">
+          <button class="ct-button--primary ct-button--small" [disabled]="isBusy"
+            (click)="SignFile()">{{'BUTTONS.SIGN_DOCUMENT' | translate}}</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

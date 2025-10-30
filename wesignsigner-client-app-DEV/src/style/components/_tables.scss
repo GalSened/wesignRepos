@@ -1,0 +1,127 @@
+// tables
+table {
+  table-layout: auto;
+  width: 100%;
+  background: white;
+
+  th {
+    height: 35px;
+    padding: 7px 10px;
+    border-bottom: solid 1px $color--border;
+    font-weight: 400;
+    background: $color--grey-light;
+
+    @include respond-to('small') {
+      height: auto;
+    }
+  }
+
+  tr {
+    @include respond-to('small') {
+      margin-bottom: 10px;
+    }
+  }
+
+  tr:hover {
+    cursor: pointer;
+    background: lightcyan !important;
+  }
+
+  tr.is-active {
+    background: lightcyan !important;
+  }
+
+  tr.is-alert {
+    background: lightgoldenrodyellow !important;
+  }
+
+  tr.collapsed {
+    background: lightcyan !important;
+  }
+
+  tr:nth-child(even) {
+    background: white
+  }
+
+  tr:nth-child(odd) {
+    background: $color--grey-light;
+  }
+
+  td {
+    padding: 7px 10px;
+
+    select {
+      width: -webkit-fill-available;
+    }
+
+    button {
+      margin: -2px;
+    }
+
+    .td__options-dropdown {
+      position: absolute;
+      width: 150px;
+      height: auto;
+      margin-left: -145px;
+      margin-top: 5px;
+      padding: 15px;
+      border: solid 1px $color--border;
+      background: white;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    
+      @include respond-to('small') {
+        right: 0;
+      }
+    
+      ul {
+          list-style: none;
+          text-align: right;
+    
+          li {
+              margin: 10px 0;
+    
+              a {
+                  color: $color--text;
+              }
+    
+              a:hover {
+                  color: $color--primary;
+                  text-decoration: none;
+              }
+          }
+      }
+    }
+  }
+
+  textarea {
+    width: 350px;
+  }
+}
+
+table.collapsed {
+  background: white;
+  border: solid 1px $color--border;
+
+  tr:hover {
+    cursor: auto;
+    background: white;
+  }
+
+  th {
+    padding: 7px 10px;
+    border-right: solid 1px $color--grey-light;
+    border-bottom: solid 1px $color--grey-light;
+    background: white;
+  }
+
+  td {
+    padding: 7px 10px;
+    border-right: solid 1px $color--grey-light;
+    border-bottom: solid 1px $color--grey-light;
+  }
+
+  .tooltip .tooltiptext.is-last {
+    left: -33px;
+  }
+}

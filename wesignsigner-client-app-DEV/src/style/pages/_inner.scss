@@ -1,0 +1,30 @@
+// login
+.ct-p-inner {
+    background: white;
+
+    main {
+        width: 100%;
+
+        .container {
+            max-width: 768px;
+            height: 500px;
+            margin: 0 auto;
+            margin-top: 25px;
+
+            @include respond-to('medium') {
+                padding: 0 20px;
+            }
+
+            .container__table {
+                overflow: scroll;
+                border: solid 1px #E0E0E0;
+                max-height: 250px;
+            }
+
+            section {
+                clear: both;
+                margin-top: 10px;
+            }
+        }
+    }
+}

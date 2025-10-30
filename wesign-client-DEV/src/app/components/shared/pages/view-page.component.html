@@ -1,0 +1,75 @@
+<!-- <div class="doc__zoom" [style.transform]="'scale(' + zmodel.ZoomLevel + ')'"> -->
+<div *ngIf="pageData && pageData.pdfFields"  (mouseenter)="onMouseEnter()"  (touchenter)="onMouseEnter()">
+    <div class="doc-image__numbering ct-float-right">
+        <h3>{{displayPageNumber}}</h3>
+    </div>
+
+    <div [innerHTML]="pageData.ocrHtml"></div>
+
+    <!--field text"-->
+    <div class="doc__field field-input" style="position: absolute;" textField *ngFor="let textField of textFields"
+        [data]="textField" attr.data-fieldName="{{textField.name}}">
+    </div>
+
+    <!--field signature-->
+    <div class="doc__field field-signature" style="position: absolute;" signatureField
+        *ngFor="let signatureField of pageData.pdfFields.signatureFields" [data]="signatureField"
+        attr.data-fieldName="{{signatureField.name}}">
+    </div>
+
+    <!--field list / choise-->
+    <div class="doc__field field-input" style="position: absolute;" choiceField
+        *ngFor="let choiceField of pageData.pdfFields.choiceFields" [data]="choiceField"
+        attr.data-fieldName="{{choiceField.name}}">
+    </div>
+
+    <!--field checkbox-->
+    <div class="doc__field field-ui" style="position: absolute;" checkBoxField
+        *ngFor="let checkBoxField of pageData.pdfFields.checkBoxFields" [data]="checkBoxField"
+        attr.data-fieldName="{{checkBoxField.name}}">
+    </div>
+
+
+
+    <!--field radio-->
+    <div class="doc__field field-ui" style="position: absolute;" radioField *ngFor="let radioField of this.radioFields"
+        [data]="radioField" attr.data-fieldName="{{radioField.name}}">
+    </div>
+
+    <!--field email-->
+    <div class="doc__field field-ui field-input" style="position: absolute;" emailField
+        *ngFor="let emailField of emailFields" [data]="emailField" attr.data-fieldName="{{emailField.name}}">
+    </div>
+
+    <!--field multiline-->
+    <div class="doc__field field-ui field-input" style="position: absolute; overflow: auto;"
+        multiline-text-field *ngFor="let multilineField of multilineTextFields" [data]="multilineField"
+        attr.data-fieldName="{{multilineField.name}}">
+    </div>
+
+    <!--field phone-->
+    <div class="doc__field field-ui field-input" style="position: absolute;" phoneField
+        *ngFor="let phoneField of phoneFields" [data]="phoneField" attr.data-fieldName="{{phoneField.name}}">
+    </div>
+
+    <!--field number-->
+    <div class="doc__field field-ui field-input" style="position: absolute;" numberField
+        *ngFor="let numberField of numberFields" [data]="numberField" attr.data-fieldName="{{numberField.name}}">
+    </div>
+
+    <!--field date-->
+    <div class="doc__field field-ui field-input" style="position: absolute;" dateField
+        *ngFor="let dateField of dateFields" [data]="dateField" attr.data-fieldName="{{dateField.name}}">
+    </div>
+
+    <!--field time-->
+    <div class="doc__field field-ui field-input" style="position: absolute;" timeField
+        *ngFor="let timeField of timeFields" [data]="timeField" attr.data-fieldName="{{timeField.name}}">
+    </div>
+
+    <!--field custom-->
+    <div class="doc__field field-ui field-input" style="position: absolute;" customField
+        *ngFor="let customField of customFields" [data]="customField" attr.data-fieldName="{{customField.name}}">
+    </div>
+
+</div>

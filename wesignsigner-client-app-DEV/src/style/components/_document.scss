@@ -1,0 +1,60 @@
+// document
+.ct-c-document {
+    overflow-x: scroll;
+    overflow-y: scroll;
+    zoom: 1;
+    // -moz-transform: scale(1);
+    // -o-transform: scale(1);
+    // -webkit-transform: scale(1);
+    // transform: scale(1);
+    //max-width: 768px;
+    height: 77vh;
+    margin: 0 auto !important;
+    //background-color: $color--grey-light;
+
+    @include respond-to('small') {
+        zoom: 0.5;
+        // -moz-transform: scale(0.5);
+        // -o-transform: scale(0.5);
+        // -webkit-transform: scale(0.5);
+        // transform: scale(0.5);
+        height: auto;
+    }
+
+    .doc__image {
+        height: 100vh;
+        margin: 0 auto;
+        margin-bottom: 15px;
+        //background: url(../assets/images/ct-document.jpg) no-repeat top center;
+        
+
+        .doc-image__numbering {
+            width: 40px;
+            margin: 5px;
+            color: white;
+            text-align: center;
+            border-radius: 50px;
+            background: $color--primary;
+        }
+    }
+
+    .doc__image.is-wizard-mode {
+        max-width: 768px;
+        background: white;
+    }
+}
+
+.ct-c-document.bg-is-light {
+    background: white;
+}
+
+.ct-c-document.bg-is-dark {
+    background: $color--text;
+}
+
+.ct-c-document-agent {
+    background-image: url(../assets/images/banner3.gif);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

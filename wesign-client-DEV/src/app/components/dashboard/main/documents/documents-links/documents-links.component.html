@@ -1,0 +1,112 @@
+<ng-container *ngIf="showOpenLink">
+
+    <div class="ct-c-modal ct-is-shown">
+        <div class="modal__overlay">
+          <div class="modal__container">            
+            <h3>{{'DATA.FILTER.FOR_SIGNING' | translate}}</h3>
+    
+            <div class="ct-separator"></div>
+    
+            <div class="ct-break--short"></div>
+
+            <!-- <span>{{'DOCUMENT.YOU_ARE_REDIRECTED_TO_SIGNER_APP' | translate}}</span> -->
+  
+            <!-- <div class="ct-break--shorter"></div> -->
+  
+            <span> {{'DOCUMENT.CLICK_OC_PROCEED' | translate}}</span>
+    
+            <div class="ct-break--medium"></div>
+            
+            <div class="ct-float-right">              
+                <button  class="ct-button--primary" (click)="openLink()"> {{'DOCUMENT.PROCEED' | translate}} </button>      
+                <button  class="ct-button--outline" (click)="closePopUp()"> {{'BUTTONS.CLOSE' | translate}} </button>            
+            </div>
+    
+            <div class="ct-is-clear"></div>
+    
+            <div class="ct-break--shorter"></div>
+          </div>
+        </div>
+      </div>
+
+    <div class="ct-c-alert ct-animate-fadein">
+      
+   </div>
+</ng-container>
+
+
+
+<div class="main__content ct-animate-fadein">
+    <div class="ct-c-filter">
+        <input type="search" class="ct-input--primary ct-input--docSearch" [class.loading]="showSearchSpinner"
+            placeholder="{{'GLOBAL.SEARCH' | translate}} {{'GLOBAL.DOCUMENTS' | translate}}" [(ngModel)]="docFilter.key"
+            debounce [delay]="500" (func)="pageChanged(1)">
+
+            <div class="ct-c-filter-rowAmount">
+                <p>{{'GLOBAL.ROWS_PER_PAGE' | translate }}:</p>
+                <select class="ct-c-rowAmountSelector" #select (change)="onDropDownSelect(select.value)">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+
+    </div>
+
+    <div class="content__table">
+        <table cellpadding="0" cellspacing="0" style="padding: 1px;"  class="ct-text-left">
+            <tbody>
+                <tr>
+                    <th  class="sticky_header" width="80"></th>
+                    <th class="sticky_header" ><a (click)="orderByFunction('name')">{{'DATA.TITLE' | translate}}</a></th>
+                    <th class="sticky_header" width="200"><a (click)="orderByFunction('creationTime')">{{'FIELDS.DATE' | translate}}</a></th>
+                    <th class="sticky_header" width="75"><a (click)="orderByFunction('mode')">{{'DATA.MODE' | translate}}</a></th>
+                    <th class="sticky_header" width="200">
+                        <div paginator class="ct-c-pagination ct-float-right" *ngIf="pageCalc"
+                            [currentPage]="currentPage" [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                    </th>
+                </tr>
+
+                <ng-container *ngIf="docs">
+                    <ng-container
+                        *ngFor="let docData of docs.documentCollections | orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i ">
+
+                        <tr (click)="updateData(true)">
+                            <td class="ct-text-center">
+                                <button class="ct-button--icon ct-tooltip--table-icons">
+                                    <i-feather name="user-plus"> </i-feather>
+                                </button>
+                            </td>
+
+
+                            <td>{{docData.name}}</td>
+                            <td width="150">{{getLocalTime(docData.creationTime) | date:'MMM d, y, HH:mm'}}</td>
+                            
+                            
+                            <td width="200"
+                                *ngIf="docData.mode==1 || docData.mode==2">
+                                {{'GLOBAL.GROUPSIGN' | translate}}
+                            </td>
+                            <td width="200"
+                                *ngIf="docData.mode==3 ">
+                                {{'GLOBAL.LIVESIGN' | translate}}
+                            </td> 
+
+                            <td class="ct-text-right">
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="onSignClick(docData.documentCollectionId)" >
+                                    <i-feather name="edit"></i-feather>
+                                    <span class="tooltiptext">{{'SIGN_PAD.SIGN_HERE' | translate}}</span>
+                                </button>
+
+                            </td>
+                        </tr>
+
+                    </ng-container>
+                </ng-container>
+
+            </tbody>
+        </table>
+    </div>
+</div>

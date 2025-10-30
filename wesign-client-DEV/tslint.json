@@ -1,0 +1,77 @@
+{
+    "extends": "tslint:recommended",
+    "rules": {
+      "align": {
+        "options": [
+          "parameters",
+          "statements"
+        ]
+      },
+      "arrow-return-shorthand": true,
+      "curly": true,
+      "deprecation": {
+        "severity": "warning"
+      },
+      "eofline": true,
+      "import-spacing": true,
+      "indent": {
+        "options": [
+          "spaces"
+        ]
+      },
+        "variable-name": [
+          true,
+          "ban-keywords",
+          "check-format",
+          "allow-leading-underscore",
+          "allow-pascal-case"
+        ],
+        "semicolon": {
+          "options": [
+            "always"
+          ]
+        },
+        "space-before-function-paren": {
+          "options": {
+            "anonymous": "never",
+            "asyncArrow": "always",
+            "constructor": "never",
+            "method": "never",
+            "named": "never"
+          }
+        },
+        "typedef-whitespace": {
+          "options": [
+            {
+              "call-signature": "nospace",
+              "index-signature": "nospace",
+              "parameter": "nospace",
+              "property-declaration": "nospace",
+              "variable-declaration": "nospace"
+            },
+            {
+              "call-signature": "onespace",
+              "index-signature": "onespace",
+              "parameter": "onespace",
+              "property-declaration": "onespace",
+              "variable-declaration": "onespace"
+            }
+          ]
+        },
+        "max-classes-per-file": [
+          true,
+          10,
+          "exclude-class-expressions"
+        ],
+        "whitespace": {
+          "options": [
+            "check-branch",
+            "check-decl",
+            "check-operator",
+            "check-separator",
+            "check-type",
+            "check-typecast"
+          ]
+        }
+    }
+}

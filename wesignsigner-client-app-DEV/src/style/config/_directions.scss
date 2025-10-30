@@ -1,0 +1,184 @@
+/*directions*/
+/* RTL */
+html[dir="rtl"] .ws_text-right {
+    direction: ltr;
+    text-align: left;
+}
+
+html[dir="rtl"] .ws_text-left {
+    direction: rtl;
+    text-align: right;
+}
+
+html[dir="rtl"] .ws_float-right {
+    float: left;
+}
+
+html[dir="rtl"] .ws_float-left {
+    float: right;
+}
+
+html[dir="rtl"] body {
+    font-size: 16px !important;
+    letter-spacing: 0px !important;
+}
+
+/**/
+html[dir="rtl"] .ws_input--login__icon {
+    right: auto;
+    left: -300px;
+}
+
+/**/
+html[dir="rtl"] .header__image {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .ws_c-top-dropdown {
+    padding: 7px 7px 0 0;
+}
+
+html[dir="rtl"] .ws_c-top-dropdown ul {
+    text-align: right !important;
+}
+
+/**/
+html[dir="rtl"] .ws_c-sidebar__toggle .sidebar-toggle__wrapper {
+    transform: scaleX(-1);
+}
+
+html[dir="rtl"] .ws_tooltip-vert--sidebar {
+    right: 50px !important;
+    left: initial !important;
+}
+
+html[dir="rtl"] .ws_tooltip-vert span::after {
+    right: 0;
+    left: initial;
+    margin-right: -11px;
+    border-color: transparent transparent transparent #3949ab;
+}
+
+html[dir="rtl"] .ws_input--sidebar__title input {
+    padding: 0 35px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42'%3E%3Cpath fill='%23546E7A' stroke='none' d='M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z'/%3E%3C/svg%3E") no-repeat;
+    background-position-x: 270px;
+}
+
+/**/
+html[dir="rtl"] .ws_select--custom.select-custom--filter {
+    background-position: right 5px center;
+}
+
+html[dir="rtl"] .ws_icon__next {
+    transform: scaleX(-1);
+}
+
+html[dir="rtl"] .ws_icon__prev {
+    transform: scaleX(-1);
+}
+
+html[dir="rtl"] .ws_c-calendar .calendar__picker .calendar {
+    margin: 7px -7px;
+}
+
+html[dir="rtl"] .ws_c-calendar .calendar__picker .calendar-navbar__calendar-navbar-icons.calendar-navbar-icons--left {
+    transform: scaleX(-1);
+}
+
+html[dir="rtl"] .ws_c-calendar .calendar__picker .calendar-navbar__calendar-navbar-icons.calendar-navbar-icons--right {
+    transform: scaleX(-1);
+}
+
+
+html[dir="rtl"] .ws_search {
+    background-position: right 5px center;
+}
+
+/**/
+html[dir="rtl"] .ws_table-menu {
+    direction: rtl;
+}
+
+html[dir="rtl"] table th {
+    text-align: right;
+}
+
+html[dir="rtl"] input[type=checkbox]+label:before {
+    margin-left: 5px !important;
+    margin-right: 2px !important;
+}
+
+/**/
+html[dir="rtl"] .ws_seal__form .ws_seal__preview .ws_seal-preview {
+    left: initial;
+    right: -115px !important;
+}
+
+/**/
+html[dir="rtl"] input[type=checkbox] {
+    right: 2px;
+}
+
+html[dir="rtl"] .select-custom--selected:after {
+    right: auto;
+    left: 10px;
+}
+
+html[dir="rtl"] #ws_e-checkbox {
+    margin-right: auto;
+    margin-left: 7px;
+}
+
+html[dir="rtl"] .list__drag {
+    left: auto;
+    right: 7px;
+}
+
+html[dir="rtl"] .ws_label {
+    padding: 3px 10px 5px 25px;
+
+    button {
+        left: 5px;
+        right: auto;
+    }
+}
+
+/**/
+html[dir="rtl"] .ws_c-document div .doc__paging {
+    left: 0;
+    right: auto;
+    border-radius: 0 0 10px 0;
+}
+
+html[dir="rtl"] .ws_c-document div .doc__paging::after {
+    left: auto;
+    right: 1%;
+    margin-right: -24px;
+    border-color: transparent transparent transparent #3949AB;
+}
+
+/**/
+html[dir="rtl"] .ws_tooltip--delete {
+    left: -9px !important;
+}
+
+html[dir="rtl"] .ws_tooltip--notifications {
+    left: auto;
+    right: -165px;
+}
+
+html[dir="rtl"] button.ws_button--icon-input {
+    right: 0 !important;
+}
+
+html[dir="rtl"] .ws_icon__arrow-right--large-white {
+    transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .ws_tooltip--plan {
+    left: auto;
+    right: -156px !important;
+    text-align: right !important;
+}

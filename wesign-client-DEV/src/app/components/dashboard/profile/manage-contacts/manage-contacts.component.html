@@ -1,0 +1,70 @@
+<div class="main__content ct-animate-fadein">
+
+    <sgn-pop-up-confirm [data]="deleteGroupPopupData" (submitEvent)="doDeleteGroupEvent()"
+    (cancelEvent)="deleteGroupPopupData.showModal = false">
+    </sgn-pop-up-confirm>
+    <sgn-pop-up-ok [data]="okModel"  (submitEvent)="okModel.showModal = false"></sgn-pop-up-ok>
+
+    <sgn-add-edit-contacts-group *ngIf="showManageGroup"  [isUpdateMode]="isUpdateMode" [contactsGroup]="selectedContactsGroup" (cancel)="cancel()"  (accept)="createContactGroup($event)"
+     (update)="updateContactGroup($event)">
+
+    </sgn-add-edit-contacts-group>
+
+    <nav>
+        <button class="ct-button--primary ct-button--short ct-button--small" (click)="toggleNewGroup()">{{'MANAGEMENT.ADD_CONTACTS_GROUP' | translate}} </button>        
+    </nav>
+    <div class="ct-c-filter">
+        <input type="search" #searchInput class="ct-input--primary" placeholder="{{'MANAGEMENT.GROUP' | translate}}" [(ngModel)]="userFilter.key" [class.loading]="showSearchSpinner">
+    </div>
+
+
+    <div class="content__table">
+
+
+        <table cellpadding="0" cellspacing="0" style="padding: 1px; width: 100%;"  class="ct-text-left">
+            
+                <tr >
+                    <th class="sticky_header"  class="sticky_header" width="50"></th>
+                    <th  class="sticky_header" ><a (click)="orderByFunction('name')">{{'REGISTER.FULL_NAME' | translate}}</a></th>
+                    <th  class="sticky_header" >{{'CONTACTS.CONTACT_GROUP_SIZE' | translate}}</th>
+                    <th class="sticky_header" width="125">
+                        <!--pagination-->
+                        <div >
+                            <div class="ct-c-pagination" paginator  *ngIf="pageCalc" [last]="pageCalc.endPage"
+                                (changed)="pageChanged($event)"></div>
+                        </div>
+                    </th>
+                </tr>
+
+                <ng-container *ngIf="contactsGroups$ | async as contactsGroups">
+                    <ng-container
+                        *ngFor="let contactsGroup of contactsGroups | orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i ">
+                        <tr>
+
+                            <td align="center">
+                                <button class="ct-button--icon">                                 
+                                    <i-feather name="users"></i-feather>
+                              </button>
+                            </td>
+                            <td>{{contactsGroup.name}} </td>                             
+                            <td>{{contactsGroup?.contactsGroupMembers?.length ?? 0}} </td>                             
+                            
+
+                            <td class="ct-text-right-no-direction">
+                                <button class="ct-button--icon ct-tooltip--table-icons" (click)="toggleEditContactGroup(contactsGroup)">                                  
+                                  <i-feather name="edit-2"></i-feather>
+                                  <span class="tooltiptext">{{'DATA.EDIT' | translate}}</span>
+                                </button>
+                  
+                                <button class="ct-button--icon ct-tooltip--table-icons" 
+                                (click)="deleteContactGroup(contactsGroup)">                                   
+                                  <i-feather name="trash-2"></i-feather>                                  
+                                  <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+                                </button>
+                              </td>
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            
+        </table>
+</div>

@@ -1,0 +1,99 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div  class="modal__container ct-animate-slide-down">
+
+
+            <h3>{{'GLOBAL.USER_DETAILS' | translate}}</h3>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+
+
+            <input type="text" class="ct-input--primary" id="id" name="full name" autocomplete="off"
+                [(ngModel)]="user.name" placeholder="{{'REGISTER.FULL_NAME' | translate}}*" maxlength="50"
+                [class.is-error]="submitted && (!user.name || user.name=='')"   [disabled]="currentUser.id == user.id">
+
+            <div class="ct-break--shorter"></div>
+
+            <input type="email" class="ct-input--primary" id="id" name="email" autocomplete="off"
+                [(ngModel)]="user.email" placeholder="{{'REGISTER.EMAIL' | translate}}*" maxlength="50"
+                [class.is-error]="submitted && (!user.email || user.email=='')" [disabled]="currentUser.id == user.id">
+
+            <div class="ct-break--shorter"></div>
+
+            <input type="text" class="ct-input--primary" id="username" name="username" autocomplete="off"
+                [(ngModel)]="user.username" placeholder="{{'REGISTER.USERNAME' | translate}}" minlength="6"
+                maxlength="15" [class.is-error]="submitted && (!user.username && user.username!='')" [disabled]="currentUser.id == user.id">
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'GLOBAL.TYPE' | translate}}:&nbsp;&nbsp;</span>
+
+            <select id="selectUserType" class="ct-select--primary ct-select--short"
+                (change)="onUserTypeChanged($event, user)"
+                [class.is-error]="submitted && (user.type == 0 || !user.type)" [disabled]="currentUser.id == user.id">
+                <option></option>
+                <ng-container *ngFor="let option of usersTypes ; let i = index; ">
+                    <option [selected]="i+1 == user.type">{{'GLOBAL.USER_TYPES.' + option | translate}}</option>
+                </ng-container>
+            </select>
+
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'MANAGEMENT.MAIN_GROUP' | translate}}:</span>
+
+            <!-- <sgn-custom-dropdown #userGroup [options]="groupsOptions" [tabindex]="5" [currentSelection]="selectedGroup"
+                (currentSelectionChange)="dropDownUserGroupUpdate($event)">
+            </sgn-custom-dropdown> -->
+
+            <select id="selectGroup" class="ct-select--primary ct-select--short"
+                (change)="onUserGroupChanged($event, user)" [disabled]="currentUser.id == user.id"
+                [class.is-error]="submitted && (!selectedUserGroup || selectedUserGroup == '')">
+                <option></option>
+                <ng-container *ngFor="let option of groupsOptions ; let i = index; ">
+                    <option [selected]="getGroupName(user) == option">{{option}}</option>
+                </ng-container>
+            </select>
+
+
+            <div class="ct-break--short"></div>
+            <span>{{'MANAGEMENT.ADDITIONAL_GROUP' | translate}}:</span>
+            <div class="ct-break--shorter"></div>
+            <ng-select [items]="groups"
+            bindLabel="name"
+            bindValue="groupId"
+            [multiple]="true"
+            [virtualScroll]="true"
+            placeholder="{{'MANAGEMENT.SELECT_GROUPS'|translate}}"
+            [selectableGroup]="true"
+            [closeOnSelect]="false"
+            [searchable] = "true"
+            [clearSearchOnAdd] = "true"
+            [hideSelected]="true"
+            [(ngModel)]="user.additionalGroupsIds"> 
+        
+        </ng-select>
+            <div class="ct-separator"></div>
+
+            <ng-container *ngIf="errorMsg">
+                <div class="ct-text-center">
+                    <label class="is-error">{{errorMsg}}</label>
+                </div>
+            </ng-container>
+            <div class="ct-break--short"></div>
+
+            <div class="ct-float-right">
+
+                <button class="ct-button--outline" tabindex="6" (click)="cancel.emit()">{{'REGISTER.CANCEL' |
+                    translate}}</button>
+
+                <button class="ct-button--primary" tabindex="7" (click)="save()">{{'REGISTER.SUBMIT' |
+                    translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

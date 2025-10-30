@@ -1,0 +1,28 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "paths": {
+        "@models/*": ["src/app/models/*"],
+        "@components/*": ["src/app/components/*"],
+        "@services/*": ["src/app/services/*"],
+        "@state/*" : ["src/app/state/*"],
+      }
+  }
+  ,"angularCompilerOptions": { "fullTemplateTypeCheck": true, "strictInjectionParameters": true }
+}

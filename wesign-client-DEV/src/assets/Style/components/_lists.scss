@@ -1,0 +1,26 @@
+// lists
+.ct-c-list {
+    overflow: scroll;
+    height: 300px;
+
+    a {
+        display: block;
+        margin-bottom: 5px;
+        color: $color--text;
+    }
+
+    a:hover {
+        color: $color--primary;
+        text-decoration: none;
+    }
+}
+
+.no-blue-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.no-blue-link:hover {
+    color: inherit;
+    text-decoration: none;
+}

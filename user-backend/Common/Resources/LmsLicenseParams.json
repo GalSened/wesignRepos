@@ -1,0 +1,12 @@
+{
+  "Templates": "NUM_OF_TEMPLATES",
+  "Users": "NUM_OF_USERS",
+  "DocumentsPerMonth": "NUM_OF_DOCUMENTS_PER_MONTH",
+  "SmsPerMonth": "NUM_OF_SMS_PER_MONTH",
+  "VisualIdentificationsPerMonth" :  "NUM_OF_VISUAL_IDENTIFICATIONS_PER_MONTH",
+  "ShouldShowSelfSign": "UI_SELF_SIGN",
+  "ShouldShowGroupSign": "UI_GROUP_SIGN",
+  "ShouldShowLiveMode": "UI_ONLINE",
+  "ShouldShowContacts": "UI_Contacts",
+  "UseActiveDirectory": "ACTIVE_DIRECTORY"
+}

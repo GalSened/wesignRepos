@@ -1,0 +1,378 @@
+// tooltips
+
+.ct-tooltip--password {
+  position: relative;
+}
+
+.ct-tooltip-under-input {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.ct-tooltip--password .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 40px;
+  left: -200px;
+  padding: 5px;
+  width: 250px;
+  border: solid 1px $color--grey-dark;
+  border-radius: 3px;
+  color: $color--grey-dark;
+  background: white;
+  z-index: 1000;
+
+  @include respond-to('small') {
+    
+    left:  -230px;
+    
+  }
+}
+
+.ct-tooltip--password:hover .tooltiptext {
+  visibility: visible;
+}
+
+.ct-tooltip--password:active .tooltiptext {
+  visibility: visible;
+}
+
+.ct-tooltip--password:focus .tooltiptext {
+  visibility: visible;
+}
+
+//
+.ct-tooltip--home {
+  position: relative;
+  display: inline-block;
+}
+
+.ct-tooltip--home .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 80%;
+  width: 85px;
+  margin-left: -65px;
+  padding: 3px 0 5px 0;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+}
+
+.ct-tooltip--home:hover .tooltiptext {
+  visibility: hidden;
+
+  @include respond-to('medium') {
+    visibility: visible;
+  }
+}
+
+//
+.ct-tooltip--aside-menu-icons {
+  position: relative;
+  display: inline-block;
+}
+
+.ct-tooltip--aside-menu-icons {
+  position: relative;
+  display: inline-block;
+}
+
+
+
+.ct-tooltip--aside-menu-icons .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  width: 475px;
+  margin-left: -10px;
+  padding: 3px 0 5px 0;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+
+  @include respond-to('small') {
+    width: 100px;
+  }
+}
+
+.ct-tooltip--aside-menu-icons:hover .tooltiptext {
+  visibility: visible;
+ 
+}
+
+
+.ct-tooltip--table-icons {  
+  display: inline-block; 
+    position: relative;
+  
+}
+
+.ct-tooltip--table-icons .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  width: 4.7rem;
+  margin-left: -50px;
+  padding: 3px 0 5px 0;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+}
+
+.ct-tooltip--table-icons:hover .tooltiptext {
+  visibility: visible;
+}
+
+
+
+
+.tooltip-container {
+  text-align: center;
+  position: fixed;
+  padding: 6px 12px;
+  font-size: 0.8rem;  
+  line-height: initial;
+  color: #30BBDE;
+  width: auto;
+  background: white;
+  border-style:none;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translate(-50%, -30%);
+  animation: tooltip-slide 0.18s ease-out 0.5s;
+  animation-fill-mode: forwards;
+  pointer-events: none;
+  top: 100%; 
+  margin-left: -50px;
+  border-radius: 8px;
+  font-weight: 400;  
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+}
+
+
+@keyframes tooltip-slide {
+0% {
+  opacity: 0;
+  transform: translate(-50%, -30%);
+}
+100% {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+}
+
+.profile-dashboard-header {
+  float: right;
+  margin-right: 30px;
+  margin-top: 30px;
+  display: flex;
+  cursor: pointer;
+  gap: 1rem;
+}
+.bar1, .bar2, .bar3 {
+  width: 30px;
+  height: 5px;
+  background-color: #333;
+  margin: 5px 0;
+  transition: 0.4s;
+}
+
+.change .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+  }
+
+.change .bar2 {
+    opacity: 0;
+}
+.change .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
+}
+
+.avatarDiv {
+  position: relative;
+  float: right;
+  cursor: pointer;
+}
+
+.avatarPopup {
+  left: 82%;
+  top: 15%;
+  width: 100%;
+  height: 50%;
+  z-index: 1000;
+}
+
+/* Toggle this class - hide and show the popup */
+.avatarPopup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+/*.avatarPopup:target {
+  visibility: visible;
+  opacity: 1;
+}*/
+
+.avatarSubPopup {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 250px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  row-gap: 2%;
+  column-gap: 1%;
+  margin: 1% auto;
+  margin-right: 20px;
+  padding: 10px;
+  /*color: $color--primary;*/
+  align-items: center;
+  background: white;
+  border-radius: 5px;
+
+}
+
+.avatarSubPopup h2 {
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
+}
+
+.avatarSubPopup .avatarWindowContent {
+  max-height: 30%;
+  overflow: auto;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+
+  .top-menu-reports {
+    cursor: pointer;
+  }
+}
+
+.personal-settings-paragraph {
+  float: left;
+  width: 52px;
+  font-size: 20px;
+  margin-right: 5%;
+  padding-right: 14px;
+}
+
+.settings-avatar-input {
+  display: flex;
+  flex-direction: row;
+}
+
+.change-label {
+  font-family: "Verdana" sans-serif;
+  font-size: 1em;
+  height: 40px;
+  vertical-align: bottom;
+  /*color: $color--primary;*/
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.change-label:hover {
+  opacity: 70%;
+}
+
+.settings-img-avatar {
+  width: 70px;
+  height: 70px;
+  vertical-align: bottom;
+  align-self: flex-end;
+}
+
+
+.gridActiveImg {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-top: 15%;
+}
+
+.gridActiveLabel {
+  font-size: 16px;
+  color: green;
+}
+
+.gridInactiveLabel {
+  font-size: 16px;
+  color: red;
+}
+
+.gridChangePassword {
+  width: 30px;
+  height: 30px;
+  float: right;
+  cursor: pointer;
+}
+
+.gridLogout {
+  width: 30px;
+  height: 30px;
+  float: right;
+  cursor: pointer;
+}
+
+.gridSettings {
+  width: 30px;
+  height: 30px;
+  float: right;
+  cursor: pointer;
+}
+
+.ct-tooltip--face-recognition {
+  display: inherit;
+}
+
+.ct-tooltip--face-recognition .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: 14px;
+  color: white;
+  background-color: black;
+  text-align: center;
+  z-index: 5000;
+}
+
+.ct-tooltip--face-recognition:hover .tooltiptext {
+  visibility: visible;
+}

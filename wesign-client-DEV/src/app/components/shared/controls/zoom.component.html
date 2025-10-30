@@ -1,0 +1,37 @@
+<nav>
+
+    <div class="ct-float-left">
+        <div class="ct-c-pagination">
+            <button class="ct-button--icon" (click)="goToPage(currentPage-1)">
+                <i-feather name="chevron-left"></i-feather>
+            </button>
+            
+            <input type="number" [(ngModel)]="currentPage" min="1" max="{{totalPages}}" (keyup)="goToPage(currentPage)">
+
+            <span> / </span><span>{{totalPages}}</span>
+
+            <button class="ct-button--icon" (click)="goToPage(currentPage+1)">
+                <i-feather name="chevron-right"></i-feather>
+            </button>
+        </div>
+    </div>
+
+    <button class="ct-button--icon" (click)="changeBackground()">
+        <i-feather *ngIf="this.isDark" name="maximize-2"></i-feather>
+        <i-feather *ngIf="!this.isDark" name="minimize-2"></i-feather>
+    </button>
+
+    <div class="ct-float-right">
+
+        <button class="ct-button--icon" (click)="zoomIn()">
+            <i-feather name="zoom-in"></i-feather>
+        </button>
+
+        <button class="ct-button--icon" (click)="zoomOut()">
+            <i-feather name="zoom-out"></i-feather>
+        </button>
+
+      
+    </div>
+
+</nav>

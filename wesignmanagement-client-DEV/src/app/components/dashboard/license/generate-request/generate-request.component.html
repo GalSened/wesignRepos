@@ -1,0 +1,58 @@
+<div class="ws_break--short"></div>
+<app-eula *ngIf="showEula" (submit)="onSubmitClicked()"></app-eula>
+<div >
+    <div class="ws_break--short"></div>
+
+    <div class="ws_separator"></div>
+
+    <span>Company Name*</span>
+
+    <input type="text"[(ngModel)]="userInfo.Company" required minlength="2" maxlength="50" #Company="ngModel" name="Company"
+    [class.ws_input--error]="Company.invalid && submited">
+
+    <div class="ws_break--shorter"></div>
+
+    <div class="ws_separator"></div>
+
+    <h3>User Information</h3>
+
+    <div class="ws_break--short"></div>
+
+    <span>Full Name*</span>
+
+    <input type="text" [(ngModel)]="userInfo.Name" required minlength="2" maxlength="50" #fullname="ngModel" name="fullname"
+    [class.ws_input--error]="fullname.invalid && submited">
+
+    <div class="ws_break--shorter"></div>
+
+    <span>Phone Number*</span>
+
+    <input type="tel" [(ngModel)]="userInfo.Phone" required minlength="2" maxlength="50" #phoneNumber="ngModel" name="phoneNumber"
+    [class.ws_input--error]="phoneNumber.invalid && submited">
+
+    <div class="ws_break--shorter"></div>
+
+    <span>Email*</span>
+
+    <input type="email" [(ngModel)]="userInfo.Email" required minlength="2" maxlength="50" #email="ngModel" name="email"
+    [class.ws_input--error]="email.invalid && submited">
+
+    <div class="ws_break--shorter"></div>
+
+    <span>Id*</span>
+
+    <input  [(ngModel)]="userInfo.Id"  required minlength="5" maxlength="50" #id="ngModel" name="id"
+    [class.ws_input--error]="id.invalid && submited">
+
+    <div class="ws_break--short"></div>
+    <div class="ws_text-center">
+        <div class="ws_break--short"></div>
+    </div>
+
+    <div class="ws_text-center">
+        <button class="ws_button--small" [disabled]="isBusy" (click)="generateLicense()">License Request</button>
+    </div>
+
+    <div class="ws_break--short"></div>
+    <textarea disabled>{{message}}</textarea>
+</div>

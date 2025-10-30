@@ -1,0 +1,85 @@
+<div class="ws_body__wrapper">
+    
+    <app-banner-alert  #bannerAlert></app-banner-alert>
+    <div class="ws_wrapper--1024px ws_margin-auto">
+
+        <form method="post">
+            <div class="ws_break--short"></div> 
+
+            <h1>Add HTML View For Template</h1>
+
+            <div class="ws_break--short"></div>
+
+            <span>User Name: {{userName}}</span>
+            <div class="ws_break--short"></div>
+          
+
+            <div class="ws_break--short"></div>
+            <span>Choose template</span>
+            
+            <ng-select class="select" [items]="dataModel" [closeOnSelect]="true"
+            [(ngModel)]="selectedTemplate" name="templates"> </ng-select>
+            <div class="ws_break--short"></div>
+            
+
+            <div class="ws_break--short"></div>
+
+            <span>HTML File&nbsp;</span>
+            <app-tool-tip [text]="this.toolTipInfo.htmlTemplateFile"></app-tool-tip>
+
+            <div class="ws_break--short"></div>
+            <span *ngIf="this.htmlFileBase64String != null && this.htmlFileBase64String != ''">HTML file exist, you can click download it in order to view your html</span>
+
+            <input #htmlFile name="htmlFile" type="file" class="ws_c-file-upload" accept=".html"
+                (change)="htmlFileDropped()" value="test">
+            <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                (click)="removeHtmlFile()">
+                <div class="ws_icon__remove"></div>
+            </button>
+            <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                (click)="downloadHtmlFile()">
+                <div class="ws_icon__download"></div>
+            </button>
+
+            <div class="ws_break--short"></div>
+
+            <span>JavaScript File&nbsp;</span>
+            <app-tool-tip [text]="this.toolTipInfo.jsTemplateFile"></app-tool-tip>
+
+            <div class="ws_break--short"></div>
+            <span *ngIf="this.javascriptFileBase64String != null && this.javascriptFileBase64String != ''">JavaScript file exist, you can click download it in order to view your js</span>
+
+            <input #javascriptFile name="javascriptFile" type="file" class="ws_c-file-upload" accept=".js"
+                (change)="javascriptFileDropped()" value="test">
+            <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                (click)="removeJavaScriptFile()">
+                <div class="ws_icon__remove"></div>
+            </button>
+            <button type="button" class="ws_button--icon ws_button--icon-input ws_float-right"
+                (click)="downloadJavaScriptFile()">
+                <div class="ws_icon__download"></div>
+            </button>
+
+
+
+            <div class="ws_break--short"></div>
+            <div class="ws_text-center">
+                <span class="ws_alert alert--error" *ngIf="isError">{{errorMessage}}</span>
+
+                <div class="ws_break--short"></div>
+            </div>
+
+            <div class="ws_text-center">
+                <button type="button" class="ws_button--small ws_button--cancel" (click)="cancel()"
+                    [disabled]="isBusy">CANCEL</button>
+
+                <button type="submit" class="ws_button--small" (click)="submit()" [disabled]="isBusy">SUBMIT</button>
+                <div id="ws_button--preloader" *ngIf="isBusy">
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

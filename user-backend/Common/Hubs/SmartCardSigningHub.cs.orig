@@ -1,0 +1,420 @@
+﻿using Common.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using Serilog;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Common.Interfaces.RabbitMQ;
+using Common.Handlers.RabbitMQ.Models;
+using Common.Models.Documents.SplitSignature;
+using Common.Interfaces.Files;
+using CTInterfaces;
+
+namespace Common.Hubs
+{
+    public class SmartCardSigningHub : Hub
+    {
+
+        private readonly ILogger _logger;
+
+        private readonly ISmartCardSigningProcess _smartCardSigningProcess;
+        private readonly IMessageQSmartCardConnector _messageQSmartCardConnector;
+        private readonly IFilesWrapper _filesWrapper;
+
+        public SmartCardSigningHub(ILogger logger, ISmartCardSigningProcess smartCardSigningProcess,
+            IMessageQSmartCardConnector messageQSmartCardConnector, IFilesWrapper filesWrapper)
+        {
+            _logger = logger;
+            _smartCardSigningProcess = smartCardSigningProcess;
+            _messageQSmartCardConnector = messageQSmartCardConnector;
+            _filesWrapper = filesWrapper;
+        }
+
+        /// <summary>
+        /// UI client request token which is the roomId for desktop and UI clients communication
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> CreateGroup(Guid collectionId, Guid token, bool isLastDocumentInCollection)
+        {
+            // need to create it all over - need to collect data and send it - the creation will be in the message implementation
+            try
+            {
+                var savedInput = _smartCardSigningProcess.GetSmartCardProcessInputByToken(token.ToString());
+                if (savedInput != null)
+                {
+                    string roomToken = Guid.NewGuid().ToString();
+                    _smartCardSigningProcess.UpdateProcessInputByToken(token.ToString(), roomToken);
+                    savedInput.Clients.Add(Context.ConnectionId);
+                    _smartCardSigningProcess.UpdateSmartCardInput(roomToken, savedInput);
+                    if (_messageQSmartCardConnector.IsRabbitActive)
+                    {
+                        BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                        {
+                            Function = SmartCardEventsConstants.CREATE_GROUP,
+                            ConnectionId = Context.ConnectionId,
+                            Data = savedInput,
+                            RoomToken = roomToken,
+
+                        };
+                        _logger.Debug("SmartCardSigningHub - Room token for documentId {DocumentId} is [{RoomToken}]", collectionId, roomToken);
+                        _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+                    }
+                    else
+                    {
+                        _logger.Debug("SmartCardSigningHub - Room token for documentId {DocumentId} is [{RoomToken}]", collectionId, roomToken);
+                        await Groups.AddToGroupAsync(Context.ConnectionId, roomToken);
+                        _logger.Debug("SmartCardSigningHub - Client {ConnectionId} create Group {RoomToken}", Context.ConnectionId, roomToken);
+                        await Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_ROOM_ID, roomToken);
+                    }
+                    return roomToken;
+                }
+                return null;
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "SmartCardSigningHub - Error in CreateGroup");
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Add Desktop client to UI client group
+        /// groupName will be token
+        /// </summary>
+        /// <param name="roomToken"></param>
+        /// <returns></returns>
+        public bool Connect(string roomToken)
+        {
+            if (Guid.TryParse(roomToken, out Guid _))
+            {
+
+                if (_messageQSmartCardConnector.IsRabbitActive)
+                {
+
+                    _logger.Debug("SmartCardSigningHub *SEND TO SYNC* - Client [{ConnectionId}] connect to group [{RoomToken}]", Context.ConnectionId, roomToken);
+                    BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                    {
+                        Function = SmartCardEventsConstants.CONNECT,
+                        ConnectionId = Context.ConnectionId,
+                        RoomToken = roomToken,
+
+                    };
+
+                    _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+
+                    return true;
+                }
+                else
+                {
+                    var smartCardProcessInput = _smartCardSigningProcess.GetSmartCardProcessInputByToken(roomToken);
+                    if (smartCardProcessInput != null)
+                    {
+                        smartCardProcessInput.Clients.Add(Context.ConnectionId);
+                        _smartCardSigningProcess.UpdateSmartCardInput(roomToken, smartCardProcessInput);
+                    }
+
+                    Groups.AddToGroupAsync(Context.ConnectionId, roomToken);
+                    //UI client will listen to DesktopClientJoin
+                    Clients.OthersInGroup(roomToken).SendAsync(SmartCardEventsConstants.DESKTOP_CLIENT_JOIN, $"{Context.ConnectionId}", roomToken);
+                    _logger.Debug("SmartCardSigningHub - Client [{ConnectionId}] connect to group [{RoomToken}]", Context.ConnectionId, roomToken);
+                    _logger.Debug("SmartCardSigningHub - Invoke event {EventName} with client [{ConnectionId}]", SmartCardEventsConstants.DESKTOP_CLIENT_JOIN, Context.ConnectionId);
+
+                    return true;
+                }
+            }
+            else
+            {
+                _logger.Debug("SmartCardSigningHub - Invalid token {RoomToken}", roomToken);
+                return false;
+            }
+        }
+
+        public async Task<bool> LeaveGroup(string roomToken)
+        {
+            try
+            {
+
+
+                if (_messageQSmartCardConnector.IsRabbitActive)
+                {
+                    _logger.Debug("SmartCardSigningHub *SEND TO SYNC*  - Trying to remove Clients from group {RoomToken}", roomToken);
+                    BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                    {
+                        Function = SmartCardEventsConstants.LEAVE_GROUP,
+                        RoomToken = roomToken,
+                        ConnectionId = Context.ConnectionId
+                    };
+
+                    _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+                    return true;
+                }
+                else
+                {
+                    var smartCardProcessInput = _smartCardSigningProcess.GetSmartCardProcessInputByToken(roomToken);
+                    if (smartCardProcessInput != null)
+                    {
+                        foreach (var client in smartCardProcessInput.Clients)
+                        {
+                            _logger.Debug("SmartCardSigningHub - Trying to remove Client {Client} from group {RoomToken}", client, roomToken);
+                            await Groups.RemoveFromGroupAsync(client, roomToken);
+                            _logger.Debug("SmartCardSigningHub - Successfully removed client {Client} from group {RoomToken}", client, roomToken);
+                        }
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "SmartCardSigningHub - Error in LeaveGroup");
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///// UI client will call this function,
+        /// After fill all singatures call this function in order to send the hash of all signautres
+        /// </summary>
+        /// <param name="roomToken"></param>
+        /// <param name="documentId"></param>
+        public void SendHashToDesktopClient(string roomToken)
+        {
+            try
+            {
+                var smartCardProcessInput = _smartCardSigningProcess.GetSmartCardProcessInputByToken(roomToken);
+
+
+                if (smartCardProcessInput != null && smartCardProcessInput.Documents.FirstOrDefault() != null)
+                {
+                    _logger.Debug("SmartCardSigningHub - Send hash to desktop client in roomId [{RoomToken}]", roomToken);
+<<<<<<< HEAD
+                    if (smartCardProcessInput.IsGovDoc)
+                    {
+                        var document = smartCardProcessInput.Documents.FirstOrDefault();
+                        byte[] bytes = _filesWrapper.Documents.ReadDocument(Enums.DocumentType.Document, document.Id);
+                        Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_HASH, bytes, document.SignatureFields.FirstOrDefault().Name, roomToken, smartCardProcessInput.IsGovDoc);
+                        return;
+                    }
+                    var signatureFields = _smartCardSigningProcess.PrepareSignatureNextField(roomToken);
+                    if (signatureFields != null)
+=======
+                    //if (smartCardProcessInput.IsGovDoc)
+                    //{
+                    //    var document = smartCardProcessInput.Documents.FirstOrDefault();
+                    //    byte[] bytes = _filesWrapper.Documents.ReadDocument(Enums.DocumentType.Document, document.Id);
+                    //    Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_HASH, bytes, document.SignatureFields.FirstOrDefault().Name, roomToken, smartCardProcessInput.IsGovDoc);
+                    //    return;
+                    //}
+                    var signatureField = _smartCardSigningProcess.PrepareSignatureNextField(roomToken);
+                    if (signatureField != null)
+>>>>>>> DEV
+                    {
+                        if (_messageQSmartCardConnector.IsRabbitActive)
+                        {
+                            BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                            {
+                                Function = SmartCardEventsConstants.SEND_HASH,
+                                RoomToken = roomToken,
+                                Data = new SignatureFieldData { Hash = signatureFields.FirstOrDefault().Hash, Name = signatureFields.FirstOrDefault().Name },
+                                ConnectionId = Context.ConnectionId
+                            };
+
+                            _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+
+                        }
+                        else
+                        {
+<<<<<<< HEAD
+                            Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_HASH, signatureFields.FirstOrDefault().Hash, signatureFields.FirstOrDefault().Name, roomToken, smartCardProcessInput.IsGovDoc);
+=======
+                            Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_HASH, signatureField.Hash, signatureField.Name, roomToken/*, smartCardProcessInput.IsGovDoc*/);
+>>>>>>> DEV
+                        }
+                    }
+                }
+                else
+                {
+                    _logger.Debug("SmartCardSigningHub - There is none group name : [{RoomToken}] opened", roomToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "SmartCardSigningHub - Error in SendHashToDesktopClient");
+                Clients.OthersInGroup(roomToken).SendAsync(SmartCardEventsConstants.GET_MESSAGE, $"SmartCardSigningHub - Error in SendHashToDesktopClient - {ex.Message}");
+                Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_MESSAGE, $"SmartCardSigningHub - Error in SendHashToDesktopClient - {ex.Message}", roomToken);
+
+            }
+        }
+        /// <summary>
+        /// Desktop client call this function.
+        /// Desktop client will call it after signing the hash 
+        /// </summary>
+        /// <param name="roomToken"></param>
+        /// <param name="signedHash"></param>
+        /// <returns></returns>
+        public async Task<bool> SetSignatureAsync(string roomToken, byte[] signedHash, string fieldName)
+        {
+
+            try
+            {
+                _logger.Information("SmartCardSigningHub -in room :{RoomToken} set signature to signature:{FieldName} ", roomToken, fieldName);
+                if (!_smartCardSigningProcess.EmbadeSignatureInDoc(roomToken, signedHash, fieldName))
+                {
+                    await LeaveGroup(roomToken);
+                    return false;
+                }
+                var smartCardProcessInput = _smartCardSigningProcess.GetSmartCardProcessInputByToken(roomToken);
+
+                if (!AreAllSignaturesSigned(smartCardProcessInput))
+                {
+                    SendHashToDesktopClient(roomToken);
+                    return true;
+                }
+
+
+                SendErrorMessage(roomToken, $"SUCCESS - ALL SIGNATURES SIGNED IN DOCUMENT_ID {smartCardProcessInput.CollectionId}");
+
+                var downloadLink = await _smartCardSigningProcess.CloseSigningProcess(roomToken);
+                if (_messageQSmartCardConnector.IsRabbitActive)
+                {
+                    BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                    {
+                        Function = SmartCardEventsConstants.PROCESS_DONE,
+                        RoomToken = roomToken,
+                        Data = downloadLink,
+                        ConnectionId = Context.ConnectionId,
+                        IsProcessDone = true
+                    };
+                    _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+                }
+                else
+                {
+                    await Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_SMARTCARD_SIGNING_RESULT, true, downloadLink);
+                }
+                await LeaveGroup(roomToken);
+
+
+                //UI client will listen to GetSmartCardSigningResult 
+
+                //IsSigningProcessFinished
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //UI client will listen to GetSmartCardSigningResult    
+                _logger.Error(ex, "SmartCardSigningHub - Error in SetSignature");
+                if (_messageQSmartCardConnector.IsRabbitActive)
+                {
+                    BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                    {
+                        Function = SmartCardEventsConstants.PROCESS_DONE,
+                        RoomToken = roomToken,
+                        IsProcessDone = false,
+                        ConnectionId = Context.ConnectionId,
+                    };
+                    _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+                }
+                else
+                {
+                    await Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_SMARTCARD_SIGNING_RESULT, false);
+                }
+
+
+                return false;
+            }
+
+        }
+
+        ///// <summary>
+        ///// Desktop client call this function.
+        ///// </summary>
+        ///// <param name="roomToken"></param>
+        ///// <param name="signedHash"></param>
+        ///// <returns></returns>
+        //public async Task<bool> SetGovSignature(string roomToken, byte[] signedHash,string fileName)
+        //{
+
+        //    try
+        //    {
+        //        _logger.Information("SmartCardSigningHub -in room :{RoomToken} ", roomToken);
+        //        var smartCardProcessInput = _smartCardSigningProcess.GetSmartCardProcessInputByToken(roomToken);
+        //        var downloadLink = await _smartCardSigningProcess.CloseSigningProcess(roomToken);
+        //        await Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_SMARTCARD_GOV_SIGNING_RESULT, true, signedHash, fileName);
+        //        await LeaveGroup(roomToken);
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    { 
+        //        _logger.Error(ex, "SmartCardSigningHub - Error in SetGovSignature");
+        //        if (_messageQSmartCardConnector.IsRabbitActive)
+        //        {
+        //            BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+        //            {
+        //                Function = SmartCardEventsConstants.PROCESS_DONE,
+        //                RoomToken = roomToken,
+        //                IsProcessDone = false,
+        //                ConnectionId = Context.ConnectionId,
+        //            };
+        //            _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+        //        }
+        //        else
+        //        {
+        //            await Clients.Group(roomToken).SendAsync(SmartCardEventsConstants.GET_SMARTCARD_GOV_SIGNING_RESULT, false, fileName);
+        //        }
+        //        await LeaveGroup(roomToken);
+        //        return false;
+        //    }
+
+        //}
+
+        public void SendErrorMessage(string roomToken, string errorMessage)
+        {
+
+            if (_messageQSmartCardConnector.IsRabbitActive)
+            {
+                _logger.Information("SmartCardSigningHub  *SEND TO SYNC* - SendMessage {EoomToken} message {ErrorMessage} ", roomToken, errorMessage);
+                BaseSmartCardEvent smartCardEvent = new BaseSmartCardEvent()
+                {
+                    Function = SmartCardEventsConstants.SEND_MESSAGE,
+                    RoomToken = roomToken,
+                    Data = errorMessage,
+
+                };
+                _messageQSmartCardConnector.SendSmartCardSigningProcessMessage(smartCardEvent);
+            }
+            else
+            {
+                Clients.OthersInGroup(roomToken).SendAsync(SmartCardEventsConstants.GET_MESSAGE, errorMessage, roomToken);
+            }
+
+        }
+
+        private bool AreAllSignaturesSigned(SmartCardInput signatureFields)
+        {
+
+            return signatureFields.Documents.FirstOrDefault() == null;
+        }
+
+    }
+
+    public static class SmartCardEventsConstants
+    {
+        public const string DESKTOP_CLIENT_JOIN = "DesktopClientJoin";
+        public const string GET_HASH = "GetHash";
+        public const string GET_SMARTCARD_SIGNING_RESULT = "GetSmartCardSigningResult";
+        //public const string GET_SMARTCARD_GOV_SIGNING_RESULT = "GetSmartCardGovSigningResult";
+        public const string GET_ROOM_ID = "GetRoomId";
+        public const string GET_MESSAGE = "GetMessage";
+        public const string CREATE_GROUP = "CreateGroup";
+        public const string CONNECT = "Connect";
+        public const string LEAVE_GROUP = "LeaveGroup";
+        public const string PREPARE_SMART_CARD_PARAMETER_FOR_SIGNATURE = "PrepareSmartCardParameterForSignature";
+        public const string SEND_HASH = "SendHash";
+        public const string PROCESS_DONE = "ProcessDone";
+        public const string SEND_MESSAGE = "SendMessage";
+        //public const string SET_GOV_SIGNATURE = "SetGovSignature";
+    }
+}

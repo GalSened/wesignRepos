@@ -1,0 +1,238 @@
+<app-banner-alert #bannerAlert></app-banner-alert>
+<div class="ws_c-table-filter">
+
+    <div class="reports-filter-wrapper">
+
+        <ng-select class="reports-select" [(ngModel)]="reportMode" (change)="changeMode()"
+            *ngIf="!isAutomatedReportsRequested" [items]="reportModes" bindLabel="label" bindValue="value">
+        </ng-select>
+
+        <div class="reports-label-andInput reports-company-select-container" *ngIf="isAutomatedReportsRequested">
+            <span>New Report:</span>
+            <ng-select class="reports-select" [(ngModel)]="reportMode" (change)="changeMode()"
+            [items]="reportModes" bindLabel="label" bindValue="value">
+            </ng-select>
+        </div>
+
+        <div class="reports-label-andInput reports-company-select-container"
+            *ngIf="(reportMode == ReportMode.GroupUtilization || reportMode ==ReportMode.GroupDocumentStatuses || reportMode == ReportMode.DocsByUsers
+            || reportMode == ReportMode.DocsBySigners || reportMode == ReportMode.CompanyUsers || reportMode == ReportMode.UsageByUsers || reportMode == ReportMode.UsageByCompanies
+            || reportMode == ReportMode.TemplatesByUsage || reportMode == ReportMode.UsageBySignatureType) && companies">
+            <span>For Company:</span>
+            <ng-select class="reports-textualSelect" [items]="companies" bindLabel="name" bindValue="id"
+                [multiple]="false" [virtualScroll]="true" [selectableGroup]="false" [searchable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" [(ngModel)]="reportRequest.companyId"
+                (ngModelChange)="onCompanySelect()">
+            </ng-select>
+        </div>
+
+        <div class="reports-label-andInput" *ngIf="reportMode ==ReportMode.ExpirationUtilization">
+            <span for="expiredSelect">Program Expiration Status:</span>
+            <select class="reports-expire-select" name="expiredSelect" [(ngModel)]="reportRequest.isExpired">
+                <option [ngValue]="true">Expired</option>
+                <option [ngValue]="false">Not Expired</option>
+                <option [ngValue]="null">Both</option>
+            </select>
+        </div>
+
+        <div class="reports-label-andInput"
+            *ngIf="reportMode ==ReportMode.ExpirationUtilization || reportMode ==ReportMode.ProgramUtilization || reportMode ==ReportMode.UsePercentageUtilization || reportMode ==ReportMode.AllCompaniesUtilization || reportMode ==ReportMode.GroupUtilization">
+            <span for="selectMonths">Months Of Usage:</span>
+            <select name="selectMonths" (change)="monthsChanged()" [(ngModel)]="reportRequest.monthsForAvgUse">
+                <option *ngFor="let month of months" [value]="month">{{month}}</option>
+            </select>
+        </div>
+
+        <div class="reports-label-andInput"
+            *ngIf="reportMode ==ReportMode.ExpirationUtilization || reportMode ==ReportMode.ProgramUtilization || reportMode ==ReportMode.UsePercentageUtilization || reportMode ==ReportMode.AllCompaniesUtilization || reportMode ==ReportMode.GroupUtilization">
+            <span>Program:</span>
+            <ng-select class="reports-textualSelect" [items]="programs" bindLabel="name" bindValue="id"
+                [multiple]="false" [virtualScroll]="true" [selectableGroup]="false" [searchable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" [(ngModel)]="reportRequest.programId">
+            </ng-select>
+        </div>
+
+        <div class="reports-label-andInput reports-minimum-select-container"
+            *ngIf="reportMode ==ReportMode.UsePercentageUtilization || reportMode ==ReportMode.GroupUtilization">
+            <span>Document Usage Percentage:</span>
+            <select [(ngModel)]="reportRequest.docUsagePercentage">
+                <option *ngFor="let percentage of percentages" [value]="percentage">{{percentage}}%</option>
+            </select>
+        </div>
+
+        <div class="reports-label-andInput reports-minimum-select-container"
+            *ngIf="reportMode ==ReportMode.ProgramUtilization">
+            <span>Minimum Amount Of Documents Used:</span>
+            <select [(ngModel)]="reportRequest.minDocs">
+                <option *ngFor="let minimum of minimums" [value]="minimum">{{minimum}}</option>
+            </select>
+        </div>
+
+        <div class="reports-label-andInput" *ngIf="reportMode ==ReportMode.ProgramUtilization">
+            <span>Minimum Amount Of SMS Used:</span>
+            <select [(ngModel)]="reportRequest.minSMS">
+                <option *ngFor="let minimum of minimums" [value]="minimum">{{minimum}}</option>
+            </select>
+        </div>
+
+        <div class="reports-label-andInput" *ngIf="reportMode ==ReportMode.ProgramsByUsage">
+            <span>Is The Program Used?</span>
+            <select name="expiredSelect" [(ngModel)]="reportRequest.isProgramUsed">
+                <option [ngValue]="true">Used</option>
+                <option [ngValue]="false">Not Used</option>
+                <option [ngValue]="null">Both</option>
+            </select>
+        </div>
+
+        <div class="reports-label-andInput" *ngIf="(reportMode ==ReportMode.UsageByUsers) && users">
+            <span>User Email:</span>
+            <ng-select class="reports-textualSelect" [items]="users" bindLabel="email" bindValue="email"
+                [multiple]="false" [virtualScroll]="true" [selectableGroup]="false" [searchable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" [(ngModel)]="reportRequest.userEmail">
+            </ng-select>
+        </div>
+
+        <div class="reports-label-andInput reports-group-select-container" *ngIf="(reportMode == ReportMode.DocsByUsers || reportMode ==ReportMode.DocsBySigners || reportMode == ReportMode.UsageByUsers
+            || reportMode == ReportMode.UsageByCompanies || reportMode == ReportMode.TemplatesByUsage)
+            && groups?.length > 0">
+            <span>For Group:</span>
+            <ng-select class="reports-textualSelect" [items]="groups" bindLabel="name" bindValue="id" [multiple]="true"
+                [virtualScroll]="true" [selectableGroup]="true" [searchable]="true" [clearSearchOnAdd]="true"
+                [hideSelected]="true" [(ngModel)]="reportRequest.groupIds">
+            </ng-select>
+        </div>
+
+        <div class="reports-label-andInput reports-group-select-container"
+            *ngIf="reportMode == ReportMode.UsageBySignatureType">
+            <span>For Signature Type:</span>
+            <ng-select class="reports-textualSelect" [items]="signatureTypes" bindLabel="key" bindValue="value"
+                [multiple]="true" [virtualScroll]="true" [selectableGroup]="true" [searchable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" [(ngModel)]="reportRequest.signatureTypes">
+            </ng-select>
+        </div>
+
+        <div *ngIf="(reportMode ==ReportMode.DocsByUsers || reportMode ==ReportMode.DocsBySigners)"
+            class="horizontal-break">
+        </div>
+
+        <div class="reports-label-andInput"
+            *ngIf="reportMode ==ReportMode.ExpirationUtilization || reportMode ==ReportMode.DocsByUsers || reportMode ==ReportMode.DocsBySigners
+            || reportMode ==ReportMode.UsageByUsers || reportMode == ReportMode.UsageByCompanies || reportMode == ReportMode.TemplatesByUsage || reportMode == ReportMode.UsageBySignatureType">
+            <span *ngIf="reportMode ==ReportMode.ExpirationUtilization">Program Expiration Date:</span>
+
+            <div class="ws_c-calendar"
+                *ngIf="reportMode ==ReportMode.ExpirationUtilization || !isAutomatedReportsRequested">
+                <div style="margin-left:10px ; display:flex; margin-bottom: 10px;">
+                    <div class="calendar__picker" (click)="showFromCalendar()" tabindex="0"
+                        (clickOutside)="isFromCalendarShown = false">
+                        <div class="ws_icon__calendar"></div>
+                        <span>From</span>
+                        <!--calendar-->
+                        <sgn-calendar-component [isShown]="isFromCalendarShown" (selected)="fromSelected($event)">
+                        </sgn-calendar-component>
+                    </div>
+                    <div class="ws_label ws_label--filter" *ngIf="reportRequest.from" style="height:50%;">
+                        <div><span>{{reportRequest.from | date:'mediumDate'}}</span></div>
+                        <button class="ws_button--icon" (click)="removeDate($event,'from')">
+                            <div class="ws_icon__remove--small"></div>
+                        </button>
+                    </div>
+
+                </div>
+                <div style="margin-left:10px ; display:flex;">
+
+                    <div class="calendar__picker" (click)="showToCalendar()" tabindex="0"
+                        (clickOutside)="isToCalendarShown = false">
+                        <div class="ws_icon__calendar"></div>
+                        <span>To</span>
+                        <!--calendar-->
+                        <sgn-calendar-component [isShown]="isToCalendarShown" (selected)="toSelected($event)">
+                        </sgn-calendar-component>
+                    </div>
+                    <div class="ws_label ws_label--filter" *ngIf="reportRequest.to" style="height:50%;">
+                        <div><span>{{reportRequest.to | date:'mediumDate'}}</span></div>
+                        <button class="ws_button--icon" (click)="removeDate($event,'to')">
+                            <div class="ws_icon__remove--small"></div>
+                        </button>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="reports-buttonContainer">
+            <button class="reports-submit-button" (click)="submitRequest()">Update Data</button>
+            <button class="reports-submit-button" (click)="getCSV()">Export CSV</button>
+            <button class="reports-submit-button" (click)="onAutomatedReports()">Automated Reports</button>
+        </div>
+    </div>
+    <div class="reports-filter-wrapper" *ngIf="isAutomatedReportsRequested">
+        <div class="reports-label-andInput reports-group-select-container reports-frequencies">
+            <span>Report Frequency:</span>
+            <ng-select class="reports-textualSelect" [items]="reportFrequencies" bindLabel="key" bindValue="value"
+                [multiple]="false" [virtualScroll]="true" [selectableGroup]="false" [searchable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" [(ngModel)]="frequencyReportRequest.frequency">
+            </ng-select>
+        </div>
+        <div class="reports-label-andInput">
+            <span>Receipt by email:</span>
+            <input class="reports-textualSelect reports-frequencyEmails" type="text" id="emails"
+                [(ngModel)]="emailsToSendStr" placeholder="em1@test.com;em2@test.com">
+        </div>
+        <div class="automated-reports-btns-section">
+            <button
+                [disabled]="!frequencyReportRequest.frequency || !this.emailsToSendStr || this.emailsToSendStr.split(';').length == 0"
+                class="reports-submit-button" (click)="saveAutomatedReports()">SAVE REPORT</button>
+            <button class="reports-submit-button ws_button--cancel" (click)="cancelAutomatedReports()">CANCEL</button>
+        </div>
+    </div>
+    <table *ngIf="isAutomatedReportsRequested">
+        <tr>
+            <th>Report Type</th>
+            <th>Report Frequency</th>
+            <th>Receipt by email</th>
+        </tr>
+        <ng-container *ngFor="let report of autoReports">
+            <tr>
+                <td>
+                    <ng-select class="reports-textualSelect" bindLabel="label" bindValue="value"
+                        [(ngModel)]="report.reportType" [items]="reportModes">
+                    </ng-select>
+                </td>
+                <td>
+                    <ng-select class="reports-textualSelect" bindLabel="label" bindValue="value"
+                        [(ngModel)]="report.reportFrequency" [items]="allFrequencies">
+                    </ng-select>
+                </td>
+                <td>
+                    <input class="reports-textualSelect reports-frequencyEmails" type="text"
+                        [(ngModel)]="report.emailsStrFormat">
+                </td>
+                <td class="ws_text-right outer">
+                    <div class="ws_table-menu">
+                        <div class="table-menu__icon ws_tooltip">
+                            <button class="ws_button--icon" (click)="updateAutoReport(report)">
+                                <div class="ws_icon__save"></div>
+                                <span class="ws_tooltip--delete">Save</span>
+                            </button>
+                        </div>
+                        <div class="table-menu__icon ws_tooltip">
+                            <button class="ws_button--icon" (click)="openDeletionAlert(report)">
+                                <div class="ws_icon__delete"></div>
+                                <span class="ws_tooltip--delete">Delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </ng-container>
+    </table>
+    <app-alert *ngIf="autoReportToDelete" [class.ws_is-hidden]="!showDeletionAlert"
+        [class.ws_is-shown]="showDeletionAlert" (removeDeletionAlert)="hideAlert()"
+        (deleteOperation)="deleteAutoReport()"
+        [itemName]="ReportMode[autoReportToDelete.reportType] + '-' + ReportFrequency[autoReportToDelete.reportFrequency]"
+        [itemType]="'Periodic Report'" [operationType]="'delete'">
+    </app-alert>
+</div>

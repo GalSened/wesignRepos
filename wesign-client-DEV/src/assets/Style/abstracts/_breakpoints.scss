@@ -1,0 +1,13 @@
+$breakpoints: (
+    'small':  (max-width: 640px),
+    'medium': (min-width: 641px) and (max-width: 1024px),
+    'large': (min-width: 1025px),
+);
+
+@media screen and (min-width: 320px) and (max-width: 640px) and (orientation: landscape) {
+    html {
+     
+      transform-origin: left top;
+      background: $color--border;
+    }
+  }

@@ -1,0 +1,42 @@
+
+<div class="marker" *ngIf="data.mandatory" ></div>
+<div class="ct-c-field ct-animate-fadein" [ngClass]="data.signerId" style="width: 100%;height: 100%;"
+  (focusin)="onFocusIn($event)" draggable="true" (dragstart)="ondrag($event)" (dragend)="ondragend($event)"
+  (endOffset)="onStopMoving($event)" *ngIf="!isHidden">
+
+  <div class="multiLine_field__icon field__icon">
+    <i-feather [name]="icon"></i-feather>
+  </div>
+  <ng-container *ngIf="!isDocView">
+
+      <textarea name="{{data.name}}" id="{{data.name}}" (click)="onSelected()" [(ngModel)]="data.value"
+        (change)="onTextChanged($event.target)" (keypress)="onKeyPress($event)" (paste)="onPaste($event)"
+        [placeholder]="placeholder" class="ct-select--primary multiline" [readonly]="!isEditable" [pattern]="htmlPattern"
+        #currentInput 
+        wrap="hard"></textarea>
+  </ng-container>
+
+  <ng-container *ngIf="isDocView">
+    <textarea name="{{data.name}}" id="{{data.name}}" (click)="onSelected()" [(ngModel)]="data.value"
+        [placeholder]="placeholder" class="ct-select--primary multiline" 
+        [readonly]="!isEditable" [pattern]="htmlPattern"
+        style="text-align: center;"
+        #currentInput 
+        wrap="hard"></textarea>
+  </ng-container>
+
+  <nav style="z-index: 1;" *ngIf="showNavs" [ngClass]="flowStep == 2 ? 'nav_with_two_elements' : ''"  >
+    <button class="ct-button--icon button--field" *ngIf="flowStep != 2" (click)="editField()">
+      <i-feather name="edit-2"></i-feather>
+    </button>
+
+    <button class="ct-button--icon button--field" (click)="duplicateField()">
+      <i-feather name="plus"></i-feather>
+    </button>
+
+    <button class="ct-button--icon button--field" (click)="removeField()">
+      <i-feather name="trash-2"></i-feather>
+    </button>
+  </nav>
+
+</div>

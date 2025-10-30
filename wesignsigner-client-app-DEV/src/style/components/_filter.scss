@@ -1,0 +1,11 @@
+// filter
+.ct-c-filter {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  background: white;
+
+  @include respond-to('small') {
+    margin-bottom: 0;
+  }
+}

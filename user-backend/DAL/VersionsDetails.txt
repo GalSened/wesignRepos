@@ -1,0 +1,621 @@
+﻿***** V3.0.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addSigner1AndReCapcheToConfigTable (include)
+
+
+***** V3.0.3 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addAuthModeToSignerTable(include)
+Script for upgrade from 3.0.2 to 3.0.3 - from addSigner1AndReCapcheToConfigTable (not include) to addAuthModeToSignerTable(include)
+
+***** V3.0.3.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addSigner1UserPasswordToConfiguration(include)
+Script for upgrade from 3.0.2 to 3.0.3.1 - from addSigner1AndReCapcheToConfigTable (not include) to addSigner1UserPasswordToConfiguration(include)
+Script for upgrade from 3.0.3 to 3.0.3.1 - from addAuthModeToSignerTable (not include) to addSigner1UserPasswordToConfiguration(include)
+
+***** V3.0.4 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addSigner1UserPasswordToConfiguration(include)
+Script for upgrade from 3.0.2 to 3.0.4 - from addSigner1AndReCapcheToConfigTable (not include) to addSigner1UserPasswordToConfiguration(include)
+Script for upgrade from 3.0.3 to 3.0.4 - from addAuthModeToSignerTable (not include) to addSigner1UserPasswordToConfiguration(include)
+Script for upgrade from 3.0.3.1 to 3.0.4 - from addSigner1UserPasswordToConfiguration (not include) to addSigner1UserPasswordToConfiguration(include)
+In addition add this code to end of each update script :
+	'DROP TABLE Logs;
+	 DROP TABLE SignerLogs;
+	 DROP TABLE ManagementLogs;
+	 
+	 GO'
+
+
+***** V3.0.5 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addEnableSigner1ExtraSigningTypesToConfigTable(include)
+Script for upgrade from 3.0.2 to 3.0.5 - from addSigner1AndReCapcheToConfigTable (not include) to addEnableSigner1ExtraSigningTypesToConfigTable(include)
+Script for upgrade from 3.0.3 to 3.0.5 - from addAuthModeToSignerTable (not include) to addEnableSigner1ExtraSigningTypesToConfigTable(include)
+Script for upgrade from 3.0.3.1 to 3.0.5 - from addSigner1UserPasswordToConfiguration (not include) to addEnableSigner1ExtraSigningTypesToConfigTable(include)
+Script for upgrade from 3.0.4 to 3.0.5 - from addSigner1UserPasswordToConfiguration (not include) to addEnableSigner1ExtraSigningTypesToConfigTable(include)
+
+
+
+
+***** V3.0.6 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable(include)
+Script for upgrade from 3.0.2 to 3.0.6 - from addSigner1AndReCapcheToConfigTable (not include) addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable(include)
+Script for upgrade from 3.0.3 to 3.0.6 - from addAuthModeToSignerTable (not include) to addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable(include)
+Script for upgrade from 3.0.3.1 to 3.0.6 - from addSigner1UserPasswordToConfiguration (not include) to addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable(include)
+Script for upgrade from 3.0.4 to 3.0.6 - from addSigner1UserPasswordToConfiguration (not include) to addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable(include)
+Script for upgrade from 3.0.5 to 3.0.6 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable(include)
+
+
+***** V3.0.7 *****
+******************
+Script for create clean and new DB - from 'init' (include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.2 to 3.0.7 - from addSigner1AndReCapcheToConfigTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.3 to 3.0.7 - from addAuthModeToSignerTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.3.1 to 3.0.7 - from addSigner1UserPasswordToConfiguration (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.4 to 3.0.7 - from addSigner1UserPasswordToConfiguration (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.5 to 3.0.7 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.6 to 3.0.7 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+
+
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.1\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.0.7.1:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To renamePhoneExtentionToPhoneExtension -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.1\upgrade-3.0.2to3.0.7.1\updateDb.sql
+
+***** V3.0.7.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.2 to 3.0.7.1 - from addSigner1AndReCapcheToConfigTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.3 to 3.0.7.1 - from addAuthModeToSignerTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.3.1 to 3.0.7.1 - from addSigner1UserPasswordToConfiguration (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.4 to 3.0.7.1 - from addSigner1UserPasswordToConfiguration (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.5 to 3.0.7.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.6 to 3.0.7.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.7 to 3.0.7.1 - from renamePhoneExtentionToPhoneExtension (not include) to renamePhoneExtentionToPhoneExtension(include)
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.2\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.0.7.2:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To renamePhoneExtentionToPhoneExtension -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.2\upgrade-3.0.2to3.0.7.2\updateDb.sql
+
+***** V3.0.7.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.2 to 3.0.7.2 - from addSigner1AndReCapcheToConfigTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.3 to 3.0.7.2 - from addAuthModeToSignerTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.3.1 to 3.0.7.2 - from addSigner1UserPasswordToConfiguration (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.4 to 3.0.7.2 - from addSigner1UserPasswordToConfiguration (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.5 to 3.0.7.2 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.6 to 3.0.7.2 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.7 to 3.0.7.2 - from renamePhoneExtentionToPhoneExtension (not include) to renamePhoneExtentionToPhoneExtension(include)
+Script for upgrade from 3.0.7.1 to 3.0.7.2 - from renamePhoneExtentionToPhoneExtension (not include) to renamePhoneExtentionToPhoneExtension(include)
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.2\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.0.7.2:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To renamePhoneExtentionToPhoneExtension -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.2\upgrade-3.0.2to3.0.7.2\updateDb.sql
+
+
+
+***** V3.0.8 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.2 to 3.0.8 - from addSigner1AndReCapcheToConfigTable (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.3 to 3.0.8 - from addAuthModeToSignerTable (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.3.1 to 3.0.8 - from addSigner1UserPasswordToConfiguration (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.4 to 3.0.8 - from addSigner1UserPasswordToConfiguration (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.5 to 3.0.8 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.6 to 3.0.8 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) toAddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.7 to 3.0.8 - from renamePhoneExtentionToPhoneExtension (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.7.1 to 3.0.8 - from renamePhoneExtentionToPhoneExtension (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+Script for upgrade from 3.0.7.2 to 3.0.8 - from renamePhoneExtentionToPhoneExtension (not include) to AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic(include)
+
+
+
+***** V3.0.8.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.0.8.1 - from addSigner1AndReCapcheToConfigTable (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.0.8.1 - from addAuthModeToSignerTable (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.0.8.1 - from addSigner1UserPasswordToConfiguration (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.0.8.1 - from addSigner1UserPasswordToConfiguration (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.0.8.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.0.8.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.0.8.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.0.8.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.0.8.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.0.8.1 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddSenderIpColumnToDocumentCollection:fill in most update migration_____(include)
+
+
+***** V3.0.9 *****
+******************
+Script for create clean and new DB - from 'init' (include) to UpdateUserPersonalIdFieldToUsername(include)
+Script for upgrade from 3.0.2 to 3.0.9 - from addSigner1AndReCapcheToConfigTable (not include) to UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.3 to 3.0.9 - from addAuthModeToSignerTable (not include) to UpdateUserPersonalIdFieldToUsername(include)
+Script for upgrade from 3.0.3.1 to 3.0.9 - from addSigner1UserPasswordToConfiguration (not include) to  UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.4 to 3.0.9 - from addSigner1UserPasswordToConfiguration (not include) to UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.5 to 3.0.9 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to UpdateUserPersonalIdFieldToUsername(include)
+Script for upgrade from 3.0.6 to 3.0.9 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.7 to 3.0.9 - from renamePhoneExtentionToPhoneExtension (not include) to UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.7.1 to 3.0.9 - from renamePhoneExtentionToPhoneExtension (not include) to UpdateUserPersonalIdFieldToUsername(include)
+Script for upgrade from 3.0.7.2 to 3.0.9 - from renamePhoneExtentionToPhoneExtension (not include) to UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.8 to 3.0.9 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to UpdateUserPersonalIdFieldToUsername (include)
+Script for upgrade from 3.0.8.1 to 3.0.9 - from AddSenderIpColumnToDocumentCollection (not include) to UpdateUserPersonalIdFieldToUsername(include)
+
+
+
+
+***** V3.0.9.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.2 to 3.0.9.1 - from addSigner1AndReCapcheToConfigTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.3 to 3.0.9.1 - from addAuthModeToSignerTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.3.1 to 3.0.9.1 - from addSigner1UserPasswordToConfiguration (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.4 to 3.0.9.1 - from addSigner1UserPasswordToConfiguration (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.5 to 3.0.9.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.6 to 3.0.9.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.7 to 3.0.9.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.7.1 to 3.0.9.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.7.2 to 3.0.9.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddLastUsedTimeToContactAndTempleteinclude)
+Script for upgrade from 3.0.8 to 3.0.9.1 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.8.1 to 3.0.9.1 - from AddSenderIpColumnToDocumentCollection (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.9 to 3.0.9.1 - from UpdateUserPersonalIdFieldToUsername (not include) to AddLastUsedTimeToContactAndTemplete(include)
+
+
+***** V3.0.9.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.2 to 3.0.9.2 - from addSigner1AndReCapcheToConfigTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.3 to 3.0.9.2 - from addAuthModeToSignerTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.3.1 to 3.0.9.2 - from addSigner1UserPasswordToConfiguration (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.4 to 3.0.9.2 - from addSigner1UserPasswordToConfiguration (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.5 to 3.0.9.2 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.6 to 3.0.9.2 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.7 to 3.0.9.2 - from renamePhoneExtentionToPhoneExtension (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.7.1 to 3.0.9.2 - from renamePhoneExtentionToPhoneExtension (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.7.2 to 3.0.9.2 - from renamePhoneExtentionToPhoneExtension (not include) to AddLastUsedTimeToContactAndTempleteinclude)
+Script for upgrade from 3.0.8 to 3.0.9.2 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.8.1 to 3.0.9.2 - from AddSenderIpColumnToDocumentCollection (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.9 to 3.0.9.2 - from UpdateUserPersonalIdFieldToUsername (not include) to AddLastUsedTimeToContactAndTemplete(include)
+Script for upgrade from 3.0.9.1 to 3.0.9.2 - from AddLastUsedTimeToContactAndTemplete (not include) to AddLastUsedTimeToContactAndTemplete(include)
+
+
+***** V3.1.0.0 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.2 to 3.1.0.0 - from addSigner1AndReCapcheToConfigTable (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.3 to 3.1.0.0 - from addAuthModeToSignerTable (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.3.1 to 3.1.0.0 - from addSigner1UserPasswordToConfiguration (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.4 to 3.1.0.0 - from addSigner1UserPasswordToConfiguration (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.5 to 3.1.0.0 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.6 to 3.1.0.0 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.7 to 3.1.0.0 - from renamePhoneExtentionToPhoneExtension (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.7.1 to 3.1.0.0 - from renamePhoneExtentionToPhoneExtension (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.7.2 to 3.1.0.0 - from renamePhoneExtentionToPhoneExtension (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.8 to 3.1.0.0 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.8.1 to 3.1.0.0 - from AddSenderIpColumnToDocumentCollection (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.9 to 3.1.0.0 - from UpdateUserPersonalIdFieldToUsername (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.9.1 to 3.1.0.0 - from AddLastUsedTimeToContactAndTemplete (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+Script for upgrade from 3.0.9.2 to 3.1.0.0 - from AddLastUsedTimeToContactAndTemplete (not include) to AddUseInternalAuthDefaultToConfiguration(include)
+
+
+***** V3.1.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) toAddDefaultSettingForExternalGraphicSignatureSettingsFixTypo 
+Script for upgrade from 3.0.2 to 3.1.1 - from addSigner1AndReCapcheToConfigTable (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.1 - from addAuthModeToSignerTable (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.1 - from addSigner1UserPasswordToConfiguration (not include) toAddDefaultSettingForExternalGraphicSignatureSettingsFixTypo:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.1 - from addSigner1UserPasswordToConfiguration (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.5 to 3.1.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.6 to 3.1.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.7 to 3.1.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.7.1 to 3.1.1- from renamePhoneExtentionToPhoneExtension (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.7.2 to 3.1.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.8 to 3.1.1 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.8.1 to 3.1.1 - from AddSenderIpColumnToDocumentCollection (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.9 to 3.1.1 - from UpdateUserPersonalIdFieldToUsername (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.9.1 to 3.1.1 - from AddLastUsedTimeToContactAndTemplete (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.0.9.2 to 3.1.1 - from AddLastUsedTimeToContactAndTemplete (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+Script for upgrade from 3.1.0 to 3.1.1 - from AddUseInternalAuthDefaultToConfiguration (not include) to AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo
+
+
+
+***** V3.1.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.2 - from addSigner1AndReCapcheToConfigTable (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.3 to 3.1.2 - from addAuthModeToSignerTable (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.3.1 to 3.1.2 - from addSigner1UserPasswordToConfiguration (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.4 to 3.1.2 - from addSigner1UserPasswordToConfiguration (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.5 to 3.1.2 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.6 to 3.1.2 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.7 to 3.1.2 - from renamePhoneExtentionToPhoneExtension (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.7.1 to 3.1.2- from renamePhoneExtentionToPhoneExtension (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.7.2 to 3.1.2 - from renamePhoneExtentionToPhoneExtension (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.8 to 3.1.2 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.8.1 to 3.1.2 - from AddSenderIpColumnToDocumentCollection (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.9 to 3.1.2 - from UpdateUserPersonalIdFieldToUsername (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.9.1 to 3.1.2 - from AddLastUsedTimeToContactAndTemplete (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.0.9.2 to 3.1.1 - from AddLastUsedTimeToContactAndTemplete (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.1.0 to 3.1.2 - from AddUseInternalAuthDefaultToConfiguration (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+Script for upgrade from 3.1.1 to 3.1.2 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf
+
+
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.1.2\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.0.7.1:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To renamePhoneExtentionToPhoneExtension -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.1\upgrade-3.0.2to3.0.7.1\updateDb.sql
+
+
+
+***** V3.1.3 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.3 - from addSigner1AndReCapcheToConfigTable (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.3 - from addAuthModeToSignerTable (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.3 - from addSigner1UserPasswordToConfiguration (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.3 - from addSigner1UserPasswordToConfiguration (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.3 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.3 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.3 - from renamePhoneExtentionToPhoneExtension (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.3- from renamePhoneExtentionToPhoneExtension (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.3 - from renamePhoneExtentionToPhoneExtension (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.3 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.3 - from AddSenderIpColumnToDocumentCollection (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.3 - from UpdateUserPersonalIdFieldToUsername (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.3 - from AddLastUsedTimeToContactAndTemplete (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.3 - from AddLastUsedTimeToContactAndTemplete (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.3 - from AddUseInternalAuthDefaultToConfiguration (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.3 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.3 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddAdditionalInformationForSignerToken:fill in most update migration_____(include)
+
+
+
+***** V3.1.3.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.3.1 - from addSigner1AndReCapcheToConfigTable (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.3.1 - from addAuthModeToSignerTable (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.3.1 - from addSigner1UserPasswordToConfiguration (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.3.1 - from addSigner1UserPasswordToConfiguration (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.3.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.3.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.3.1 - from renamePhoneExtentionToPhoneExtension (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.3.1- from renamePhoneExtentionToPhoneExtension (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.3.1 - from renamePhoneExtentionToPhoneExtension (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.3.1 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.3.1 - from AddSenderIpColumnToDocumentCollection (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.3.1 - from UpdateUserPersonalIdFieldToUsername (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.3.1 - from AddLastUsedTimeToContactAndTemplete (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.3.1 - from AddLastUsedTimeToContactAndTemplete (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.3.1 - from AddUseInternalAuthDefaultToConfiguration (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.3.1 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.3.1 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.3.1 - from AddAdditionalInformationForSignerToken (not include) to DeviceInformationToSigner:fill in most update migration_____(include)
+
+
+***** V3.1.3.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.3.2 - from addSigner1AndReCapcheToConfigTable (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.3.2 - from addAuthModeToSignerTable (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.3.2 - from addSigner1UserPasswordToConfiguration (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.3.2 - from addSigner1UserPasswordToConfiguration (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.3.2 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.3.2 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.3.2 - from renamePhoneExtentionToPhoneExtension (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.3.2- from renamePhoneExtentionToPhoneExtension (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.3.2 - from renamePhoneExtentionToPhoneExtension (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.3.2 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.3.2 - from AddSenderIpColumnToDocumentCollection (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.3.2 - from UpdateUserPersonalIdFieldToUsername (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.3.2 - from AddLastUsedTimeToContactAndTemplete (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.3.2 - from AddLastUsedTimeToContactAndTemplete (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.3.2 - from AddUseInternalAuthDefaultToConfiguration (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.3.2 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.3.2 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.3.2 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.3.2 - from DeviceInformationToSigner (not include) to addHistoryIntegratorApiKeyAndUrlConfiguration:fill in most update migration_____(include)
+
+
+
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.1.4\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.0.7.1:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To renamePhoneExtentionToPhoneExtension -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.1\upgrade-3.0.2to3.0.7.1\updateDb.sql
+
+
+
+***** V3.1.4 *****
+******************
+Script for create clean and new DB - from 'init' (include) AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.4 - from addSigner1AndReCapcheToConfigTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.4 - from addAuthModeToSignerTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.4 - from addSigner1UserPasswordToConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.4 - from addSigner1UserPasswordToConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.4 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.4 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.4 - from renamePhoneExtentionToPhoneExtension (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.4- from renamePhoneExtentionToPhoneExtension (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.4 - from renamePhoneExtentionToPhoneExtension (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.4 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.4 - from AddSenderIpColumnToDocumentCollection (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.4 - from UpdateUserPersonalIdFieldToUsername (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.4 - from AddLastUsedTimeToContactAndTemplete (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.4 - from AddLastUsedTimeToContactAndTemplete (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.4 - from AddUseInternalAuthDefaultToConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.4 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.4 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.4 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.4 - from DeviceInformationToSigner (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.4 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+
+
+
+
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.1.4\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.0.7.1:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To renamePhoneExtentionToPhoneExtension -Output \\fs01\Production\WeSign\V3\DB_Script\v3.0.7.1\upgrade-3.0.2to3.0.7.1\updateDb.sql
+
+
+***** V3.1.4.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.4.1 - from addSigner1AndReCapcheToConfigTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.4.1 - from addAuthModeToSignerTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.4.1 - from addSigner1UserPasswordToConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.4.1 - from addSigner1UserPasswordToConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.4.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.4.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.4.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.4.1- from renamePhoneExtentionToPhoneExtension (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.4.1 - from renamePhoneExtentionToPhoneExtension (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.4.1 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.4.1 - from AddSenderIpColumnToDocumentCollection (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.4.1 - from UpdateUserPersonalIdFieldToUsername (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.4.1 - from AddLastUsedTimeToContactAndTemplete (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.4.1 - from AddLastUsedTimeToContactAndTemplete (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.4.1 - from AddUseInternalAuthDefaultToConfiguration (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.4.1 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.4.1 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.4.1 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.4.1 - from DeviceInformationToSigner (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.4.1 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) toAddUserPhoneColumn:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.1.4.1 - from AddUserPhoneColumn (not include) to AddUserPhoneColumn:fill in most update migration_____(include)
+
+
+
+***** V3.1.4.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.4.2 - from addSigner1AndReCapcheToConfigTable (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.4.2 - from addAuthModeToSignerTable (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.4.2 - from addSigner1UserPasswordToConfiguration (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.4.2 - from addSigner1UserPasswordToConfiguration (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.4.2 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.4.2 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.4.2 - from renamePhoneExtentionToPhoneExtension (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.4.2- from renamePhoneExtentionToPhoneExtension (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.4.2 - from renamePhoneExtentionToPhoneExtension (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.4.2 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.4.2 - from AddSenderIpColumnToDocumentCollection (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.4.2 - from UpdateUserPersonalIdFieldToUsername (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.4.2 - from AddLastUsedTimeToContactAndTemplete (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.4.2 - from AddLastUsedTimeToContactAndTemplete (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.4.2 - from AddUseInternalAuthDefaultToConfiguration (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.4.2 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.4.2 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.4.2 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.4.2 - from DeviceInformationToSigner (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.4.2 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.1.4.2 - from AddUserPhoneColumn (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.1.4.2 - from AddUserPhoneColumn (not include) to AddAttemptsToSignerOtpDetails:fill in most update migration_____(include)
+
+
+
+***** V3.1.5 *****
+******************
+Script for create clean and new DB - from 'init' (include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.5 - from addSigner1AndReCapcheToConfigTable (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.5 - from addAuthModeToSignerTable (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.5 - from addSigner1UserPasswordToConfiguration (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.5 - from addSigner1UserPasswordToConfiguration (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.5 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.5 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.5 - from renamePhoneExtentionToPhoneExtension (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.5- from renamePhoneExtentionToPhoneExtension (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.5 - from renamePhoneExtentionToPhoneExtension (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.5 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.5 - from AddSenderIpColumnToDocumentCollection (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.5 - from UpdateUserPersonalIdFieldToUsername (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.5 - from AddLastUsedTimeToContactAndTemplete (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.5 - from AddLastUsedTimeToContactAndTemplete (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.5 - from AddUseInternalAuthDefaultToConfiguration (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.5 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.5 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.5 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.5 - from DeviceInformationToSigner (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.5 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.1.5 - from AddUserPhoneColumn (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.1.5 - from AddUserPhoneColumn (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.2 to 3.1.5 - from AddAttemptsToSignerOtpDetails (not include) to addShouldEnableSignatureFormatToCompanyConfiguration:fill in most update migration_____(include)
+
+
+
+
+***** V3.1.6 *****
+******************
+Script for create clean and new DB - from 'init' (include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.6 - from addSigner1AndReCapcheToConfigTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.6 - from addAuthModeToSignerTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.6 - from addSigner1UserPasswordToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.6 - from addSigner1UserPasswordToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.6 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.6 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.6 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.6 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.6 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.6 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.6 - from AddSenderIpColumnToDocumentCollection (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.6 - from UpdateUserPersonalIdFieldToUsername (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.6 - from AddLastUsedTimeToContactAndTemplete (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.6 - from AddLastUsedTimeToContactAndTemplete (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.6 - from AddUseInternalAuthDefaultToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.6 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.6 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.6 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.6 - from DeviceInformationToSigner (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.6 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.1.6 - from AddUserPhoneColumn (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.1.6 - from AddUserPhoneColumn (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.2 to 3.1.6 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.5 to 3.1.6 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+
+
+***** V3.1.6.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.6.1 - from addSigner1AndReCapcheToConfigTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.6.1 - from addAuthModeToSignerTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.6.1 - from addSigner1UserPasswordToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.6.1 - from addSigner1UserPasswordToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.6.1 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.6.1 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.6.1 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.6.1 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.6.1 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.6.1 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.6.1 - from AddSenderIpColumnToDocumentCollection (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.6.1 - from UpdateUserPersonalIdFieldToUsername (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.6.1 - from AddLastUsedTimeToContactAndTemplete (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.6.1 - from AddLastUsedTimeToContactAndTemplete (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.6.1 - from AddUseInternalAuthDefaultToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.6.1 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.6.1 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.6.1 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.6.1 - from DeviceInformationToSigner (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.6.1 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.1.6.1 - from AddUserPhoneColumn (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.1.6.1 - from AddUserPhoneColumn (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.2 to 3.1.6.1 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.5 to 3.1.6.1 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.6 to 3.1.6.1 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+
+
+***** V3.1.6.2 *****
+******************
+Script for create clean and new DB - from 'init' (include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.1.6.2 - from addSigner1AndReCapcheToConfigTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.1.6.2 - from addAuthModeToSignerTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.1.6.2 - from addSigner1UserPasswordToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.1.6.2 - from addSigner1UserPasswordToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.1.6.2 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.1.6.2 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.1.6.2 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.1.6.2 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.1.6.2 - from renamePhoneExtentionToPhoneExtension (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.1.6.2 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.1.6.2 - from AddSenderIpColumnToDocumentCollection (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.1.6.2 - from UpdateUserPersonalIdFieldToUsername (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.1.6.2 - from AddLastUsedTimeToContactAndTemplete (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.1.6.2 - from AddLastUsedTimeToContactAndTemplete (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.1.6.2 - from AddUseInternalAuthDefaultToConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.1.6.2 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.1.6.2 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.1.6.2 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.1.6.2 - from DeviceInformationToSigner (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.1.6.2 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.1.6.2 - from AddUserPhoneColumn (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.1.6.2 - from AddUserPhoneColumn (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.2 to 3.1.6.2 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.5 to 3.1.6.2 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.6 to 3.1.6.2 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+Script for upgrade from 3.1.6.1 to 3.1.6.2 - from AddAttemptsToSignerOtpDetails (not include) to RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration:fill in most update migration_____(include)
+
+
+//Script example for clean installation:
+//Script-Migration -Output \\fs01\Production\WeSign\V3\DB_Script\v3.2.0\CreateWeSignTables.sql
+//Script example for upgrade installation from version 3.0.2 to 3.2.0:
+//Script-Migration -From addSigner1AndReCapcheToConfigTable -To fixSystemAdminPassword -Output \\fs01\Production\WeSign\V3\DB_Script\v3.2.0\upgrade-3.0.2to3.2.0\updateDb.sql
+
+
+
+***** V3.2.0 *****
+******************
+Script for create clean and new DB - from 'init' (include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.2.0 - from addSigner1AndReCapcheToConfigTable (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.2.0 - from addAuthModeToSignerTable (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.2.0 - from addSigner1UserPasswordToConfiguration (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.2.0 - from addSigner1UserPasswordToConfiguration (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.2.0 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.2.0 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.2.0 - from renamePhoneExtentionToPhoneExtension (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.2.0 - from renamePhoneExtentionToPhoneExtension (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.2.0 - from renamePhoneExtentionToPhoneExtension (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.2.0 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.2.0 - from AddSenderIpColumnToDocumentCollection (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.2.0 - from UpdateUserPersonalIdFieldToUsername (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.2.0 - from AddLastUsedTimeToContactAndTemplete (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.2.0 - from AddLastUsedTimeToContactAndTemplete (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.2.0 - from AddUseInternalAuthDefaultToConfiguration (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.2.0 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.2.0 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.2.0 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.2.0 - from DeviceInformationToSigner (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.2.0 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.2.0 - from AddUserPhoneColumn (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.2.0 - from AddUserPhoneColumn (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.2 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.5 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.6 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.6.1 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+Script for upgrade from 3.1.6.2 to 3.2.0 - from RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration (not include) to fixSystemAdminPassword:fill in most update migration_____(include)
+
+
+
+
+
+***** V3.2.1 *****
+******************
+Script for create clean and new DB - from 'init' (include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.2 to 3.2.0 - from addSigner1AndReCapcheToConfigTable (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.3 to 3.2.0 - from addAuthModeToSignerTable (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.3.1 to 3.2.0 - from addSigner1UserPasswordToConfiguration (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.4 to 3.2.0 - from addSigner1UserPasswordToConfiguration (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.5 to 3.2.0 - from addEnableSigner1ExtraSigningTypesToConfigTable (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.6 to 3.2.0 - from addShouldSignUsingSigner1AfterDocumentSigningFlowToDocumentCollectionTable (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.7 to 3.2.0 - from renamePhoneExtentionToPhoneExtension (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.1 to 3.2.0 - from renamePhoneExtentionToPhoneExtension (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.7.2 to 3.2.0 - from renamePhoneExtentionToPhoneExtension (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.8 to 3.2.0 - from AddDefaultSigingTypeForCompanySetSigingDefaultToGrafic (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.8.1 to 3.2.0 - from AddSenderIpColumnToDocumentCollection (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.9 to 3.2.0 - from UpdateUserPersonalIdFieldToUsername (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.1 to 3.2.0 - from AddLastUsedTimeToContactAndTemplete (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.0.9.2 to 3.2.0 - from AddLastUsedTimeToContactAndTemplete (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.0 to 3.2.0 - from AddUseInternalAuthDefaultToConfiguration (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.1 to 3.2.0 - from AddDefaultSettingForExternalGraphicSignatureSettingsFixTypo (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.2 to 3.2.0 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.3 to 3.2.0 - from changeFieldEnableDisplaySignerNameInSignatureToTrueInCompConf (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.1 to 3.2.0 - from DeviceInformationToSigner (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.3.2 to 3.2.0 - from addHistoryIntegratorApiKeyAndUrlConfiguration (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.4 to 3.2.0 - from AddUserPhoneColumn (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.1 to 3.2.0 - from AddUserPhoneColumn (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.4.2 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.5 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.6 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.6.1 to 3.2.0 - from AddAttemptsToSignerOtpDetails (not include) to ____TODO:fill in most update migration_____(include)
+Script for upgrade from 3.1.6.2 to 3.2.0 - from RemoveShouldEnableGovernmentSignatureFromCompanyConfiguration (not include) to ____TODO:fill in most update migration_____(include)

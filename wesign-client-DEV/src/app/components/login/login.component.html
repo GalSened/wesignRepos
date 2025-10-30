@@ -1,0 +1,124 @@
+<div class="ct-p-login">
+    <main>
+        <sgn-alert-component></sgn-alert-component>
+        <div class="main__img"></div>
+
+        <div class="main__content">
+            <header>
+                <div class="header__logo" (click)="onLogoClicked()" [routerLink]="['/dashboard','main']"></div>
+                <sgn-lang-selector></sgn-lang-selector>
+            </header>
+
+
+
+            <div class="content__form ct-animate-fadein">
+                <h2 *ngIf="!expiredPassFlow">{{'LOGIN.LOGIN' | translate}}</h2>
+
+                <div class="ct-break--short"></div>
+
+                <sgn-otp-login-flow [otpFlow]="otpFlow" [token]="otpToken"></sgn-otp-login-flow>
+
+                <sgn-expired-password *ngIf="expiredPassFlow" (expiredTimeToChange)="onPasswordChangeTimeExpired()"
+                    (passwordChanged)="onPasswordChanged()" [expiredPassFlow]="expiredPassFlow"
+                    [token]="expiredPassToken"></sgn-expired-password>
+
+                <form #f="ngForm" novalidate>
+                    <ng-container *ngIf="!ShowSSOOnly && !otpFlow && !expiredPassFlow">
+                        <div class="ct-input--secondary__container">
+
+                            <input class="ct-input--secondary" required minlength="5" maxlength="50" type="email"
+                                name="email" #emailEl [(ngModel)]="email"
+                                [class.is-error]="(f.form.get('email') && f.form.get('email').invalid) && (f.submitted && f.form.invalid)"
+                                placeholder="{{'LOGIN.EMAIL_OR_USERNAME' | translate }}">
+
+                            <span class="input-border"></span>
+
+                            <label
+                                *ngIf="(f.form.get('email') && f.form.get('email').invalid) && (f.submitted && f.form.invalid)"
+                                class=" is-error">{{'ERROR.INPUT.I_EMAIL_OR_USERNAME' | translate}}</label>
+                        </div>
+
+                        <div class="ct-break--short"></div>
+
+                        <div class="ct-input--secondary__container">
+
+                            <input class="ct-input--secondary" required minlength="8" type="password" name="password"
+                                autocomplete="password" #passwordEl [(ngModel)]="password"
+                                [class.is-error]="(f.form.get('password') && f.form.get('password').invalid) && (f.submitted && f.form.invalid)"
+                                placeholder="{{'LOGIN.PASSWORD' | translate }}" (keyup.enter)="onEnter()">
+
+                            <div class="ct-float-right">
+                                <button class="ct-button--icon show-password" [togglePass]="passwordEl"
+                                    [(eyeIconProp)]="eyeIcon">
+                                    <i-feather [name]="eyeIcon"></i-feather>
+                                </button>
+                            </div>
+
+                            <span class="input-border"></span>
+
+                            <label
+                                *ngIf="(f.form.get('password') && f.form.get('password').invalid) && (f.submitted && f.form.invalid)"
+                                class="is-error">{{'ERROR.INPUT.E_CRED' | translate}}</label>
+                        </div>
+
+                        <div class="ct-break--short"></div>
+
+                        <label class="is-error bold-font"
+                            *ngIf="errorMessage || (f.submitted && f.form.invalid)">{{errorMessage | translate}}</label>
+
+                        <div class="ct-break--short"></div>
+
+                        <input id="loginInput" type="submit" (click)="doLogin()" [disabled]="isBusy && SSOisBusy"
+                            value="{{'LOGIN.LOGIN' | translate }}">
+
+                        <div *ngIf="isBusy" class="ct-c-loader ct-float-right">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+
+
+
+                        <div class="ct-break--short"></div>
+                        <div class="ct-text-center">
+                            <a *ngIf="SSO" (click)="SSOLogin()">{{"LOGIN.SSO" | translate }}</a>
+                        </div>
+
+
+                        <div class="ct-break--short"></div>
+
+                        <label class="ct-checkbox ct-text-left">
+                            <span>{{"LOGIN.REMEMBER_ME" | translate }}</span>
+
+                            <input type="checkbox" name="rememberme" [(ngModel)]="persistent">
+                            <!-- (click)="togglePersistent()" -->
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label>
+
+                        <div class="ct-break--short"></div>
+
+                        <div class="ct-separator"></div>
+
+                        <div class="ct-break--short"></div>
+
+                        <a [routerLink]="['forget']">{{"LOGIN.FORGOT_PASSWORD" | translate }}</a>
+
+                        <div class="ct-break--short"></div>
+                    </ng-container>
+
+                    <input id="SSOloginInput" type="submit" (click)="SSOLogin()" [disabled]="isBusy && SSOisBusy"
+                        *ngIf="ShowSSOOnly" value="{{'LOGIN.SSO' | translate }}">
+
+                    <a *ngIf="enableRegister" [routerLink]="['register']">{{"LOGIN.REGISTER" | translate}}</a>
+
+
+
+                </form>
+
+
+            </div>
+
+            <sgn-footer-component [isFullClass]="false"></sgn-footer-component>
+        </div>
+    </main>
+</div>

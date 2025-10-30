@@ -1,0 +1,118 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Enums\FileGateScanner\**" />
+    <EmbeddedResource Remove="Enums\FileGateScanner\**" />
+    <None Remove="Enums\FileGateScanner\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClickSendV3API" Version="5.0.72" />
+    <PackageReference Include="Cloudmersive.APIClient.NETCore.DocumentAndDataConvert" Version="2.5.0" />
+    <PackageReference Include="Comda.Authentication" Version="1.11.0" />
+    <PackageReference Include="Comda.License" Version="1.5.9" />
+    <PackageReference Include="CsvHelper" Version="17.0.1" />
+    <PackageReference Include="CTHashSignerExternal" Version="1.1.14" />
+    <PackageReference Include="CTInterfaces" Version="1.1.6" />
+    <PackageReference Include="CTPdfSigner" Version="1.1.3" />
+    <PackageReference Include="CTXmlSigner" Version="1.1.2" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="4.13.0" />
+    <PackageReference Include="Google.Cloud.Vision.V1" Version="3.7.0" />
+    <PackageReference Include="itextsharp-4.1.6" Version="1.0.7" />
+    <PackageReference Include="LazyCache" Version="2.4.0" />
+    <PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
+    <PackageReference Include="MailKit" Version="4.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="21.1.3" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.3" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="8.1.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.1.0" />
+    <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0" />
+    <PackageReference Include="Twilio" Version="7.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Interop.CERTCLILib">
+      <HintPath>ExternalDLLs\Interop.CERTCLILib.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.CERTENROLLLib">
+      <HintPath>ExternalDLLs\Interop.CERTENROLLLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ExternalDLLs\Interop.CERTCLILib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ExternalDLLs\Interop.CERTENROLLLib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\EmailBody.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Emails.en.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Emails.he.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\LmsLicenseParams.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\WeSign Signng Software.pfx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\WeSign Signng Software.pfx" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Certificate\Certificate.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Handlers\Files\External\" />
+	  <Folder Include="Interfaces\History\" />
+	</ItemGroup>
+
+</Project>

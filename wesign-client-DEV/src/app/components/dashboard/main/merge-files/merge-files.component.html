@@ -1,0 +1,102 @@
+<sgn-alert-component></sgn-alert-component>
+
+<div class="ws_body__wrapper">
+
+    <body class="ct-p-profile">
+        <div class="ct-c-titlebar">
+            <main>
+                <div></div>
+
+                <h1>{{'GLOBAL.MERGE_FILES' | translate}}</h1>
+            </main>
+
+            <nav>
+                <button (click)='this.router.navigate(["dashboard"]);' class="ct-button--titlebar-outline">
+                    {{'FORGET.BACK' | translate}}
+                </button>
+            </nav>
+        </div>
+
+        <main>
+            <aside  style="width: 200px;">
+                <menu id="contactsMenu">
+                    <ul style="  display: grid; align-items: center;justify-content: center; ">
+                        <li id="addContact" >{{'GLOBAL.MERGE_FILES_PANEL'
+                            | translate}}
+                        </li>
+                    
+                    </ul>
+                </menu>
+            </aside>
+
+
+            
+            <div class="main__content ct-animate-fadein" >
+                
+                    <span>{{'MERGE_FILES.NAME' | translate}}</span>
+                    <div class="ct-break--shorter"></div>
+
+                    <input type="text" class="ct-input--primary ct-input--short" required pattern=".{2,}" minlength="2" maxlength="50"name="name" [(ngModel)]="collentionName">
+
+                    
+                    <div class="ct-break--shorter"></div>
+                    <span>{{'MERGE_FILES.AMOUNT' | translate}}</span>
+                
+                    <div class="ct-break--shorter"></div>
+                
+                    <ng-select  style="top:-5px;max-width: 300px;" class="ngselect-ct-select--short ngselect-ct-select--primary"
+                        [searchable]="false" [clearable]="false"  [(ngModel)]="amuntOfFiles">
+                        <ng-option value="2" >2</ng-option>
+                        <ng-option value="3">3</ng-option>
+                        <ng-option value="4">4</ng-option>
+                        <ng-option value="5">5</ng-option>
+                    </ng-select>
+                    <div class="ct-break--shorter"></div>
+                    <span>{{'MERGE_FILES.CONTENT_ALLOW' | translate}}</span>
+                    <div class="ct-break--shorter"></div>
+                    <div class="ct-break--shorter"></div>
+                    <section>                    
+                    <sgn-merge-file-selector *ngIf="filesSelectorInfo" [name]="filesSelectorInfo[0][0]" [title]="filesSelectorInfo[0][1]" (clear)="clear(1)"
+                    (dataSelect)="dataSelected(1, $event)"></sgn-merge-file-selector>
+                    <div class="ct-break--shorter"></div>
+                    <sgn-merge-file-selector *ngIf="filesSelectorInfo" [name]="filesSelectorInfo[1][0]" [title]="filesSelectorInfo[1][1]" (clear)="clear(2)"
+                    (dataSelect)="dataSelected(2, $event)"></sgn-merge-file-selector>
+                  
+                    <div class="ct-break--shorter"  *ngIf="amuntOfFiles > 2"  >
+                        <div class="ct-break--shorter"></div>
+                        <sgn-merge-file-selector *ngIf="filesSelectorInfo" [name]="filesSelectorInfo[2][0]" [title]="filesSelectorInfo[2][1]" (clear)="clear(3)"
+                        (dataSelect)="dataSelected(3, $event)"></sgn-merge-file-selector>
+                    </div>
+                  
+                    <div class="ct-break--shorter"  *ngIf="amuntOfFiles > 3">
+                        <div class="ct-break--shorter"></div>
+                        <sgn-merge-file-selector  *ngIf="filesSelectorInfo" [name]="filesSelectorInfo[3][0]" [title]="filesSelectorInfo[3][1]" (clear)="clear(4)"
+                        (dataSelect)="dataSelected(4, $event)" ></sgn-merge-file-selector>
+                    </div>
+                    <div class="ct-break--shorter"  *ngIf="amuntOfFiles > 4">
+                        <div class="ct-break--shorter"></div>
+                        <sgn-merge-file-selector *ngIf="filesSelectorInfo"  [name]="filesSelectorInfo[4][0]" [title]="filesSelectorInfo[4][1]" (clear)="clear(5)"
+                        (dataSelect)="dataSelected(5, $event)"></sgn-merge-file-selector>
+                    </div>                        
+                </section>
+                
+                <ng-container *ngIf="errorMsg">
+                    <div class="ct-break--shorter"></div>
+                    <div class="ct-text-center">
+                        <label class="is-error">{{errorMsg}}</label>
+                    </div>
+                </ng-container>
+                <div class="ct-break--shorter"></div>
+            <div >
+                 <button class="ct-button--primary " style="margin: 0 10px" (click)="createTemplate()">{{'SIGNERS.SAVE_TO_MY_TEMPLATES'
+                    | translate}}</button>
+                    <button class="ct-button--primary " (click)="sendDocument()" >{{'BUTTONS.SIGN'
+                        | translate}}</button>
+                        <button class="ct-button--outline" [routerLink]="['/dashboard','main']">{{'BUTTONS.CANCEL'
+                            | translate}}</button>
+            </div>
+
+            </div>
+        </main>
+   
+    </body>

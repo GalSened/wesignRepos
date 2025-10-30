@@ -1,0 +1,168 @@
+<sgn-alert-component></sgn-alert-component>
+<div class="ct-p-inner">
+
+    <sgn-note *ngIf="showPersonalNote" (hide)="hide()" [signer]="currSigner"></sgn-note>
+    <sgn-attachments *ngIf="showAttachments" (hide)="hide()" (approve)="hide()" [signer]="currSigner"></sgn-attachments>
+    <sgn-appendices *ngIf="showAppendices" (hide)="hide()" [signer]="currSigner"
+        [documentAppendices]="this.request.senderAppendices" (getDocumentAppendices)="getDocumentAppendices($event)">
+    </sgn-appendices>
+    <sgn-otp *ngIf="showOtp" (hide)="hide()" (updateIdentificationMode)="updateIdentificationMode()" [signer]="currSigner"></sgn-otp>
+<sgn-video-confrence *ngIf="showVideoConferencePopUp && enableVideoConference" (hide)="hide()"
+[signers]="selectDistinctContactVideoConfrence"  [documentName]="documentName">
+
+</sgn-video-confrence>
+    <sgn-visual-identification *ngIf="enableVisualIdentification && showVisualIdentificationPopUp" (hide)="hide()" (updateIdentificationMode)="updateIdentificationMode()"
+        [signer]="this.currSigner"></sgn-visual-identification>
+
+
+    <div class="ct-c-titlebar">
+        <main>
+            <div></div>
+
+            <h1>{{'SIGNERS.REVIEW_DOCUMENT' | translate}}</h1>
+        </main>
+
+        <nav>
+            <!--  <button class="ct-button--titlebar-outline" (click)="back()">
+                {{'SIGNERS.BACK' | translate}}
+            </button>  off for now, need to fix bug - when return back the app reducer add to the fields again, nned to clear store and mapping
+            edit-page.component.ts  in ngOnInit
+        -->
+        <button class="ct-button--titlebar-primary" [disabled]="isBusy" (click)="backToEditDocument()">
+            {{'FORGET.BACK' | translate}}
+        </button>
+
+            <button class="ct-button--titlebar-primary" [disabled]="isBusy" (click)="sendDocument()">
+                {{'FORGET.SEND' | translate}}
+            </button>
+        </nav>
+    </div>
+
+    <main class="ct-animate-fadein">
+        <div class="container">
+
+            <h3>{{documentName}}</h3>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="container__table">
+                <table cellpadding="0" cellspacing="0" class="ct-text-left"  >
+                    <tr>
+                        <th width="10"></th>
+                        <th align="center" *ngIf="request.signers.length > 1">{{'SIGNERS.CHANGE_SIGNERS_ORDER' | translate}}</th>
+                        <th>{{'SIGNERS.RECIPIENT' | translate}}</th>
+                        <th>{{'REGISTER.SEND_BY' | translate}}</th>
+                        <th *ngIf="signerAuthActive">{{'SIGNERS.USE_INTERNAL_AUTH' | translate}}</th>
+                        <th *ngIf="IdentificationTypeRequierd"> {{'DOCUMENT.IDENTIFICATION_TYPE' | translate }}</th>
+                        <th width="10">
+                        </th>
+                    </tr>
+                    <ng-container *ngIf="state$ | async as state">
+
+                        <ng-container *ngFor="let signer of request.signers ; let i = index">
+
+                            <tr class="{{signersClassId[i]}}">
+                                <td align="center">{{i+1}}</td>
+                                <td *ngIf="request.signers.length > 1" align="center">
+                                    <button class="ct-button--icon" *ngIf="i != 0" (click)="upClick(i)">
+                                        <i-feather name="chevron-up"></i-feather>
+                                    </button>
+                                    <button class="ct-button--icon" *ngIf="i != request.signers.length-1" (click)="downClick(i)">
+                                        <i-feather name="chevron-down"></i-feather>
+                                    </button>
+                                </td>
+                                <td>{{signer.contactName}}</td>
+                                <td>{{SendingMethod[signer.sendingMethod]}}</td>
+                                <td *ngIf="signerAuthActive">
+                                    <label class="ct-checkbox ct-text-left">
+                                        <span>&nbsp;</span>
+                                        <input type="checkbox" [checked]="isAuthSelected(i)"
+                                            (change)="selectedAuthForSigner($event, i)" />
+                                        <span class="ct-checkbox__checkmark"></span>
+                                    </label>
+
+                                </td>
+                                
+                               
+                            
+                                 <td *ngIf="IdentificationTypeRequierd" display="flex"> 
+                                    <button *ngIf="SignersIdentificationType[i]" style="all:unset; cursor: pointer;" (click)="removeSignerMode(i)"><i-feather style="color:red;" name="x"></i-feather></button>
+                                    <span> {{SignersIdentificationType[i] | translate}} </span>
+                                 </td>
+                              
+                                <td class="ct-text-right">
+                                    <button class="ct-button--icon" (click)="showDrop(i, $event)">
+                                        <i-feather name="more-vertical"></i-feather>
+                                    </button>
+
+                                    <div class="td__options-dropdown" [style.top.px]="dropDownTop" [style.left.px]="dropDownLeft" *ngIf="currSignerIndex == i"   (clickOutside)="closeclickOutside($event)">
+                                        <ul>
+                                            <li><a (click)="showPersonalNote=true">{{'GLOBAL.PERSONAL_NOTE' |
+                                                    translate}}</a></li>
+                                            <li *ngIf="signer.sendingMethod != 3"><a (click)="showAppendices=true">{{'DOCUMENT.ADD_APPENDICES' |
+                                                    translate}}</a></li>
+                                            <li><a (click)="showAttachments=true">{{'DOCUMENT.REQUEST_ATTACHMENTS' |
+                                                    translate}}</a></li>
+                                            <li *ngIf="signer.sendingMethod != 3"><a
+                                                    (click)="showOtp=true">{{'GLOBAL.OTP_AUTH' | translate}}</a></li>
+                                            <li *ngIf="signer.sendingMethod != 3 && enableVisualIdentification"
+                                            class="ct-tooltip--face-recognition"><a
+                                                    (click)="showVisualIdentificationPopUp=true">
+                                                    {{'GLOBAL.VISUAL_IDENTIFICATION' | translate}}</a> <span class="tooltiptext">{{'GLOBAL.ADDITIONAL_CHARGE'| translate}}</span></li>                                   
+                                                    <li *ngIf="signer.sendingMethod != 3 && enableVideoConference">
+                                                        <a (click)="showVideoConferencePopUpProcess()">
+                                                            {{'GLOBAL.VIDEO_CONFRENCE' | translate}}</a>
+                                                             </li>                                   
+
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </ng-container>
+                    </ng-container>
+                </table>
+            </div>
+
+            <div class="ct-break--shorter"></div>
+
+            <label class="ct-checkbox ct-text-left" (click)="updateSignMode()">
+                <span>{{'SIGNERS.SEND_TO_ALL_RECIPIENTS' | translate}}</span>
+
+                <input type="checkbox" id="ignoreSigningOrder">
+
+                <span class="ct-checkbox__checkmark"></span>
+            </label>
+
+            <ng-container *ngIf="shouldShowSigner1SigningLockOption">
+                <div class="ct-break--short"></div>
+                <label class="ct-checkbox ct-text-left" (click)="updateSigner1SigningAfterDocumentSignedMode()">
+                    <span>{{'SIGNERS.SIGN_USIGN_SIGNER1' | translate}}</span>
+                    <input type="checkbox" [(ngModel)]="appState.companySigner1Details.shouldSignAsDefaultValue">
+                    <span class="ct-checkbox__checkmark"></span>
+                </label>
+            </ng-container>
+
+            <div class="ct-break--medium"></div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'SIGNERS.PERSONAL_NOTE_ALL_RECIPIEN' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <textarea [(ngModel)]="generalNote" maxlength="350"></textarea>
+
+            <div class="ct-break--short"></div>
+
+
+        </div>
+    </main>
+
+</div>

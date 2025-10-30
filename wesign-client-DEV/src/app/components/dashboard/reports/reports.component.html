@@ -1,0 +1,5 @@
+<sgn-top-header-title [title]="'GLOBAL.REPORTS.TITLE' | translate"></sgn-top-header-title>
+<sgn-report-filter (SubmittedRequest)="SubmittedRequest($event)" 
+(SubmittedFrequencyRequest)="SubmittedFrequencyRequest($event)"
+(DeletedFrequencyRequest)="DeletedFrequencyRequest()"></sgn-report-filter>
+<sgn-report-output-table></sgn-report-output-table>

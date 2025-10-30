@@ -1,0 +1,92 @@
+<div style="display: grid;">
+    <sgn-modal-component></sgn-modal-component>
+    <sgn-pop-up-confirm [data]="popUpModal" (submitEvent)="logout()" 
+    (cancelEvent)="popUpModal.showModal = false">
+</sgn-pop-up-confirm>
+<sgn-swith-group-modal [groups]="groupsToSwitch"  [show]="showSwitchGroup" (submitEvent)="switchToGroup($event)"
+(cancelEvent)="showSwitchGroup = false"></sgn-swith-group-modal>
+    <sgn-loading></sgn-loading>
+
+    <header class="ct-p-home">
+
+      
+
+        <div id="logo_image" (click)="clearSession()" class="header__logo"  [routerLink]="['/dashboard','main']"></div>
+        <main style="display: inline;">
+        <nav style="display: inline;position: absolute;margin: 25px;">
+            <button class="button--contacts-ent" *ngIf="!tiny && uiViewLicense"   routerLinkActive="selected-top-buttons"
+            [routerLink]="['/dashboard','main']">{{'GLOBAL.DASHBOARD_SCREEN' | translate}}</button>
+
+            <button class="button--contacts-ent" *ngIf="!tiny && uiViewLicense && uiViewLicense.shouldShowContacts"   routerLinkActive="selected-top-buttons"
+            [routerLink]="['/dashboard','contacts']">{{'GLOBAL.CONTACTS' | translate}}</button>
+
+        <button (click)="onTemplatesClick()" class="button--templates-ent" *ngIf="!tiny && uiViewLicense && uiViewLicense.shouldShowTemplates"  routerLinkActive="selected-top-buttons"
+            [routerLink]="['/dashboard','templates']">{{'GLOBAL.TEMPLATES' | translate}}</button>
+
+        <button class="button--sent-ent" [class.button--sent-ent]="!tiny" [class.button--sent]="tiny" *ngIf="uiViewLicense && uiViewLicense.shouldShowDocuments"  routerLinkActive="selected-top-buttons"
+            [routerLink]="['/dashboard','documents']">{{'GLOBAL.DOCUMENTS' | translate}}</button>
+
+        <button class="button--plans" *ngIf="tiny"
+            [routerLink]="['/dashboard','profile','plans']">{{'GLOBAL.PROFILE.MY_PLAN' | translate}} </button>
+        </nav> 
+<div style="display: inherit;">
+  
+    <div class="profile-dashboard-header">
+<ng-select *ngIf="selectedOption" [(ngModel)]="selectedOption" (ngModelChange)="onLanguageChange()" class="ngselect-ct-select--short ngselect-ct-select--primary"
+        [searchable]="false" [clearable]="false">
+        <ng-option value="English">
+            <img class="ngSelect-icon-usa" width="16" height="16" />
+            {{'LANGUAGE.ENGLISH' | translate}}
+        </ng-option>
+        <ng-option value="עברית">
+            <img class="ngSelect-icon-israel" width="16" height="16" />
+            {{'LANGUAGE.HEBREW' | translate}}
+        </ng-option>
+    </ng-select>
+    <div class="hamburger" (clickOutside)="doClickOutside()" [ngClass]="manuShow?'change':''"    (click)="manuShow = !manuShow" id="myPoppup">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+          </div>
+    </div>
+       
+
+          <div class="avatarPopup"  *ngIf="manuShow" >
+            <div class="avatarSubPopup" style="z-index: 999;" *ngIf="uiUser">
+              <p>{{uiUser.name}}</p>
+              <div class="ct-break--shorter"></div>
+              <p>{{uiUser.email}}</p>
+              <div class="ct-break--shorter"></div>              
+              <p>{{uiUser.groupName}}</p>
+              <div class="ct-break--shorter"></div>
+              <ng-container *ngIf="uiUser.additionalGroupsIds && uiUser.additionalGroupsIds.length > 0">
+                <div class="flex-row" (click)="switchGroup()"> 
+                  <i-feather name="refresh-ccw" style="cursor: pointer; color: #30BBDE;" ></i-feather>
+                  <a class="ng-star-inserted" style="cursor: pointer;" >{{'GLOBAL.TOPMENU.SWITCH_GROUP' | translate}}
+                    
+                  </a>
+                </div>
+                 <div class="ct-break--shorter"></div>
+              </ng-container>
+
+              <div class="flex-row">
+                <i-feather name="activity" style="color: green;"></i-feather>
+                <p id="activeLabel" class="gridActiveLabel ng-star-inserted">{{'GLOBAL.TOPMENU.ACTIVE' | translate}}</p>
+              </div>
+              <div class="ct-break--shorter"></div>
+              
+              <div class="flex-row">
+                <i-feather title="{{'GLOBAL.PROFILE.MY_PROFILE' | translate}}" name="settings" [routerLink]="['/dashboard','profile']" style="margin: 10px;cursor: pointer;"></i-feather>
+                <i-feather title="Analytics Dashboard" name="bar-chart-2" [routerLink]="['/dashboard', 'analytics']" style="margin: 10px;cursor: pointer;"></i-feather>
+                <i-feather title="{{'GLOBAL.TOPMENU.REPORTS' | translate}}" name="file-text" [routerLink]="['/dashboard', 'reports']" style="margin: 10px;cursor: pointer;"></i-feather>
+                <i-feather title="{{'GLOBAL.TOPMENU.SIGNOUT' | translate}}" (click)="showLogOutPopup()" name="log-out" style="margin: 10px;cursor:pointer;"></i-feather>
+              </div>
+            </div>
+          </div>
+        </div>
+    </main>
+        <!-- <sgn-lang-selector #lang></sgn-lang-selector> -->
+    </header>
+
+    <router-outlet></router-outlet>
+</div>

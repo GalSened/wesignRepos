@@ -1,0 +1,127 @@
+// navigation
+nav.add-signers {
+    max-width: 768px;
+    text-align: center;
+
+    button {
+        display: inline-block;
+        vertical-align: top;
+        width: 24%;
+        height: 75px;
+        margin: -1px;
+        border: solid 1px $color--border;
+        font-size: 17px;
+        font-weight: 400;
+        color: $color--grey-dark;
+        text-align: center;
+        text-transform: initial;
+        background: white;
+
+        @include respond-to('small') {
+            height: 50px;
+        }
+    }
+
+    button.button--signature-self {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 125 125'%3E%3Cpath fill='%23A7A7A7' stroke='none' d='M12 5C9.88 5 8 6.725 8 9v2c0 .1.03.195.084.277L9 12.652v1.565L4.242 17.07c-.15.09-.242.254-.242.43v1c0 .656 1 .668 1 0v-.717l4.758-2.853c.15-.09.242-.254.242-.43v-2c0-.1-.03-.195-.084-.277L9 10.848V9c0-1.725 1.42-3 3-3s3 1.275 3 3v1.848l-.916 1.375c-.055.082-.084.178-.084.277v2c0 .176.092.34.242.43L19 17.783v.717c0 .68 1 .64 1 0v-1c0-.176-.092-.34-.242-.43L15 14.217v-1.565l.916-1.375C15.97 11.195 16 11.1 16 11V9c0-2.275-1.88-4-4-4zm0-5C5.38 0 0 5.38 0 12s5.38 12 12 12 12-5.38 12-12S18.62 0 12 0zm0 1c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1z'/%3E%3C/svg%3E") no-repeat;
+        background-size: 125px;
+        background-position-y: 25px;
+        background-position-x: 15px;
+
+        @include respond-to('medium') {
+            background: none;
+        }
+
+        @include respond-to('small') {
+            border-radius: 6px 0px 0px 6px;
+            background: none;
+        }
+    }
+
+    button.button--signature-group {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 125 125'%3E%3Cpath fill='%23A7A7A7' stroke='none' d='M7.5 7c-1.278 0-2.212.745-2.75 1.65-.538.906-.75 1.973-.75 2.85 0 .792-.01 1.252-.105 1.578-.096.326-.273.593-.75 1.068-.313.315-.09.854.355.854.83 0 1.692-.16 2.41-.5-.057.29-.144.62-.256.826-.236.442-.52.674-1.154.674-.645 0-.668 1 0 1 .95 0 1.668-.518 2.035-1.2.367-.685.465-1.504.465-2.3 0-.445-.54-.668-.854-.354-.46.46-1.02.643-1.646.743.13-.13.3-.343.355-.53C5.01 12.83 5 12.29 5 11.5c0-.707.194-1.64.61-2.338C6.023 8.462 6.59 8 7.5 8c.91 0 1.476.463 1.89 1.162.416.7.61 1.63.61 2.338 0 .81.037 1.4.21 1.936.062.186.152.358.29.496-.592-.062-1.073-.213-1.646-.786-.315-.314-.854-.09-.854.354 0 .796.098 1.615.465 2.3.367.682 1.084 1.2 2.035 1.2.65.01.672-1 0-1-.635 0-.918-.232-1.154-.674-.11-.206-.22-.538-.276-.826.74.36 1.613.5 2.43.5.445 0 .668-.54.354-.854-.39-.388-.574-.658-.692-1.02-.117-.36-.162-.85-.162-1.626 0-.877-.212-1.944-.75-2.85C9.712 7.745 8.778 7 7.5 7zM12 0C5.38 0 0 5.38 0 12s5.38 12 12 12 12-5.38 12-12S18.62 0 12 0zm0 1c6.08 0 11 4.92 11 11s-4.92 11-11 11S1 18.08 1 12 5.92 1 12 1zm8.817 15.1c-.532-.533-.817-.883-.817-.883v-1.565l.916-1.375C20.97 12.195 21 12.1 21 12v-2c0-2.275-1.88-4-4-4s-4 1.725-4 4v2c0 .1.03.195.084.277L14 13.652v1.565L9.242 18.07c-.15.09-.242.254-.242.43v1c0 .656 1 .668 1 0v-.717l4.758-2.853c.15-.09.242-.254.242-.43v-2c0-.1-.03-.195-.084-.277L14 11.848V10c0-1.725 1.42-3 3-3s3 1.275 3 3v1.848l-.916 1.375c-.055.082-.084.178-.084.277v2c0 .176.104.292.242.43 0 0 .288.352.817.882.528.53 1.29-.18.757-.713z'/%3E%3C/svg%3E") no-repeat;
+        background-size: 125px;
+        background-position-y: 25px;
+        background-position-x: 25px;
+
+        @include respond-to('medium') {
+            background: none;
+
+        }
+
+        @include respond-to('small') {
+            margin-left: -4px;
+            margin-right: -4px;
+            border-radius: 0;
+            background: none;
+        }
+    }
+
+    button.button--signature-live {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 125 125'%3E%3Cpath fill='%23A7A7A7' stroke='none' d='M4.5 5c-.276 0-.5.224-.5.5v11c0 .652 1 .67 1 0V6h14v10.5c0 .672 1 .656 1 0v-11c0-.276-.224-.5-.5-.5zm-1-2C2.678 3 2 3.678 2 4.5v12c0 .67 1.01.66 1 0v-12c0-.286.214-.5.5-.5h17c.286 0 .5.214.5.5v12c0 .668 1 .656 1 0v-12c0-.822-.678-1.5-1.5-1.5zm-3 15c-.276 0-.5.224-.5.5C0 19.876 1.124 21 2.5 21h19c1.376 0 2.5-1.124 2.5-2.5 0-.276-.224-.5-.5-.5zm.705 1h21.59c-.217.558-.653 1-1.295 1h-19c-.642 0-1.078-.442-1.295-1z'/%3E%3C/svg%3E") no-repeat;
+        background-size: 125px;
+        background-position-y: 25px;
+        background-position-x: 45px;
+
+        @include respond-to('medium') {
+            background: none;
+        }
+
+        @include respond-to('small') {
+            border-radius: 0px 6px 6px 0px;
+            background: none;
+        }
+    }
+
+    button.button--signature-distribute {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 125 125'%3E%3Cpath fill='%23A7A7A7' stroke='none' d='M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z' /%3E%3C/svg%3E") no-repeat;
+        background-size: 125px;
+        background-position-y: 25px;
+        background-position-x: 25px;
+        
+        @include respond-to('medium') {
+            background: none;
+        }
+
+        @include respond-to('small') {
+            border-radius: 0px 6px 6px 0px;
+            background: none;
+        }
+    }
+
+    button.button--signature-file {        
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 125 125'%3E%3Cpath fill='%23A7A7A7' stroke='none' d='M3.512 8.996c-.415 0-.79.19-1.035.46-.247.268-.387.6-.456.942l-1.995 10c-.09.46.108.893.4 1.166.29.273.674.436 1.09.436H20.49c.414 0 .79-.194 1.035-.463.247-.268.387-.6.455-.943l1.998-10c.085-.424-.11-.893-.4-1.166-.29-.273-.676-.432-1.09-.432zm0 1H22.49c.14 0 .31.07.406.16.098.09.12.158.104.242l-1.998 10c-.123.46-.25.602-.51.602H1.514c-.405 0-.57-.178-.508-.406l1.996-10c.04-.2.123-.367.21-.463.09-.095.16-.134.3-.134zM1.5 2C.678 2 0 2.678 0 3.5v11c0 .66 1 .665 1 0v-11c0-.286.214-.5.5-.5h4.793l3.853 3.854c.094.093.22.146.354.146H21v.5c0 .68 1 .65 1 0v-1c0-.276-.224-.5-.5-.5H10.707L6.854 2.146C6.76 2.053 6.634 2 6.5 2z'/%3E%3C/svg%3E") no-repeat;
+        background-size: 125px;
+        background-position-y: 23px;
+        background-position-x: 9px;
+        
+        @include respond-to('medium') {
+            background: none;
+        }
+
+        @include respond-to('small') {
+            border-radius: 0px 6px 6px 0px;
+            background: none;
+        }
+    }
+
+    button.button--signature-contact {
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 125 125'%3E%3Cpath fill='%23A7A7A7' stroke='none' d='M3.5 10c-.822 0-1.5.678-1.5 1.5v4c0 .822.678 1.5 1.5 1.5h3c.822 0 1.5-.678 1.5-1.5v-4c0-.822-.678-1.5-1.5-1.5h-3zm0 1h3c.286 0 .5.214.5.5v4c0 .286-.214.5-.5.5h-3c-.286 0-.5-.214-.5-.5v-4c0-.286.214-.5.5-.5zm6 5h11c.277 0 .5.223.5.5s-.223.5-.5.5h-11c-.277 0-.5-.223-.5-.5s.223-.5.5-.5zm-4-14c-.277 0-.5.223-.5.5v4c0 .277.223.5.5.5s.5-.223.5-.5v-4c0-.277-.223-.5-.5-.5zm13 0c-.277 0-.5.223-.5.5v4c0 .277.223.5.5.5s.5-.223.5-.5v-4c0-.277-.223-.5-.5-.5zm-17 2C.678 4 0 4.678 0 5.5v15c0 .822.678 1.5 1.5 1.5h21c.822 0 1.5-.678 1.5-1.5v-15c0-.822-.678-1.5-1.5-1.5h-2c-.334 0-.5.248-.5.5s.162.5.5.5h2c.286 0 .5.214.5.5v15c0 .286-.214.5-.5.5h-21c-.286 0-.5-.214-.5-.5v-15c0-.286.214-.5.5-.5h2c.336 0 .502-.25.5-.5-.002-.25-.174-.5-.5-.5zm6 0c-.323 0-.5.248-.5.5s.162.505.5.5h9c.298 0 .5-.248.5-.5s-.15-.5-.5-.5zm2 6c-.277 0-.5.223-.5.5s.223.5.5.5h11c.277 0 .5-.223.5-.5s-.223-.5-.5-.5zm0 3c-.277 0-.5.223-.5.5s.223.5.5.5h11c.277 0 .5-.223.5-.5s-.223-.5-.5-.5z'/%3E%3C/svg%3E") no-repeat;
+        background-size: 125px;
+        background-position-y: 23px;
+        background-position-x: 14px;
+        
+        @include respond-to('medium') {
+            background: none;
+        }
+
+        @include respond-to('small') {
+            border-radius: 0px 6px 6px 0px;
+            background: none;
+        }
+    }
+    
+    button:hover {
+        color: $color--primary;
+    }
+}

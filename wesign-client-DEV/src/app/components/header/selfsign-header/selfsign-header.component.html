@@ -1,0 +1,47 @@
+<ng-container *ngIf="appState$ | async as state">
+
+    <div class="ws_content-doc__progress progress_full" *ngIf="state.FlowName == 'selfsign'" >
+
+        <div class="ws_inline" 
+            [class.ws_icon__upload-disabled]="state.FlowStep != FLOW_STEP.SELF_SIGN_UPLOAD" 
+            [class.ws_icon__upload-enabled]="state.FlowStep == FLOW_STEP.SELF_SIGN_UPLOAD"></div>
+
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text" 
+            [class.active]="state.FlowStep == FLOW_STEP.SELF_SIGN_UPLOAD">
+            <span>Upload</span>
+        </div>
+
+        <div class="ws_inline ws_icon__progress-arrow-disabled"></div>
+
+        <div class="ws_inline" 
+            [class.ws_icon__place-disabled] = "state.FlowStep != FLOW_STEP.SELF_SIGN_PLACE_FIELDS" 
+            [class.ws_icon__place-enabled] = "state.FlowStep == FLOW_STEP.SELF_SIGN_PLACE_FIELDS"></div>
+
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text" 
+            [class.active]="state.FlowStep == FLOW_STEP.SELF_SIGN_PLACE_FIELDS">
+            <span>Place</span>
+        </div>
+
+        <div class="ws_inline ws_icon__progress-arrow-disabled"></div>
+
+        <div class="ws_inline" 
+            [class.ws_icon__signature-disabled]="state.FlowStep != FLOW_STEP.SELF_SIGN_SIGN" 
+            [class.ws_icon__signature-enabled]="state.FlowStep == FLOW_STEP.SELF_SIGN_SIGN"></div>
+
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text" 
+            [class.active]="state.FlowStep == FLOW_STEP.SELF_SIGN_SIGN">
+            <span>Sign</span>
+        </div>
+
+        <div class="ws_inline ws_icon__progress-arrow-disabled"></div>
+
+        <div class="ws_inline" 
+            [class.ws_icon__download-disabled]="state.FlowStep != FLOW_STEP.SELF_SIGN_DOWNLOAD" 
+            [class.ws_icon__download-enabled]="state.FlowStep == FLOW_STEP.SELF_SIGN_DOWNLOAD"></div>
+
+        <div class="ws_inline ws_align-top ws_content-doc-progress__text" 
+            [class.active]="state.FlowStep == FLOW_STEP.SELF_SIGN_DOWNLOAD">
+            <span>Download</span>
+        </div>
+    </div>
+</ng-container>

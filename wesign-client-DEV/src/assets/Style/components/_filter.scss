@@ -1,0 +1,136 @@
+// filter
+.report-filter-container {
+  margin: 14px 14px 14px 14px;
+
+  .ng-select.ng-select-single .ng-select-container {
+    height: 100%;
+  }
+  button.ct-button--primary {
+    height: 2rem;
+    width: 7rem;
+    font-size: 13px;
+}
+}
+
+.ct-c-filter {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  background: white;
+  justify-content: space-between;
+
+  @include respond-to('small') {
+    margin-bottom: 0;
+  }
+}
+
+.ct-c-filter-section {
+  display: flex;
+  align-items: center;
+}
+
+.ct-c-filter-rowAmountTemplate {
+  display: flex;
+  margin-left: auto;
+
+}
+
+.ct-c-filter-rowAmount {
+  display: flex;
+  column-gap: 0.5rem;
+  justify-self: flex-end;
+}
+
+.ct-c-filter-current-report {
+  display: flex;
+  align-items: center;
+}
+
+
+.ct-c-filter-documents,
+.ct-c-filter-reports {
+  align-items: center;
+  width: 85%;
+
+  @include respond-to('small') {
+    flex-wrap: wrap;
+  }
+
+  @include respond-to('medium') {
+    flex-wrap: wrap;
+  }
+
+  .ng-select {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+
+  .ng-select.ng-select-single,
+  .ng-select-container {
+    height: 2.8rem;
+    width: 15rem;
+  }
+
+  .ng-select.ng-select-multiple,
+  .ng-select-container .ng-value-container {
+    width: 15rem;
+  }
+}
+
+.ng-select .ng-select-container {
+  cursor: default;
+  display: flex;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.reports-filter-button-container {
+  width: 16rem;
+  height: 2rem;
+  display: flex;
+  justify-content: space-evenly;
+
+  .reports-filter-buttons {
+    font-size: 13px;
+  }
+}
+
+.ct-c-filter-frequency-section {
+  width: 24%;
+  justify-content: space-between;
+
+  .ngselect-ct-select--short {
+    width: 15rem;
+    margin: 0 1px;
+    height: 2.8rem;
+    margin-right: 87px;
+  }
+}
+
+.ct-create-frequency-container {
+  height: 17rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: visible !important;
+  .frequency-buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+  }
+  .ct-c-frequency-button {
+    height: 2rem;
+    width: 95%;
+  }
+  .required-icon {
+    color: red;
+    text-align: end;
+    width: 325px;
+    margin-top: 2rem;
+    width: 95%;
+  }
+}

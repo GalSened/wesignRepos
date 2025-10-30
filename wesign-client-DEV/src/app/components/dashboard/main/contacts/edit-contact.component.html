@@ -1,0 +1,109 @@
+<div class="ct-c-modal ">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <h3 *ngIf="!isInEditMode">{{'CONTACTS.ADD_NEW' | translate}}</h3>
+            <h3 *ngIf="isInEditMode">{{'CONTACTS.EDIT' | translate}}</h3>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+            <form #newContactForm="ngForm" (input)="isFormValid()">
+
+                <div name="name">
+                    <input type="text" id="fullNameFieldInput" class="ct-input--primary ct-break--shorter"
+                        autocomplete="off" placeholder="{{'REGISTER.FULL_NAME' | translate}}*" #contactName="ngModel"
+                        name="contactName" minlength="2" maxlength="50" required [(ngModel)]="contact.name"
+                        [class.is-error]="contactName.invalid && (contactName.dirty || contactName.touched)"
+                        [class.is-confirm]="contactName.valid">
+
+                    <div *ngIf="contactName.invalid && (contactName.dirty || contactName.touched)">
+                        {{'REGISTER_ERRORS.INVALID_NAME' | translate}}
+                    </div>
+                </div>
+
+                <div class="ct-break--shorter"></div>
+
+                <div name="email">
+                    <input type="email" id="emailFieldInput" class="ct-input--primary ct-break--shorter"
+                        autocomplete="off" placeholder="{{'REGISTER.EMAIL' | translate}}" #contactEmail="ngModel"
+                        name="contactEmail" minlength="3" maxlength="50" pattern="[^ @]*@[^ @]*"
+                        [(ngModel)]="contact.email" [class.is-confirm]="isEmailValid()" [class.is-error]="!contactEmail.valid && 
+                        (!isEmailEmpty() || (isEmailEmpty() && isEmailOption)) &&
+                        (contactEmail.dirty || contactEmail.touched)">
+
+                    <div *ngIf="contactEmail.invalid && (contactEmail.dirty || contactEmail.touched)">
+                        {{'REGISTER_ERRORS.INVALID_EMAIL' | translate}}
+                    </div>
+                </div>
+
+                <div class="ct-break--shorter"></div>
+
+                <div *ngIf="!userProgram.isSmsProviderSupportGloballySend">
+                    <label class="color--alert">{{'ERROR.INPUT.SMS_ONLY_ISRAELI_NUMBERS' | translate}}</label>
+                    <div class="ct-break--shorter"></div>
+                </div>
+
+                <div name="phone">
+                    <input type="tel" id="phoneFieldInput" class="ct-input--primary" autocomplete="off"
+                        *ngIf="!userProgram.isSmsProviderSupportGloballySend"
+                        placeholder="{{'REGISTER.PHONE_NUMBER' | translate}}" #contactPhone="ngModel"
+                        name="contactPhone" minlength="10" maxlength="10" pattern="(?:^[0][1-9][0-9]{8})?"
+                        [(ngModel)]="contact.phone" [class.is-confirm]="contactPhone.valid && !isPhoneNumberEmpty()"
+                        [class.is-error]="!contactPhone.valid && 
+                        (!isPhoneNumberEmpty() || (isPhoneNumberEmpty() && !isEmailOption)) &&
+                        (contactPhone.dirty || contactPhone.touched)">
+
+                    <input ng2TelInput id="phoneFieldInput" #contactPhone="ngModel" name="contactPhone"
+                        [(ngModel)]="contact.phone" class="ct-input--primary"
+                        *ngIf="userProgram.isSmsProviderSupportGloballySend" pattern="(?:^[0-9\\-\\+]{9,15})?"
+                        (countryChange)="onCountryChange($event)" [ng2TelInputOptions]="telOptions"
+                        [class.is-confirm]="contactPhone.valid && !isPhoneNumberEmpty()" [class.is-error]="!contactPhone.valid && 
+                        (!isPhoneNumberEmpty() || (isPhoneNumberEmpty() && !isEmailOption)) &&
+                        (contactPhone.dirty || contactPhone.touched)">
+                </div>
+
+                <div class="ct-break--short"></div>
+                <span>{{'REGISTER.SEND_BY' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+                <select class="ct-select--primary ct-select--short" [(ngModel)]="selectedOption" name="methods"
+                    (change)="onSendingMethodChange($event.target.value)">
+                    <option *ngFor='let method of methods | keyvalue'>
+                        {{method.value}}
+                    </option>
+                    <div class="ct-break--short"></div>
+                </select>
+
+                <div class="ct-break--short"></div>
+                <span>{{'REGISTER.SEARCH_TAGS' | translate}}</span>
+
+                <div class="ct-break--shorter"></div>
+                <div name="searchTag">
+                    <input type="text" id="searchTagFieldInput" class="ct-input--primary ct-break--shorter"
+                        autocomplete="off" #searchTag="ngModel"
+                        name="contactSearchTag" minlength="2" maxlength="20" [(ngModel)]="contact.searchTag">
+                </div>
+            </form>
+            <div class="ct-separator"></div>
+            <div class="ct-float-left">
+            <ng-container *ngIf="errorMsg">
+                <div class="ct-text-center">
+                    <label class="is-error">{{errorMsg}}</label>
+                </div>
+            </ng-container>
+            </div>
+            <div class="ct-break--shorter"></div>
+            
+            <div class="ct-float-right">
+               
+                <button class="ct-button--outline" tabindex="5" id="cancelAddContactButton"
+                    (click)="this.errorMsg ='';cancel.emit()">{{'REGISTER.CANCEL' | translate}}</button>
+
+                <button class="ct-button--primary" tabindex="6" id="addContactButton"
+                    (click)="save()">{{'REGISTER.SUBMIT' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

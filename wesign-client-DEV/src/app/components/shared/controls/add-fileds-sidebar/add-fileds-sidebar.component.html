@@ -1,0 +1,37 @@
+<select class="ct-select--colored" [ngClass]="selectedSigner.ClassId" *ngIf="signers" [(ngModel)]="selectedSigner" 
+(change)="changeSignerClassId()">
+  <option  *ngFor="let signer of signers" class="{{signer.ClassId}}"  [ngValue]="signer">{{signer.FullName}}
+  </option>
+</select>
+
+<aside>
+  <input *ngIf="showtemplateName" type="text" class="ct-input--primary" [(ngModel)]="templateName" maxlength="50"
+    placeholder="Name">
+
+  <div class="ct-add-fields">
+    <sgn-field-button  *ngIf="uiViewLicense.shouldShowEditTextField" title="{{'FIELDS.TEXT' | translate}}"  text="Text" className="type" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button  *ngIf="uiViewLicense.shouldShowEditSignatureField" title="{{'FIELDS.SIGNATURE' | translate}}" text="Signature" className="feather" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button  *ngIf="uiViewLicense.shouldShowEditSignatureField" title="{{'FIELDS.INITIALS_SIGNATURE' | translate}}" text="SignatureInitials" className="feather" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button  *ngIf="uiViewLicense.shouldShowEditEmailField" title="{{'FIELDS.EMAIL' | translate}}" text="Email" className="mail" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowEditPhoneField"  title="{{'FIELDS.PHONE' | translate}}" text="Phone" className="phone" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowEditDateField"  title="{{'FIELDS.DATE' | translate}}" text="Date" className="calendar" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <!-- <sgn-field-button title="{{'FIELDS.TIME' | translate}}" text="Time" className="clock" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button> -->
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowEditNumberField"  title="{{'FIELDS.NUMBER' | translate}}" text="Number" className="hash" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowEditListField"  title="{{'FIELDS.LIST' | translate}}" text="Choice" className="list" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowEditCheckboxField" title="{{'FIELDS.CHECKBOX' | translate}}" text="Checkbox" className="x-square" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowEditRadioField" title="{{'FIELDS.RADIO' | translate}}" text="Radio" className="disc" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+    <sgn-field-button *ngIf="uiViewLicense.shouldShowMultilineText" title="{{'FIELDS.MULTILINE_TEXT' | translate}}" text="Multiline" className="type" [signerClassId]="selectedSigner.ClassId">
+    </sgn-field-button>
+  </div>
+</aside>

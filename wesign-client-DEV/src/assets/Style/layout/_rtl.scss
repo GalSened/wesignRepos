@@ -1,0 +1,296 @@
+// rtl
+html[dir="rtl"] body {
+    letter-spacing: 0px !important;
+}
+
+
+html[dir="rtl"] .ct-text-right-no-direction {
+    
+    text-align: left;
+}
+html[dir="rtl"] .ct-text-right {
+    direction: ltr;
+    text-align: left;
+}
+
+html[dir="rtl"] .ct-text-left {
+    direction: rtl;
+    text-align: right;
+}
+
+html[dir="rtl"] .ct-float-right {
+    float: left;
+}
+
+html[dir="rtl"] .ct-float-left {
+    float: right;
+}
+
+// animations
+html[dir="rtl"] .ct-animate-slide-left {
+    -webkit-animation: slideright .7s;
+    -moz-animation: slideright .7s;
+    -ms-animation: slideright .7s;
+    -o-animation: slideright .7s;
+    animation: slideright .7s;
+}
+
+// buttons
+html[dir="rtl"] .ct-p-home main nav button {
+    @include respond-to('medium') {
+        width: 100px;
+    }
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--contacts {
+    background-position-y: 52px;
+    background-position-x: 185px;
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--contacts-ent {
+    background-position-y: 52px;
+    background-position-x: 190px;
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--templates {
+    background-position-y: 52px;
+    background-position-x: 200px;
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--templates-ent {
+    background-position-y: 53px;
+    background-position-x: 205px;
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--sent-ent {
+    background-position-y: 52px;
+    background-position-x: 205px;
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--profile-ent {
+    background-position-y: 52px;
+    background-position-x: 215px;
+}
+
+html[dir="rtl"] button.ct-button--icon svg {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+
+html[dir="rtl"] button.ct-button--icon.button--field svg {
+    right: auto;
+    left: 1px;
+}
+
+html[dir="rtl"] button.ct-button--icon.show-password,
+.add-remove {
+    right: -7px;
+}
+
+html[dir="rtl"] .ct-c-add-signers.is-order button.ct-button--icon.icon-address-book {
+    margin-right: -40px;
+}
+
+// forms
+html[dir="rtl"] select {
+    background-position: left 5px top 50%, 0 0 !important;
+}
+
+html[dir="rtl"] .ct-checkbox input {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .ct-checkbox__checkmark {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .ct-checkbox__checkmark:after {
+    left: auto;
+    right: 9px;
+}
+
+html[dir="rtl"] .ct-radio input {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .ct-radio__checkmark {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .ct-radio__checkmark:after {
+    left: auto;
+    right: 6px;
+}
+
+// alerts
+html[dir="rtl"] .ct-c-alert {
+    right: auto;
+    left: 10px;
+    padding: 7px 5px 10px 50px;
+    border-radius: 0 6px 6px 6px;
+
+    @include respond-to('small') {
+        left: auto;
+    }
+}
+
+html[dir="rtl"] .ct-c-alert .ct-button--icon {
+    right: auto;
+    left: 0;
+}
+
+// login
+html[dir="rtl"] header .ct-c-language-bar {
+    left: 0;
+    right: auto;
+}
+
+// titlebar
+html[dir="rtl"] .ct-c-titlebar {
+    background-image: url(../../images/images/ct-title-rtl.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+html[dir="rtl"] .ct-c-titlebar nav {
+    left: 0;
+    right: auto;
+}
+
+// home
+html[dir="rtl"] .ct-p-home main .main__content {
+    background-image: url(../../images/images/ct-home-rtl.png);
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--sent {
+    background-position-x: 205px;
+
+    @include respond-to('medium') {
+        background-position-x: 0;
+    }
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--profile {
+    background-position-x: 215px;
+
+    @include respond-to('medium') {
+        background-position-x: 0;
+    }
+}
+
+html[dir="rtl"] .ct-p-home main nav button.button--plans {
+    background-position-x: 170px;
+
+    @include respond-to('medium') {
+        background-position-x: 0;
+    }
+}
+
+
+
+// add signers
+html[dir="rtl"] .ct-c-file-upload-rename input {
+    padding: 0 50px 0 0;
+}
+
+html[dir="rtl"] .ct-c-add-signers.is-order {
+    border-left: solid 1px;
+    border-right: solid 17px;
+}
+
+html[dir="rtl"] .ct-c-add-signers.is-order nav {
+    margin-right: -65px;
+}
+
+html[dir="rtl"] .ct-c-add-signers.is-order .add-signers__dragline {
+    margin-right: -13px;
+}
+
+// html[dir="rtl"] nav.add-signers button.button--signature-self {
+//     background-position-x: 165px;
+// }
+
+// html[dir="rtl"] nav.add-signers button.button--signature-group {
+//     background-position-x: 180px;
+// }
+
+html[dir="rtl"] nav.add-signers button.button--signature-live {
+    background-position-x: 15px ;
+}
+html[dir="rtl"] nav.add-signers button.button--signature-group{
+    background-position-x: 10px ;
+}
+
+// edit document
+// html[dir="rtl"] .ct-c-field nav {
+//     right: auto;
+//     left: -120px;
+// }
+
+html[dir="rtl"] .ng-resizable-handle.ng-resizable-se {
+    right: auto;
+    left: 1px;
+    transform: rotate(90deg);
+}
+
+// user sign
+html[dir="rtl"] .ct-c-titlebar .titlebar__options-dropdown {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] header span {
+    right: auto;
+    left: 0;
+}
+
+html[dir="rtl"] header .header__logo {
+    background-position: right 10px;
+}
+
+// tooltips
+html[dir="rtl"] .ct-tooltip--table-icons .tooltiptext {
+    margin-left: auto;
+    margin-right: -50px;
+}
+
+/**/
+html[dir="rtl"] .ct-c-switch input:checked+div {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    -moz-transform: translate3d(-100%, 0, 0);
+    -ms-transform: translate3d(-100%, 0, 0);
+    -o-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+}
+
+
+
+
+
+html[dir="rtl"]  .loading {        
+    background-position:left center;    
+    }
+
+
+
+html[dir="rtl"]  .profile-dashboard-header {
+        float: left !important;
+        margin-right: 0px!important;
+        margin-left: 30px!important;
+    }
+
+
+html[dir="rtl"]    .avatarSubPopup{
+        float: left !important;
+        margin-right: 0px  !important;
+        margin-left: 20px!important;
+    }

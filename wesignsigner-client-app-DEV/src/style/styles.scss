@@ -1,0 +1,69 @@
+// vendors
+@import 'vendors/normalize';
+@import 'vendors/shame';
+
+// themes
+@import 'themes/theme';
+
+// abstracts
+@import 'abstracts/animations';
+@import 'abstracts/breakpoints';
+@import 'abstracts/functions';
+@import 'abstracts/mixins';
+@import 'abstracts/placeholders';
+@import 'abstracts/variables';
+
+// base
+@import 'base/reset';
+@import 'base/typography';
+
+// pages
+@import 'pages/edit-document';
+@import 'pages/home';
+@import 'pages/inner';
+@import 'pages/login';
+@import 'pages/profile';
+@import 'pages/user-sign';
+
+// layout
+@import 'layout/footer';
+@import 'layout/forms';
+@import 'layout/grid';
+@import 'layout/header';
+@import 'layout/navigation';
+@import 'layout/rtl';
+
+// components
+@import 'components/accordions';
+@import 'components/add-signers';
+@import 'components/alerts';
+@import 'components/buttons';
+@import 'components/document';
+@import 'components/fields';
+@import 'components/file-upload';
+@import 'components/file-upload-rename';
+@import 'components/filter';
+@import 'components/icons';
+@import 'components/initials';
+@import 'components/inputs';
+@import 'components/labels';
+@import 'components/language-bar';
+@import 'components/lists';
+@import 'components/loader';
+@import 'components/menu';
+@import 'components/modals';
+@import 'components/pagination';
+@import 'components/plan';
+@import 'components/seal';
+@import 'components/selects';
+@import 'components/separators';
+@import 'components/signature-pad';
+@import 'components/signature-panel';
+@import 'components/switches';
+@import 'components/tables';
+@import 'components/templates-reorder';
+@import 'components/titlebar';
+@import 'components/tooltips';
+@import 'components/face-recognition';
+
+@import "~@ng-select/ng-select/themes/default.theme.css";

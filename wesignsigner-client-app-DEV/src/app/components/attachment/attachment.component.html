@@ -1,0 +1,11 @@
+<div>
+    <h3 >{{attachmentName}}</h3> 
+    <input type="file"  class="ct-input--primary" #fileInput id="fileInput" name="fileInput" accept="image/*,.pdf,.docx,.doc"
+        (click)="fileInput.value = null" (change)="fileUpload()" />
+    <div class="ct-float-right">
+        <button class="ct-button--icon add-remove" (click)="fileInput.click()">
+            <i-feather name="upload"></i-feather>
+        </button>
+    </div>
+</div>
+

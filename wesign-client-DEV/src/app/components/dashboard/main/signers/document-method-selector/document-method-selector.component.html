@@ -1,0 +1,346 @@
+<sgn-select-contact *ngIf="showContacts" [ngClass]="showContacts?'ct-is-shown':'ct-is-hidden'"
+  (hide)="showContacts=!showContacts" (sendContact)="updateSigner($event, false,-1)">
+</sgn-select-contact>
+
+<sgn-select-multi-contacts *ngIf="showMultiContacts" [ngClass]="showMultiContacts?'ct-is-shown':'ct-is-hidden'"
+  (hide)="showMultiContacts=!showMultiContacts" (sendContacts)="distributionSending($event)"
+  [contactsFromFile]="contactsFromExcel" [contactsOriginMode]="contactsOriginMode">
+</sgn-select-multi-contacts>
+
+
+<sgn-select-contacts-group  [ngClass]="showContactsGroup?'ct-is-shown':'ct-is-hidden'"
+(hide)="showContactsGroup=!showContactsGroup" (sendContactsGroup)="SetSelectedContactGroup($event)">
+</sgn-select-contacts-group>
+
+
+<sgn-select-tablet *ngIf="showTablets" (hide)="showTablets=false" (sendTablet)="updateSignerAsTablet($event)">
+</sgn-select-tablet>
+
+<nav class="add-signers">
+  <button class="tablinks button--signature-self is-active" #signatureSelfSign
+    *ngIf="userProgram.uiViewLicense.shouldShowSelfSign && !multidocs"
+    (click)="change($event, signModeEnum.SelfSign)">{{'SIGNERS.MYSELF' | translate}}</button>
+
+  <button class="tablinks button--signature-group" #signatureGroup *ngIf="userProgram.uiViewLicense.shouldShowGroupSign"
+    (click)="change($event, signModeEnum.Workflow)">{{'SIGNERS.OTHERS' | translate}}</button>
+
+  <button class="tablinks button--signature-live" *ngIf="userProgram.uiViewLicense.shouldShowLiveMode && !multidocs"
+    (click)="change($event, signModeEnum.Online)">{{'SIGNERS.LIVE' | translate}}</button>
+
+  <button class="tablinks button--signature-distribute"
+    *ngIf="userProgram.uiViewLicense.shouldShowDistribution && !appState.FileUploadRequest && !multidocs"
+    (click)="change($event, signModeEnum.Distribution)"> {{'SIGNERS.DISTRIBUTE' | translate}}</button>
+</nav>
+
+
+<ng-container *ngIf="selectedSignMode == signModeEnum.SelfSign && userProgram.uiViewLicense.shouldShowSelfSign">
+  <div id="Self" class="tabcontent ct-animate-fadein">
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center">
+      <span>{{'SIGNERS.YOU_ARE_ONLY_SIGNER' | translate}}</span>
+    </div>
+
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center">
+      <button (click)="sign()" [disabled]="isBusy" class="ct-button--primary ct-button--small">{{'SIGNERS.EDIT_DOCUMENT'
+        | translate}}</button>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="selectedSignMode == signModeEnum.Workflow && userProgram.uiViewLicense.shouldShowGroupSign">
+  <form class="tabcontent ct-animate-fadein" #wfForm="ngForm">
+    <div class="ct-break--short"></div>
+    <div class="ct-text-center">
+      <button (click)="selectContactsGroup()" [disabled]="isBusy" class="ct-button--primary ct-button--small ws_float-left ws-button-select-contacts-group">{{'SIGNERS.ADD_CONTACTS_GROUP'
+        | translate}}</button>
+      <span class="ws-span-padding-right">{{'SIGNERS.ADD_RECIPIENTS' | translate}}</span>
+      
+    </div>
+  
+
+    <div class="ct-break--short"></div>
+
+    <section *ngFor="let signer of signers; index as i">
+      <div class="signer_numbering ct-float-right">
+        <h3>{{i + 1}}</h3>
+    </div>
+      <div class="ct-c-add-signers is-order" [ngClass]="signer.ClassId" draggable="true">
+        <nav>
+          <button class="ct-button--icon" *ngIf="i>0" (click)="moveSigner(i,-1)">
+            <i-feather name="chevron-up"></i-feather>
+          </button>
+
+          <button class="ct-button--icon" *ngIf="i+1!=signers.length" (click)="moveSigner(i,1)">
+            <i-feather name="chevron-down"></i-feather>
+          </button>
+        </nav>
+
+        <div class="add-signers__dragline"></div>
+
+        <div class="add-signers__container" #signersContainer [attr.data-signerId]="signer.ClassId">
+
+          <ng-container *ngIf="isAppSupportTablets">
+            <button class="ct-button--icon ct-tooltip--table-icons" (click)="openTablets($event)">
+              <i-feather name="tablet"></i-feather>
+
+              <span class="tooltiptext">{{'CONTACTS.TABLET' | translate}}</span>
+            </button>
+          </ng-container>
+
+          <button class="ct-button--icon ct-tooltip--table-icons" (click)="openContactsBook($event, signer)"
+            *ngIf="userProgram.uiViewLicense.shouldShowContacts">
+            <i-feather name="book-open"></i-feather>
+
+            <span class="tooltiptext">{{'CONTACTS.ADDRESS_BOOK' | translate}}</span>
+          </button>
+
+          <div id="signerDetails" style="margin: auto;">
+
+            <input type="text" class="ct-input--primary ct-input--short" name="fullName_{{signer.ClassId}}" required
+              [(ngModel)]="signer.FullName" placeholder="{{'SIGNERS.FULL_NAME' | translate}}" maxlength="50"
+              pattern="(.|\s)*\S(.|\s)*" minlength="1">
+            <div class="ct-break--shorter"></div>
+
+            <div *ngIf="signer.DeliveryMethod!=3">
+              <select class="ct-select--primary ct-select--short" (change)="onSignerMethodChanged($event, signer)">
+                <option [selected]="signer.DeliveryMethod==2">{{'GLOBAL.SEND_BY_EMAIL' | translate}}</option>
+                <option [selected]="signer.DeliveryMethod==1">{{'GLOBAL.SEND_BY_SMS' | translate}}</option>
+              </select>
+
+              <div *ngIf="signer.DeliveryMethod==2|| !signer.DeliveryMethod">
+                <input #email="ngModel" [(ngModel)]="signer.DeliveryMeans" name="emailPhone_{{signer.ClassId}}"
+                type="text" required pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,100})"
+                  class="ct-input--primary ct-input--short" placeholder="{{'SIGNERS.EMAIL' | translate}}" minlength="3"
+                  maxlength="50">
+              </div>
+              <div *ngIf="signer.DeliveryMethod==1">
+
+                <div *ngIf="!userProgram.isSmsProviderSupportGloballySend">
+                  <div class="ct-text-center">
+                    <label class="color--alert">{{'ERROR.INPUT.SMS_ONLY_ISRAELI_NUMBERS' | translate}}</label>
+                    <div class="ct-break--shorter"></div>
+                  </div>
+                  <input type="text" class="ct-input--primary  ct-input--short" autocomplete="off"
+                    *ngIf="!userProgram.isSmsProviderSupportGloballySend"
+                    placeholder="{{'REGISTER.PHONE_NUMBER' | translate}}" #contactPhone="ngModel"
+                    [(ngModel)]="signer.DeliveryMeans" name="emailPhone_{{signer.ClassId}}" pattern="^([0-9]{10}|[0-9]{2}-[0-9]{8}|[0-9]{3}-[0-9]{7})$" maxlength="50">
+                  
+                  </div>
+
+                <input ng2TelInput #contactPhone="ngModel" [(ngModel)]="signer.DeliveryMeans" name="emailPhone{{i}}"
+                  *ngIf="userProgram.isSmsProviderSupportGloballySend" required pattern="^[0-9\\-]{9,15}$"
+                  class="ct-input--primary ct-input--short" (countryChange)="onCountryChange($event, signer)"
+                  [ng2TelInputOptions]="telOptions" maxlength="50">
+              </div>
+            </div>
+
+          </div>
+
+          <button class="ct-button--icon ct-tooltip--table-icons ct-float-right" *ngIf="i>0 || signers.length > 1 " (click)="removeSigner(i)">
+            <i-feather name="x"></i-feather>
+            <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center">
+      <button class="ct-button--outline ct-button--small" (click)="addSigner();">{{'SIGNERS.ADD_RECIPIENT' |
+        translate}}</button>
+
+      <button (click)="sign()" [disabled]="isBusy" class="ct-button--primary ct-button--small">{{'SIGNERS.EDIT_DOCUMENT'
+        | translate}}</button>
+    </div>
+
+    <div class="ct-break--short"></div>
+
+    <div class="ct-separator"></div>
+
+    <div class="ct-break--shorter"></div>
+
+    <div class="ct-text-left">
+      <label class="ct-checkbox ">
+        <span>{{'SIGNERS.SEND_TO_ALL_RECIPIENTS' | translate}}</span>
+
+        <input type="checkbox" (change)="workFlowChange($event)">
+
+        <span class="ct-checkbox__checkmark"></span>
+      </label>
+    </div>
+    <ng-container *ngIf="enableMeaningOfSignature" >
+      <div class="ct-break--shorter"></div>
+      <div class="ct-text-left" >
+        <label style="display: inline;" class="ct-checkbox  ct-tooltip--table-icons ">
+          <span>{{'SIGNERS.MEANING_OF_SIGNATURE' | translate}}          
+          </span>            
+          <input type="checkbox"  [checked]="useMeaningOfSignature"  (change)="MeaningOfSignatureChange($event)">  
+          <span class="ct-checkbox__checkmark"></span>
+          <i-feather name="help-circle"></i-feather>
+          <span style="width: 20rem;" class="tooltiptext">
+              {{'SIGNERS.MEANING_OF_SIGNATURE_TOOLTIP' | translate}}
+          </span>
+        </label>
+      </div>
+      
+      <div class="ct-break--short"></div>
+    </ng-container>
+    <br style="margin-bottom: 50px;" />
+  </form>
+</ng-container>
+
+<ng-container *ngIf="selectedSignMode == signModeEnum.Online && userProgram.uiViewLicense.shouldShowLiveMode">
+  <form class="tabcontent ct-animate-fadein" #wfForm="ngForm">
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center">
+      <span>{{'SIGNERS.ADD_RECIPIENT_FOR_LIVE' | translate}}</span>
+    </div>
+
+    <div class="ct-break--short"></div>
+
+    <section>
+
+      <div class="ct-c-add-signers is-order" [ngClass]="signers[0].ClassId" draggable="true">
+
+        <div class="add-signers__dragline"></div>
+
+        <div class="add-signers__container" [attr.data-signerId]="signers[0].ClassId">
+
+          <ng-container *ngIf="isAppSupportTablets">
+            <button class="ct-button--icon ct-tooltip--table-icons" (click)="openTablets($event)">
+              <i-feather name="tablet"></i-feather>
+
+              <span class="tooltiptext">{{'CONTACTS.TABLET' | translate}}</span>
+            </button>
+          </ng-container>
+
+          <button class="ct-button--icon ct-tooltip--table-icons" (click)="openContactsBook($event, signers[0])"
+            *ngIf="userProgram.uiViewLicense.shouldShowContacts">
+            <i-feather name="book-open"></i-feather>
+
+            <span class="tooltiptext">{{'CONTACTS.ADDRESS_BOOK' | translate}}</span>
+          </button>
+          <div id="signerDetails" style="margin: auto;">
+            <input type="text" class="ct-input--primary ct-input--short" name="fullName0" required
+              [(ngModel)]="signers[0].FullName" placeholder="{{'SIGNERS.FULL_NAME' | translate}}" maxlength="50"
+              minlength="1">
+            <div class="ct-break--shorter"></div>
+
+            <div *ngIf="signers[0].DeliveryMethod!=3">
+              <select class="ct-select--primary ct-select--short"
+                [disabled]="signers[0].DeliveryMethod && signers[0].ContactId"
+                (change)="onSignerMethodChanged($event, signers[0])">
+                <option [selected]="signers[0].DeliveryMethod==2">{{'GLOBAL.SEND_BY_EMAIL' | translate}}</option>
+                <option [selected]="signers[0].DeliveryMethod==1">{{'GLOBAL.SEND_BY_SMS' | translate}}</option>
+              </select>
+
+              <div *ngIf="signers[0].DeliveryMethod==2 || !signers[0].DeliveryMethod">
+                <input #email="ngModel" [(ngModel)]="signers[0].DeliveryMeans" name="emailPhone0" type="text" required
+                  pattern="([\w-\.]+@([\w-]+\.)+[\w-]{2,100})" class="ct-input--primary ct-input--short"
+                  placeholder="{{'SIGNERS.EMAIL' | translate}}" minlength="3" maxlength="50">
+              </div>
+
+
+              <div *ngIf="signers[0].DeliveryMethod==1 ">
+
+                <div *ngIf="!userProgram.isSmsProviderSupportGloballySend">
+                  <div class="ct-text-center">
+                    <label class="color--alert">{{'ERROR.INPUT.SMS_ONLY_ISRAELI_NUMBERS' | translate}}</label>
+                    <div class="ct-break--shorter"></div>
+                  </div>
+                  <input type="text" class="ct-input--primary  ct-input--short" autocomplete="off"
+                    placeholder="{{'REGISTER.PHONE_NUMBER' | translate}}" #contactPhone="ngModel"
+                    [(ngModel)]="signers[0].DeliveryMeans" name="emailPhone0" pattern="^[0-9]{10}$" maxlength="50">
+                </div>
+
+                <input *ngIf="userProgram.isSmsProviderSupportGloballySend" ng2TelInput #contactPhone="ngModel"
+                  [(ngModel)]="signers[0].DeliveryMeans" name="emailPhone0" required pattern="^[0-9\\-]{9,15}$"
+                  class="ct-input--primary ct-input--short" (countryChange)="onCountryChange($event, signers[0])"
+                  [ng2TelInputOptions]="telOptions" maxlength="50">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center">
+      <button class="ct-button--primary ct-button--small" [disabled]="isBusy" (click)="sign()">{{'SIGNERS.EDIT_DOCUMENT'
+        | translate}}</button>
+    </div>
+
+    <ng-container *ngIf="companySigner1Details && companySigner1Details.shouldShowInUI">
+      <div class="ct-break--short"></div>
+
+      <div class="ct-separator"></div>
+      <div class="ct-break--short"></div>
+      <div class="ct-text-center">
+        <label class="ct-checkbox">
+          <span>{{'SIGNERS.SIGN_USIGN_SIGNER1' | translate}}</span>
+          <input type="checkbox" name="shouldSignAsDefaultValue"
+            [(ngModel)]="companySigner1Details.shouldSignAsDefaultValue">
+          <span class="ct-checkbox__checkmark"></span>
+        </label>
+      </div>
+    </ng-container>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="selectedSignMode == signModeEnum.Distribution && templatesCount == 1">
+  <form class="tabcontent ct-animate-fadein" #wfForm="ngForm">
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center">
+      <span>{{'SIGNERS.ADD_RECIPIENT_FOR_DISTRIBUTION' | translate}}</span>
+    </div>
+    <div class="ct-break--short"></div>
+
+    <ng-container *ngIf="shouldShowSigner1SigningLockOption">
+      <div class="ct-text-center">
+        <label class="ct-checkbox ct-text-left">
+          <span>{{'SIGNERS.SIGN_AFTER_USING_SERVER_SIGNING' | translate}}</span>
+          <input type="checkbox" [checked]="isSigner1DistributionChecked" (change)="onSigner1DistributtonChange()">
+          <span class="ct-checkbox__checkmark"></span>
+        </label>
+      </div>
+    </ng-container>
+
+    <div class="ct-break--short"></div>
+    <div class="ct-text-center">
+      <a href="/assets/distribution_list_example.xlsx"
+        class="ct-button--icon ct-tooltip--aside-menu-icons">{{'GLOBAL.IMPORTED_EXCEL_STRUCTURE' | translate}}</a>
+    </div>
+    <div class="ct-break--short"></div>
+
+
+    <nav class="add-signers">
+      <button class="tablinks button--signature-file" style="padding-left: 30px;"
+        (click)="openExcelFileUpload()">{{'GLOBAL.CONTACTS_UPLOAD' | translate}}</button>
+
+      <button *ngIf="uiViewLicense && uiViewLicense.shouldShowContacts" class="tablinks button--signature-contact"
+        (click)="openShowMultiContactsBook($event)">{{'GLOBAL.CONTACTS'
+        | translate}}</button>
+    </nav>
+
+    <div class="ct-break--short"></div>
+
+    <div class="ct-c-file-upload" *ngIf="showExcelFileUpload">
+      <sgn-upload-file-area [acceptTypes]="acceptTypes" (fileUploadEvent)="distributionFileDropped($event)">
+      </sgn-upload-file-area>
+    </div>
+    <div class="ct-break--short"></div>
+
+    <div id="add-recipients-via-file">
+    </div>
+
+  </form>
+</ng-container>

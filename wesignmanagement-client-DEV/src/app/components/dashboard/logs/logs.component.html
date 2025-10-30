@@ -1,0 +1,125 @@
+<div class="ws_body__wrapper">
+
+        <!--filters-->
+        <div class="ws_c-table-filter">
+                <app-custom-drop-down [options]="appSourceOptions" [currentSelection]="0"
+                        (currentSelectionChange)="applicationSourceDropDownUpdate($event)">
+                </app-custom-drop-down>
+                <div class="ws_break--short"></div>
+        
+                <div class="table-filter__icon">
+                        <div class="ws_icon__filter"></div>
+                </div>
+        
+                <input type="text" class="ws_search ws_search--table-filter" placeholder="Search..." #searchInput
+                        [(ngModel)]="logsFilter.key">
+        
+                <div class="ws_c-calendar">
+                        <div style="margin-left:10px ; display:flex; margin-bottom: 10px;">
+                                <div class="calendar__picker" (click)="showFromCalendar()" tabindex="0"
+                                        (clickOutside)="isFromCalendarShown = false">
+                                        <div class="ws_icon__calendar"></div>
+                                        <span>From</span>
+                                        <!--calendar-->
+                                        <sgn-calendar-component [isShown]="isFromCalendarShown" (selected)="fromSelected($event)">
+                                        </sgn-calendar-component>
+                                </div>
+                                <div class="ws_label ws_label--filter" *ngIf="logsFilter.from" style= "height:50%;">
+                                        <div><span>{{logsFilter.from | date:'mediumDate'}}</span></div>
+                                        <button class="ws_button--icon" (click)="removeDate($event,'from')">
+                                                <div class="ws_icon__remove--small"></div>
+                                        </button>
+                                </div>
+                                <div *ngIf="logsFilter.from" style= "margin-left:10px ; display:flex;">                
+                                        <app-custom-drop-down [options]="hours" [currentSelection]="0" style=" width: 60px;"
+                                                (currentSelectionChange)="dropDownUpdateTime($event,'hours', 'from')">
+                                        </app-custom-drop-down>
+                                        <app-custom-drop-down [options]="mintues" [currentSelection]="0" style=" width: 60px;"
+                                                (currentSelectionChange)="dropDownUpdateTime($event,'mintues','from')">
+                                        </app-custom-drop-down>
+                                </div>
+                        </div>
+                        <div style="margin-left:10px ; display:flex;">
+                
+                                <div class="calendar__picker" (click)="showToCalendar()" tabindex="0"
+                                        (clickOutside)="isToCalendarShown = false">
+                                        <div class="ws_icon__calendar"></div>
+                                        <span>To</span>
+                                        <!--calendar-->
+                                        <sgn-calendar-component [isShown]="isToCalendarShown" (selected)="toSelected($event)">
+                                        </sgn-calendar-component>
+                                </div>
+                                <div class="ws_label ws_label--filter" *ngIf="logsFilter.to" style= "height:50%;">
+                                        <div><span>{{logsFilter.to | date:'mediumDate'}}</span></div>
+                                        <button class="ws_button--icon" (click)="removeDate($event,'to')">
+                                                <div class="ws_icon__remove--small"></div>
+                                        </button>
+                                </div>
+                                <div *ngIf="logsFilter.to" style= "margin-left:10px ; display:flex;">                
+                                        <app-custom-drop-down [options]="hours" [currentSelection]="0" style=" width: 60px;"
+                                                (currentSelectionChange)="dropDownUpdateTime($event,'hours', 'to')">
+                                        </app-custom-drop-down>
+                                        <app-custom-drop-down [options]="mintues" [currentSelection]="0" style=" width: 60px;"
+                                                (currentSelectionChange)="dropDownUpdateTime($event,'mintues','to')">
+                                        </app-custom-drop-down>
+                                </div>
+                
+                        </div>
+                </div>
+        
+                <div class="ws_break--short"></div>
+                <app-custom-drop-down [options]="logLevelOptions" [currentSelection]="3"
+                        (currentSelectionChange)="dropDownUpdate($event)">
+                </app-custom-drop-down>
+        
+        
+        
+        </div>
+</div>
+
+<!--info-->
+<div class="ws_c-table-info">
+        <span>&nbsp;</span>
+</div>
+
+<!--table-->
+<table cellpadding="0" cellspacing="0" class="ws_animate-slide-down">
+        <tr class="header">
+                <th>Time
+                        <button class="ws_button--icon ws_align-vert--middle">
+                                <div class="ws_icon__sort"></div>
+                        </button>
+                </th>
+                <th>Log level
+                        <button class="ws_button--icon ws_align-vert--middle">
+                                <div class="ws_icon__sort"></div>
+                        </button>
+                </th>
+                <th>Message
+                        <button class="ws_button--icon ws_align-vert--middle">
+                                <div class="ws_icon__sort"></div>
+                        </button>
+                </th>
+
+                <th width="150">
+                        <!--pagination-->
+                        <div class="ws_pagination ws_float-right">
+                                <div paginator class="ws_float-right" *ngIf="pageCalc" [last]="pageCalc.endPage"
+                                        (changed)="pageChanged($event)"></div>
+                        </div>
+                </th>
+        </tr>
+
+
+        <ng-container *ngIf="logs$ | async as logs">
+                <ng-container *ngFor="let log of logs; index as i" > 
+                        <tr class="ws_tr__menu" [ngStyle]="{'color':(LogLevel[log.logLevel]=='Error')? '#fc0317':'#000000'}">
+                                <td width="125"><span>{{log.timeStamp | date:'medium'}}</span></td>
+                                <td width="50"><span>{{LogLevel[log.logLevel]}}</span>
+                                </td>
+                                <td style="word-wrap: break-word; max-width: 750px;" innerHTML="{{log.message | highlight :inputText | newline }}"></td>
+                                <td></td>
+                        </tr>
+                </ng-container>
+        </ng-container>
+</table> 

@@ -1,0 +1,49 @@
+<aside class="ws_c-sidebar-min">
+    <div class="sidebar-min__body">
+        <ul>
+                <li *ngIf="!appState.IsGhostUser" class="ws_tooltip-vert is-active" tabindex="0" (click)="selectView('companies')">
+                    <div class="ws_icon__company"></div>
+
+                    <span class="ws_tooltip-vert--sidebar">Companies</span>
+                </li>
+
+            <li *ngIf="!appState.IsGhostUser"  class="ws_tooltip-vert" tabindex="0" (click)="selectView('users')">
+                <div class="ws_icon__contacts"></div>
+
+                <span class="ws_tooltip-vert--sidebar">Users</span>
+            </li>
+
+            <li *ngIf="!appState.IsGhostUser" class="ws_tooltip-vert" tabindex="0" (click)="selectView('programs')">
+                <div class="ws_icon__list"></div>
+
+                <span class="ws_tooltip-vert--sidebar">Programs</span>
+            </li>
+
+            <li *ngIf="!appState.IsGhostUser" class="ws_tooltip-vert" tabindex="0" (click)="selectView('logs')">
+                <div class="ws_icon__calendar"></div>
+
+                <span class="ws_tooltip-vert--sidebar">Logs</span>
+            </li>
+
+            <li *ngIf="!appState.IsGhostUser" class="ws_tooltip-vert" tabindex="0" (click)="selectView('configuration')">
+                <div class="ws_icon__settings"></div>
+
+                <span class="ws_tooltip-vert--sidebar">Configuration</span>
+            </li>
+            <li *ngIf="!appState.IsGhostUser" class="ws_tooltip-vert is-active" tabindex="0" (click)="selectView('license')">
+                <div class="ws_icon__duplicate"></div>
+                <span class="ws_tooltip-vert--sidebar">License</span>
+            </li>
+            <li *ngIf="appState.IsGhostUser" class="ws_tooltip-vert is-active" tabindex="0" (click)="selectView('qrcode')">
+                <div class="ws_icon__duplicate"></div>
+                <span class="ws_tooltip-vert--sidebar">QR-Code</span>
+            </li>
+            
+            <li *ngIf="!appState.IsGhostUser" class="ws_tooltip-vert" tabindex="0" (click)="selectView('reports')">
+                <div class="ws_icon__doc"></div>
+                <span class="ws_tooltip-vert--sidebar">Reports</span>
+            </li>
+            
+        </ul>
+    </div>
+</aside>

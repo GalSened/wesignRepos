@@ -1,0 +1,9 @@
+<div class="ws_body__wrapper">
+  
+    <app-banner-alert #bannerAlert></app-banner-alert>
+
+</div>
+<app-report-filter (monthsForAvgUse)="monthsForAvgUse($event)" (SubmittedMode)="SubmittedMode($event)" (SubmittedRequest)="SubmittedRequest($event)"></app-report-filter>
+<app-report-output-table  [monthsForAvgUse]="months" [submittedMode]="submittedMode"></app-report-output-table>
+   
+

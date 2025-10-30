@@ -1,0 +1,43 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <h3>{{'DOCUMENT.SHARE_DOCUMENT' | translate}}</h3>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--short"></div>
+
+        <span>{{'DOCUMENT.SHARE_WITH' | translate}}</span>
+
+        <div class="ct-break--short"></div>
+
+        <input type="text" class="ct-input--primary" [(ngModel)]="name"
+        [class.is-error]="submitted && (!name || name=='')"
+         name="full name" autocomplete="off" placeholder="{{'SIGNERS.FULL_NAME' | translate}}" maxlength="50">  
+        
+        <div class="ct-break--shorter"></div>
+
+        <input type="text" class="ct-input--primary" [(ngModel)]="means"
+        [class.is-error]="submitted && (!means || means=='')"
+        name="email phone" autocomplete="off" placeholder="{{'SIGNERS.EMAIL_OR_PHONE' | translate}}" maxlength="50">
+        
+        <div class="ct-break--medium"></div>
+        
+        <ng-container *ngIf="hasError">
+          <div class="ct-text-center">
+            <label class="is-error">{{'ERROR.INPUT.0' | translate}}</label>
+          </div>
+          <div class="ct-break--medium"></div>
+        </ng-container>
+        
+
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="close()" [disabled]="isBusy">{{'REGISTER.CANCEL' | translate}}</button>
+
+          <button class="ct-button--primary" (click)="send()" [disabled]="isBusy">{{'FORGET.SEND' | translate}}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,37 @@
+<div class="ct-c-modal" *ngIf="showDeclineForm()">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <h3>{{'MENU.DECLINE_DOCUMENT' | translate}}</h3>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--short"></div>
+
+        <span>{{'GLOBAL.DECLINE_REASON_MESSAGE' | translate}}</span>
+
+        <div class="ct-break--shorter"></div>
+
+        <!-- <textarea [class.is-error]="isEmptyDeclineMessage" [(ngModel)]="declineMessage" maxlength="250"></textarea> -->
+        <input class="ct-input--primary" [class.is-error]="isEmptyDeclineMessage" [(ngModel)]="declineMessage" maxlength="250">
+
+        <label *ngIf="isEmptyDeclineMessage" class="is-error">{{'ERROR.INPUT.3' | translate}}</label>
+        <div class="ct-break--medium"></div>
+
+        <div class="ct-text-center" *ngIf="showErrorMessage">
+          <label class="is-error">{{errorMessage}}</label>
+          <div class="ct-break--shorter"></div>
+        </div>  
+  
+        <div class="ct-separator"></div>
+        <div class="ct-break--short"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+          <button class="ct-button--primary" (click)="decline()" >{{'BUTTONS.SUBMIT' | translate}}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

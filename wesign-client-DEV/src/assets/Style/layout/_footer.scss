@@ -1,0 +1,25 @@
+// footer
+footer {
+    position: fixed;
+    bottom: 5px;
+    background: white;
+
+    span {
+        color: $color--grey-dark;
+
+        @include respond-to('small') {
+            font-size: 11px;
+        }
+    }
+
+    a {
+        @include respond-to('small') {
+            font-size: 11px;
+        }
+    }
+}
+
+footer.is-full {
+    width: 100%;
+    text-align: center;
+}

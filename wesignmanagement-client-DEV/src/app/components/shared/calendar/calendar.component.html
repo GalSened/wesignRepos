@@ -1,0 +1,59 @@
+<div class="calendar ws_animate-slide-down" [class.ws_is-shown]="isShown" [class.ws_is-hidden]="!isShown">
+    <div class="calendar--navbar">
+
+        <div class="calendar-navbar__calendar-navbar-icons calendar-navbar-icons--left" (click)="prevMonth($event)">
+        </div>
+
+        <!-- <div class="select--custom select-custom--calendar">
+            <select class="ws_calendar-select" [(ngModel)]="selectedMonth" (ngModelChange)="monthChanged()"
+                (click)="$event.stopPropagation()">
+                <option *ngFor="let item of [].constructor(12); let i = index" [value]="i">
+                    {{monthNames[i]}}
+                </option>
+            </select>
+        </div> -->
+        <app-custom-drop-down [additionalClass]="'select-custom--calendar'" [options]="monthNames"
+            [(currentSelection)]="selectedMonth" (currentSelectionChange)="monthChanged()">
+        </app-custom-drop-down>
+        <!-- (clickEvent)="$event.stopPropagation()" -->
+
+        <!-- <div class="select--custom select-custom--calendar">
+            <select class="ws_calendar-select" [(ngModel)]="selectedYear" (ngModelChange)="yearChanged()"
+                (click)="$event.stopPropagation()">
+                <option *ngFor="let item of [].constructor(10); let i = index" [value]="now.getFullYear()-i">
+                    {{now.getFullYear()-i}}</option>
+            </select>
+        </div> -->
+        <app-custom-drop-down [additionalClass]="'select-custom--calendar'" [options]="yearsList"
+            [(currentSelection)]="selectedYear" (currentSelectionChange)="yearChanged()">
+        </app-custom-drop-down>
+
+        <div class="calendar-navbar__calendar-navbar-icons calendar-navbar-icons--right" (click)="nextMonth($event)">
+        </div>
+
+        <!-- -->
+        <div class="ws_calendar__calendar-week">
+            <div class="calendar-week__calendar-day">MON</div>
+            <div class="calendar-week__calendar-day">TUE</div>
+            <div class="calendar-week__calendar-day">WED</div>
+            <div class="calendar-week__calendar-day">THU</div>
+            <div class="calendar-week__calendar-day">FRI</div>
+            <div class="calendar-week__calendar-day">SAT</div>
+            <div class="calendar-week__calendar-day">SUN</div>
+        </div>
+
+        <div class="calendar__calendar-date">
+            <div class="calendar-date disabled" *ngFor="let d of daysLastMonth">
+                <button class="calendar-date--date-item" (click)="selectPrevMonthDate(d)">{{d}}</button>
+            </div>
+            <div class="calendar-date" *ngFor="let d of daysThisMonth">
+                <button class="calendar-date--date-item"
+                    [class.active]="d === selectedDate.getDate() && currentDate.getMonth() == selectedDate.getMonth() && currentDate.getFullYear() == selectedDate.getFullYear()"
+                    (click)="selectMonthDate(d)">{{d}}</button>
+            </div>
+            <div class="calendar-date disabled" *ngFor="let d of daysNextMonth">
+                <button class="calendar-date--date-item" (Click)="selectNextMonthDate(d)">{{d}}</button>
+            </div>
+        </div>
+    </div>
+</div>

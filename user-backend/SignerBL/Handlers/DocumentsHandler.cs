@@ -1,0 +1,1447 @@
+﻿using Common.Enums;
+using Common.Enums.Contacts;
+using Common.Enums.Documents;
+using Common.Enums.PDF;
+using Common.Enums.Results;
+using Common.Enums.Users;
+using Common.Extensions;
+using Common.Hubs;
+using Common.Interfaces;
+using Common.Interfaces.DB;
+using Common.Interfaces.Files;
+using Common.Interfaces.Oauth;
+using Common.Interfaces.PDF;
+using Common.Interfaces.SignerApp;
+using Common.Models;
+using Common.Models.Configurations;
+using Common.Models.Documents;
+using Common.Models.Documents.Signers;
+using Common.Models.Documents.SplitSignature;
+using Common.Models.Files.PDF;
+using Common.Models.Settings;
+
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
+using System.Threading.Tasks;
+using Wangkanai.Detection.Services;
+using ISignerValidator = Common.Interfaces.SignerApp.ISignerValidator;
+
+
+namespace SignerBL.HandlersdocumentCollection
+{
+    public class DocumentsHandler : IDocumentsHandler
+    {
+
+        private readonly GeneralSettings _generalSettings;
+        private readonly IDocumentPdf _documentPdf;
+
+
+        private readonly IJWT _jwt;
+        private readonly ILogger _logger;
+        private readonly IDater _dater;
+        private readonly ITemplatePdf _templatePdf;
+
+        private readonly ICertificate _certificate;
+        private readonly IDocumentModeHandler _documentModeHandler;
+        private readonly IAppendices _appendices;
+        private readonly ISender _sender;
+
+        private readonly ISignerValidator _validator;
+        private readonly IDocumentCollectionConnector _documentCollectionConnector;
+        private readonly ISignerTokenMappingConnector _signerTokenMappingConnector;
+        private readonly IConfigurationConnector _configurationConnector;
+        private readonly ISignersConnector _signersConnector;
+        private readonly ITemplateConnector _tempateConnector;
+        private readonly IGroupConnector _groupConnector;
+        private readonly IDocumentConnector _documentConnector;
+        private readonly ICompanyConnector _companyConnector;
+        private readonly IMemoryCache _memoryCache;
+        private readonly IFilesWrapper _fileWrapper;
+        private readonly IOauth _oauth;
+        private readonly IOTP _otp;
+
+        private readonly IDocumentCollectionOperationsNotifier _documentCollectionOperationsNotifer;
+        private readonly IEncryptor _encryptor;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IOcrService _ocrService;
+
+        public DocumentsHandler(IDocumentCollectionConnector documentCollectionConnector, ISignerTokenMappingConnector signerTokenMappingConnector,
+            ICompanyConnector companyConnector, IConfigurationConnector configurationConnector, IGroupConnector groupConnector, IDocumentConnector documentConnector,
+            ITemplateConnector tempateConnector, ISignersConnector signersConnector, IOptions<GeneralSettings> generalSettings, IJWT jwt,
+            IDocumentPdf documentPdf, ISignerValidator validator,
+            ICertificate certificate, IDocumentModeHandler documentModeHandler, ILogger logger, IDater dater,
+            ITemplatePdf templatePdf, IAppendices appendices,
+             ISender sender, IMemoryCache memoryCache, IOTP otp,
+         IOauth oauth,
+              IDocumentCollectionOperationsNotifier documentCollectionOperationsNotifer,
+               IFilesWrapper fileWrapper, IEncryptor encryptor,
+               IServiceScopeFactory serviceScopeFactory, IOcrService ocrService)
+        {
+            _jwt = jwt;
+
+            _documentPdf = documentPdf;
+            _validator = validator;
+            _documentCollectionConnector = documentCollectionConnector;
+            _signerTokenMappingConnector = signerTokenMappingConnector;
+            _configurationConnector = configurationConnector;
+            _signersConnector = signersConnector;
+            _tempateConnector = tempateConnector;
+            _groupConnector = groupConnector;
+            _documentConnector = documentConnector;
+            _companyConnector = companyConnector;
+            _generalSettings = generalSettings.Value;
+            _certificate = certificate;
+            _documentModeHandler = documentModeHandler;
+            _logger = logger;
+            _dater = dater;
+            _templatePdf = templatePdf;
+            _appendices = appendices;
+            _sender = sender;
+            _memoryCache = memoryCache;
+            _fileWrapper = fileWrapper;
+            _oauth = oauth;
+            _otp = otp;
+            _ocrService = ocrService;
+
+            _documentCollectionOperationsNotifer = documentCollectionOperationsNotifer;
+            _encryptor = encryptor;
+            _serviceScopeFactory = serviceScopeFactory;
+
+
+
+        }
+
+        public async Task<string> GetOcrHtmlFromImage(string base64Image)
+        {
+            return await _ocrService.GenerateOcrHtmlFromBase64ImageAsync(base64Image);
+        }
+
+        public async Task<(Document, bool, PDFFields)> GetPagesInfoByDocumentId(SignerTokenMapping signerTokenMapping, Guid documentId, int offset, int limit, string code)
+        {
+            PDFFields otherFields;
+            var inputToken = signerTokenMapping.GuidToken;
+            (var signer, Guid documentCollectionId) = await _validator.ValidateSignerToken(signerTokenMapping);
+            if (signer == null)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidToken, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var documentCollection = new DocumentCollection()
+            {
+                Id = documentCollectionId
+            };
+            documentCollection = _memoryCache.Get<DocumentCollection>(GetDocumentCollectionDataFlowInfoForSignerMemCacheKey(documentCollection, signer));
+            if (documentCollection == null)
+            {
+                documentCollection = new DocumentCollection()
+                {
+                    Id = documentCollectionId
+                };
+                documentCollection = await _documentCollectionConnector.Read(documentCollection);
+                if (documentCollection != null)
+                {
+                    _memoryCache.Set(GetDocumentCollectionDataFlowInfoForSignerMemCacheKey(documentCollection, signer), documentCollection, TimeSpan.FromSeconds(10));
+                }
+            }
+            if (documentCollection == null)
+            {
+
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            var signerId = signer.Id;
+            signer = documentCollection.Signers.FirstOrDefault(x => x.Id == signerId) ?? signer;
+            var document = documentCollection?.Documents?.FirstOrDefault(x => x.Id == documentId);
+            if (document == null)
+            {
+
+                _memoryCache.Set($"{inputToken}_{documentId}_tokenForDoc", ResultCode.InvalidDocumentId, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidDocumentId.GetNumericString());
+            }
+
+            bool returnImages = true;
+            if (signer.SignerAuthentication?.OtpDetails?.Mode == OtpMode.CodeRequired || signer?.SignerAuthentication?.OtpDetails?.Mode == OtpMode.CodeAndPasswordRequired)
+            {
+                returnImages = (await _otp.IsValidCode(code, signerTokenMapping.GuidToken)).Item1;
+            }
+
+            var documentMemoryCache = _memoryCache.Get<DocumentMemoryCache>(document.Id);
+
+            if (documentMemoryCache == null)
+            {
+                _documentPdf.Load(document.Id);
+            }
+            var (SignerFields, OtherFields) = await ExtractSignerFields(offset, offset + limit - 1, signer, document, documentMemoryCache);
+            document.Fields = SignerFields;
+            if (documentMemoryCache == null)
+            {
+                document.PagesCount = _documentPdf.GetPagesCount();
+            }
+            else
+            {
+                document.PagesCount = documentMemoryCache.PageCount;
+                _documentPdf.SetId(document.Id);
+            }
+
+            int endPage = offset + limit > document.PagesCount ? document.PagesCount + 1 : offset + limit;
+
+            document.Images = GetImages(document, offset, endPage);
+            otherFields = (documentCollection.Mode == DocumentMode.OrderedGroupSign || documentCollection.Mode == DocumentMode.GroupSign) ? OtherFields : new PDFFields();
+
+            return (document, returnImages, otherFields);
+        }
+        public async Task<DocumentCollectionDataFlowInfo> GetDocumentCollectionDataFlowInfoForUser(Guid signerInputToken)
+        {
+            DocumentCollectionDataFlowInfo documentCollectionDataFlowInfo = new DocumentCollectionDataFlowInfo();
+            SignerTokenMapping signerTokenMapping = new SignerTokenMapping
+            {
+                GuidToken = signerInputToken
+            };
+
+            signerTokenMapping = await _signerTokenMappingConnector.Read(signerTokenMapping);
+            if (signerTokenMapping == null)
+            {
+                signerTokenMapping = new SignerTokenMapping
+                {
+                    GuidAuthToken = signerInputToken
+                };
+                signerTokenMapping = await _signerTokenMappingConnector.Read(signerTokenMapping);
+                if (signerTokenMapping == null)
+                {
+                    _memoryCache.Set(signerInputToken, ResultCode.InvalidDocumentCollectionId, TimeSpan.FromHours(1));
+                    throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+                }
+            }
+
+            (var signer, Guid documentCollectionId) = await _validator.ValidateSignerToken(signerTokenMapping);
+            var documentCollection = new DocumentCollection
+            {
+                Id = documentCollectionId
+            };
+
+            documentCollection = await _documentCollectionConnector.Read(documentCollection);
+            if (documentCollection == null || documentCollection.Id == Guid.Empty || documentCollection?.DocumentStatus == DocumentStatus.Declined
+               || documentCollection.DocumentStatus == DocumentStatus.Deleted)
+            {
+                if (documentCollection?.DocumentStatus != DocumentStatus.Declined && documentCollection?.Mode != DocumentMode.GroupSign)
+                {
+                    _memoryCache.Set(signerInputToken, ResultCode.InvalidDocumentCollectionId, TimeSpan.FromHours(1));
+                }
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            signer = documentCollection.Signers.FirstOrDefault(x => x.Id == signer.Id);
+            if (signer == null)
+            {
+                _memoryCache.Set(signerInputToken, ResultCode.InvalidDocumentCollectionId, TimeSpan.FromMinutes(3));
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+
+            if (signer?.SignerAuthentication?.AuthenticationMode == AuthMode.IDP && signerTokenMapping.GuidAuthToken == signerInputToken)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            var signerStatus = signer?.Status;
+            if (signerStatus == SignerStatus.Signed)
+            {
+                _memoryCache.Set(signerInputToken, ResultCode.DocumentAlreadySignedBySigner, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.DocumentAlreadySignedBySigner.GetNumericString());
+            }
+            _memoryCache.Set(GetDocumentCollectionDataFlowInfoForSignerMemCacheKey(documentCollection, signer), documentCollection, TimeSpan.FromSeconds(10));
+
+            _fileWrapper.Users.SetCompanyLogo(documentCollection.User);
+            documentCollectionDataFlowInfo.CompanyLogo = documentCollection.User.CompanyLogo;
+
+            documentCollectionDataFlowInfo.OtpMode = signer?.SignerAuthentication?.OtpDetails.Mode ?? OtpMode.None;
+
+            documentCollectionDataFlowInfo.VisualIdentificationRequired = signer?.SignerAuthentication?.AuthenticationMode == AuthMode.ComsignVisualIDP ? true : false;
+
+            if (documentCollectionDataFlowInfo.OtpMode == OtpMode.None && !documentCollectionDataFlowInfo.VisualIdentificationRequired)
+            {
+                documentCollectionDataFlowInfo.MapperID = signerTokenMapping.GuidToken;
+            }
+
+            documentCollectionDataFlowInfo.Language = documentCollection.User?.UserConfiguration?.Language ?? Language.en;
+            documentCollectionDataFlowInfo.Means = GetSignerMeans(signer);
+            documentCollectionDataFlowInfo.Name = signer?.Contact.Name;
+            var companyConfiguration = await _companyConnector.ReadConfiguration(new Company() { Id = documentCollection.User.CompanyId });
+            var companyDisplayNameInSignatureConfig = companyConfiguration?.EnableDisplaySignerNameInSignature ?? false;
+            var companyMeaningOfSignature = companyConfiguration?.ShouldEnableMeaningOfSignatureOption ?? false;
+            documentCollectionDataFlowInfo.ShouldDisplaySignerNameInSignature = companyDisplayNameInSignatureConfig && (documentCollection.User?.UserConfiguration?.ShouldDisplayNameInSignature ?? false);
+            documentCollectionDataFlowInfo.ShouldDisplayMeaningOfSignature = companyMeaningOfSignature && documentCollection.ShouldEnableMeaningOfSignature;
+            documentCollectionDataFlowInfo.ShouldSignEidasSignatureFlow = _generalSettings.ComsignIDPActive;
+            return documentCollectionDataFlowInfo;
+
+        }
+
+        private string GetDocumentCollectionDataFlowInfoForSignerMemCacheKey(DocumentCollection documentCollection, Signer signer)
+        {
+            return $"{documentCollection.Id}_{signer.Id}_DocumentCollectionToSigner_FlowInfo";
+        }
+
+        private string GetSignerMeans(Signer signer)
+        {
+            if (signer?.SendingMethod == SendingMethod.Email)
+            {
+                return signer.Contact?.Email;
+            }
+            if (signer?.SendingMethod == SendingMethod.SMS)
+            {
+                return signer.Contact?.Phone;
+            }
+            return string.Empty;
+        }
+        public async Task<DocumentCollectionData> GetDocumentCollectionData(string signerIP, SignerTokenMapping signerTokenMapping, string exrtaAuthId = "")
+        {
+            DocumentCollectionData result = new DocumentCollectionData()
+            {
+                SignerTokenMapping = signerTokenMapping,
+            };
+            var inputToken = result.SignerTokenMapping.GuidToken;
+            result.SignerTokenMapping = await _signerTokenMappingConnector.Read(result.SignerTokenMapping);
+            if (result.SignerTokenMapping == null)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidToken, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var signer = _jwt.GetSigner(result.SignerTokenMapping?.JwtToken);
+            if (signer == null)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidToken, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+
+            if (!string.IsNullOrWhiteSpace(exrtaAuthId))
+            {
+                string authIdFromSignerMapping = _encryptor.Decrypt(result.SignerTokenMapping.AuthId).ToLower();
+                if (!string.IsNullOrWhiteSpace(authIdFromSignerMapping) && authIdFromSignerMapping != exrtaAuthId.ToLower())
+                {
+                    throw new InvalidOperationException(ResultCode.InvalidSignerId.GetNumericString());
+                }
+
+            }
+
+            var documentCollection = new DocumentCollection()
+            {
+                Id = result.SignerTokenMapping.DocumentCollectionId
+            };
+            documentCollection = _memoryCache.Get<DocumentCollection>(GetDocumentCollectionDataFlowInfoForSignerMemCacheKey(documentCollection, signer));
+            if (documentCollection == null)
+            {
+                documentCollection = new DocumentCollection()
+                {
+                    Id = result.SignerTokenMapping.DocumentCollectionId
+                };
+                documentCollection = await _documentCollectionConnector.Read(documentCollection);
+                if (documentCollection != null)
+                {
+                    _memoryCache.Set(GetDocumentCollectionDataFlowInfoForSignerMemCacheKey(documentCollection, signer), documentCollection, TimeSpan.FromSeconds(10));
+                }
+            }
+            if (documentCollection == null || documentCollection.Id == Guid.Empty || documentCollection?.DocumentStatus == DocumentStatus.Declined
+                || documentCollection.DocumentStatus == DocumentStatus.Deleted)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidDocumentCollectionId, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            var signerStatus = documentCollection.Signers.FirstOrDefault(x => x.Id == signer.Id)?.Status;
+            if (signerStatus == SignerStatus.Signed)
+            {
+                _memoryCache.Set(inputToken, ResultCode.DocumentAlreadySignedBySigner, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.DocumentAlreadySignedBySigner.GetNumericString());
+            }
+
+            int totalCount = 0;
+            foreach (var document in documentCollection?.Documents ?? Enumerable.Empty<Document>())
+            {
+                _logger.Debug("GetPagesCount : documentCollectionId = {DocumentCollectionId} name {DocumentCollectionName}, documentId = {DocumentId} name {DocumentName}",
+                    documentCollection.Id, documentCollection.Name, document.Id, document.Name);
+                DocumentMemoryCache documentMemoryCache = _memoryCache.Get<DocumentMemoryCache>(document.Id);
+                int pages = 0;
+                if (documentMemoryCache == null)
+                {
+
+                    _documentPdf.Load(document.Id);
+                    pages = _documentPdf.GetPagesCount();
+                    document.Images = new PdfImage[pages].ToList();
+                    document.PagesCount = pages;
+
+                    documentMemoryCache = new DocumentMemoryCache
+                    {
+                        pdfFields = _documentPdf.GetAllFields(),
+                        PageCount = pages,
+                        Images = document.Images.ToList()
+                    };
+                    _memoryCache.Set(document.Id, documentMemoryCache, TimeSpan.FromSeconds(20));
+                }
+                else
+                {
+                    pages = documentMemoryCache.PageCount;
+                    document.PagesCount = documentMemoryCache.PageCount;
+                    document.Images = documentMemoryCache.Images;
+                }
+
+                totalCount += pages;
+            }
+
+            result.TotalCount = totalCount;
+            result.SignerId = signer.Id;
+
+            var appendices = _appendices.Read(documentCollection.Id).Concat(_appendices.Read(documentCollection.Id, result.SignerId));
+            documentCollection.SenderAppendices = appendices;
+            var dbSigner = documentCollection.Signers.FirstOrDefault(x => x.Id == signer.Id);
+            _fileWrapper.Contacts.SetSealsData(dbSigner?.Contact);
+
+            var appConfiguration = await _configurationConnector.Read();
+            var companyConfiguration = await _companyConnector.ReadConfiguration(new Company() { Id = documentCollection.User.CompanyId });
+            await ChangeDocumentStatusToViewed(signerIP, documentCollection, dbSigner, appConfiguration, companyConfiguration);
+
+            _fileWrapper.Users.SetCompanyLogo(documentCollection.User);
+
+            result.DocumentCollection = documentCollection;
+            return result;
+        }
+
+        private async Task ChangeDocumentStatusToViewed(string signerIP, DocumentCollection documentCollection, Signer dbSigner, Common.Models.Configurations.Configuration appConfiguration, Common.Models.Configurations.CompanyConfiguration companyConfiguration)
+        {
+            if (documentCollection.DocumentStatus == DocumentStatus.Sent ||
+                documentCollection.DocumentStatus == DocumentStatus.Created ||
+                documentCollection.DocumentStatus == DocumentStatus.Viewed)
+            {
+                await UpdateDocumentViewed(documentCollection, dbSigner, signerIP);
+                _logger.Debug("Signer [{DbSignerId}] name [{DbSignerName}] view document collection [{DocumentCollectionId}: {DocumentCollectionName}]",
+                    dbSigner.Id, dbSigner?.Contact?.Name, documentCollection.Id, documentCollection.Name);
+                if (documentCollection.User.UserConfiguration.ShouldNotifyWhileSignerViewed)
+                {
+                    var sendBefore = _memoryCache.Get<bool>($"{dbSigner.Id}ShouldNotifyWhileSignerViewed");
+                    if (!sendBefore)
+                    {
+                        await _sender.SendEmailNotification(MessageType.SignerViewDocumentNotification, documentCollection, appConfiguration, dbSigner, companyConfiguration);
+                        _memoryCache.Set($"{dbSigner.Id}ShouldNotifyWhileSignerViewed", true, TimeSpan.FromMinutes(3));
+                    }
+                }
+            }
+        }
+
+        public async Task<DocumentCollectionHtmlData> GetDocumentCollectionHtmlData(SignerTokenMapping signerTokenMapping)
+        {
+            DocumentCollectionHtmlData documentCollectionHtmlData = new DocumentCollectionHtmlData()
+            {
+                SignerTokenMapping = signerTokenMapping
+            };
+            var inputToken = documentCollectionHtmlData.SignerTokenMapping.GuidToken;
+            documentCollectionHtmlData.SignerTokenMapping = await _signerTokenMappingConnector.Read(documentCollectionHtmlData.SignerTokenMapping);
+            if (documentCollectionHtmlData.SignerTokenMapping == null)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidToken, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var signer = _jwt.GetSigner(documentCollectionHtmlData.SignerTokenMapping?.JwtToken);
+            if (signer == null)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidToken, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var documentCollection = new DocumentCollection()
+            {
+                Id = documentCollectionHtmlData.SignerTokenMapping.DocumentCollectionId
+            };
+            documentCollection = await _documentCollectionConnector.Read(documentCollection);
+            if (documentCollection == null || documentCollection.Id == Guid.Empty || documentCollection?.DocumentStatus == DocumentStatus.Declined)
+            {
+                _memoryCache.Set(inputToken, ResultCode.InvalidDocumentCollectionId, TimeSpan.FromHours(1));
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+
+            (string HTML, string JS) content = (string.Empty, string.Empty);
+            var fieldsData = new List<FieldData>();
+            foreach (var document in documentCollection?.Documents ?? Enumerable.Empty<Document>())
+            {
+                _templatePdf.Load(document.TemplateId);
+                var template = await _tempateConnector.Read(new Template { Id = document.TemplateId });
+                content = _templatePdf.GetHtmlTemplate();
+                var fields = _templatePdf.GetAllFields();
+
+                foreach (var field in fields.TextFields ?? Enumerable.Empty<TextField>())
+                {
+                    if (template != null)
+                    {
+                        field.TextFieldType = template.Fields.TextFields.FirstOrDefault(x => x.Name == field.Name).TextFieldType;
+                    }
+                }
+
+                foreach (var field in fields.SignatureFields ?? Enumerable.Empty<SignatureField>())
+                {
+                    if (template != null)
+                    {
+                        field.Mandatory = template.Fields.SignatureFields.FirstOrDefault(x => x.Name == field.Name).Mandatory;
+                    }
+                }
+
+                fieldsData.AddRange(fields.TextFields.Select(x => new FieldData { Name = x.Name, Type = WeSignFieldType.TextField, Value = x.Value, TextFieldType = x.TextFieldType }));
+                fieldsData.AddRange(fields.CheckBoxFields.Select(x => new FieldData { Name = x.Name, Type = WeSignFieldType.CheckBoxField, Value = x.IsChecked.ToString() }));
+                fieldsData.AddRange(fields.ChoiceFields.Select(x => new FieldData { Name = x.Name, Type = WeSignFieldType.ChoiceField, Value = x.SelectedOption }));
+                fieldsData.AddRange(fields.RadioGroupFields.Select(x => new FieldData { Name = x.Name, Type = WeSignFieldType.RadioGroupField, Value = x.SelectedRadioName }));
+                fieldsData.AddRange(fields.SignatureFields.Select(x => new FieldData { Name = x.Name, Type = WeSignFieldType.SignatureField }));
+
+                break;
+            }
+            documentCollectionHtmlData.HTML = content.HTML;
+            documentCollectionHtmlData.JS = content.JS;
+            documentCollectionHtmlData.FieldsData = fieldsData;
+            return documentCollectionHtmlData;
+        }
+
+        public async Task<(string RedirectLink, string Downloadlink)> Update(SignerTokenMapping signerTokenMapping, DocumentCollection inputDocumentCollection, DocumentOperation operation, bool useForAllFields = false)
+        {
+
+            if (operation == DocumentOperation.Decline)
+            {
+                signerTokenMapping.GuidAuthToken = signerTokenMapping.GuidToken;
+            }
+            var dbDocumentCollection = await InputValidation(signerTokenMapping, inputDocumentCollection, operation);
+
+            foreach (var signer in inputDocumentCollection.Signers ?? Enumerable.Empty<Signer>())
+            {
+                foreach (var attachment in signer.SignerAttachments ?? Enumerable.Empty<SignerAttachment>())
+                {
+                    attachment.Base64File = (await _validator.ValidateIsCleanFile(attachment.Base64File))?.CleanFile;
+                }
+            }
+
+
+            var dbSigner = dbDocumentCollection.Signers.FirstOrDefault(x => x.Id == inputDocumentCollection.Signers.First().Id);
+            var uniqueSingingType = await GetSingingTypeProcess(dbDocumentCollection, dbSigner);
+
+            if (uniqueSingingType != UniqueSingingType.None && operation == DocumentOperation.Close)
+            {
+                throw new InvalidOperationException(ResultCode.DocumentNotSigned.GetNumericString());
+            }
+
+            if (operation != DocumentOperation.Save)
+            {
+                if (inputDocumentCollection.Signers.FirstOrDefault()?.SignerAuthentication != null)
+                {
+                    dbSigner.SignerAuthentication = inputDocumentCollection.Signers.FirstOrDefault()?.SignerAuthentication;
+
+                    if (!string.IsNullOrWhiteSpace(dbSigner.SignerAuthentication.Signer1Credential.SignerToken) &&
+                        !string.IsNullOrWhiteSpace(signerTokenMapping.AuthToken)
+                         && dbSigner.SignerAuthentication.Signer1Credential.SignerToken != signerTokenMapping.AuthToken)
+                    {
+                        throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+                    }
+
+                }
+            }
+            var dbSignerTokenMapping = await _signerTokenMappingConnector.Read(signerTokenMapping);
+            if (operation == DocumentOperation.Decline)
+            {
+                if (dbSignerTokenMapping != null)
+                {
+                    var dbDeclinedSigner = dbDocumentCollection.Signers.FirstOrDefault(signer => signer.Id == dbSignerTokenMapping.SignerId);
+                    var inputDeclinedSigner = inputDocumentCollection.Signers.FirstOrDefault(signer => signer.Id == dbSignerTokenMapping.SignerId);
+                    dbDeclinedSigner.Notes = inputDeclinedSigner.Notes;
+                    await SendCurrentSignerNoteEmailNotification(dbDeclinedSigner, dbDocumentCollection);
+                }
+                await UpdateDocumentDeclined(inputDocumentCollection, dbDocumentCollection, dbSigner);
+
+                await _signerTokenMappingConnector.Delete(signerTokenMapping);
+                Configuration appConfiguration = await _configurationConnector.Read();
+                await _sender.SendDocumentDecline(dbDocumentCollection, appConfiguration, dbSigner, dbDocumentCollection.User);
+                _logger.Warning("Document collection [{DbDocumentCollectionId}] Decline by signer [{DbSignerId}] ", dbDocumentCollection.Id, dbSigner.Id);
+                var declineRedirecturl = GetRedirectUrl(dbDocumentCollection);
+
+                if (dbSigner.SendingMethod == SendingMethod.Tablet)
+                {
+                    MoveToAd($"{dbDocumentCollection.User.CompanyId}_{dbSigner.Contact?.Name}");
+                }
+                await Task.Run(async () => await _documentCollectionOperationsNotifer.AddNotification(dbDocumentCollection, DocumentNotification.DocumentRejeceted, dbSigner));
+                return (declineRedirecturl, "");
+            }
+            await UpdatePdfDocuments(inputDocumentCollection, dbDocumentCollection, operation, dbSigner, useForAllFields);
+            AddAttachmentsToFS(inputDocumentCollection, dbSigner);
+            var dbSignedSigner = dbDocumentCollection.Signers.FirstOrDefault(signer => signer.Id == dbSignerTokenMapping.SignerId);
+            var inputSignedSigner = inputDocumentCollection.Signers.FirstOrDefault(signer => signer.Id == dbSignerTokenMapping.SignerId);
+            dbSignedSigner.Notes.SignerNote = inputSignedSigner.Notes.SignerNote;
+            await SendCurrentSignerNoteEmailNotification(dbSignedSigner, dbDocumentCollection);
+            await UpdateSingerInfoInDb(inputDocumentCollection, dbDocumentCollection, dbSignedSigner, operation);
+            string downloadLink = "";
+            if (uniqueSingingType == UniqueSingingType.SmartCard)
+            {
+                signerTokenMapping.SignerId = dbSigner.Id;
+                signerTokenMapping.DocumentCollectionId = inputDocumentCollection.Id;
+                SaveDataForSmartCardSign(signerTokenMapping, inputDocumentCollection);
+            }
+            if (uniqueSingingType == UniqueSingingType.EIDAS)
+            {
+                signerTokenMapping.SignerId = dbSigner.Id;
+                signerTokenMapping.DocumentCollectionId = inputDocumentCollection.Id;
+                inputDocumentCollection.Name = dbDocumentCollection.Name;
+                SaveDataForEIDASSign(signerTokenMapping, inputDocumentCollection);
+            }
+            if (operation == DocumentOperation.Close)
+            {
+
+                downloadLink = await DoneProcess(dbDocumentCollection, dbSigner);
+            }
+            var redirecturl = GetRedirectUrl(dbDocumentCollection);
+            await Task.Run(async () => await _documentCollectionOperationsNotifer.AddNotification(dbDocumentCollection, DocumentNotification.DocumentSigned, dbSigner));
+            return (redirecturl, downloadLink);
+
+        }
+
+        private void SaveDataForEIDASSign(SignerTokenMapping signerTokenMapping, DocumentCollection inputDocumentCollection)
+        {
+            _oauth.SaveDataForEidasProcess(signerTokenMapping, inputDocumentCollection);
+
+        }
+
+
+        private void SaveDataForSmartCardSign(SignerTokenMapping signerTokenMapping, DocumentCollection inputDocumentCollection)
+        {
+
+            SmartCardInput smartCardInput = new SmartCardInput()
+            {
+                CollectionId = inputDocumentCollection.Id,
+                SignerTokenMapping = signerTokenMapping
+            };
+            foreach (var document in inputDocumentCollection.Documents)
+            {
+                DocumentSplitSignatureDataProcessInput documentSmartCardInput = new DocumentSplitSignatureDataProcessInput()
+                {
+                    Id = document.Id,
+                    SignatureFields = new List<SignatureFieldData>()
+                };
+
+                foreach (var sigField in document?.Fields?.SignatureFields ?? Enumerable.Empty<SignatureField>())
+                {
+                    documentSmartCardInput.SignatureFields.Add(new SignatureFieldData()
+                    {
+                        Image = sigField.Image,
+                        Name = sigField.Name,
+                    });
+                }
+
+                if (documentSmartCardInput.SignatureFields.Count > 0)
+                {
+                    smartCardInput.Documents.Add(documentSmartCardInput);
+                }
+            }
+            _memoryCache.Set($"SmartCardSigning_{signerTokenMapping.GuidToken}", smartCardInput, TimeSpan.FromMinutes(3));
+
+        }
+
+        private async Task<UniqueSingingType> GetSingingTypeProcess(DocumentCollection dbDocumentCollection, Signer dbSigner)
+        {
+            Dictionary<Guid, Template> documentSignatureFieldsMapper = new Dictionary<Guid, Template>();
+            foreach (var field in dbSigner.SignerFields.OrderBy(x => x.DocumentId) ?? Enumerable.Empty<SignerField>())
+            {
+                var doc = dbDocumentCollection.Documents.FirstOrDefault(x => x.Id == field.DocumentId);
+                if (doc != null)
+                {
+
+                    if (!documentSignatureFieldsMapper.ContainsKey(field.DocumentId))
+                    {
+                        documentSignatureFieldsMapper.Add(field.DocumentId,
+                           await _tempateConnector.Read(new Template { Id = doc.TemplateId }));
+                    }
+                    var sigantureInDoc = documentSignatureFieldsMapper[field.DocumentId]?.Fields?.SignatureFields;
+                    if (sigantureInDoc != null)
+                    {
+                        var docField = sigantureInDoc.Find(x => field.FieldName == x.Name);
+                        if (docField != null && docField.SigningType == SignatureFieldType.SmartCard)
+                        {
+                            return UniqueSingingType.SmartCard;
+                        }
+                        if (docField != null && docField.SigningType == SignatureFieldType.Server &&
+                            _generalSettings.ComsignIDPActive)
+                        {
+                            return UniqueSingingType.EIDAS;
+                        }
+                    }
+
+                }
+
+
+            }
+            return UniqueSingingType.None;
+
+
+
+        }
+
+
+        public async Task<(IDictionary<Guid, (string name, byte[] content)>, string documentCollectionName)> Download(SignerTokenMapping signerTokenMapping)
+        {
+            string documentCollectionName;
+            var dbSignerTokenMapping = await _signerTokenMappingConnector.Read(signerTokenMapping);
+            if (dbSignerTokenMapping == null)
+            {
+                dbSignerTokenMapping = await _signerTokenMappingConnector.Read(new SignerTokenMapping { GuidAuthToken = signerTokenMapping.GuidToken });
+            }
+            if (dbSignerTokenMapping == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var signer = _jwt.GetSigner(dbSignerTokenMapping.JwtToken);
+            if (signer == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var documentCollection = new DocumentCollection()
+            {
+                Id = dbSignerTokenMapping.DocumentCollectionId
+            };
+            var dbDocumentCollection = await _documentCollectionConnector.Read(documentCollection);
+            if (dbDocumentCollection == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            if (dbDocumentCollection.DocumentStatus != DocumentStatus.Signed && dbDocumentCollection.DocumentStatus != DocumentStatus.ExtraServerSigned)
+            {
+                throw new InvalidOperationException(ResultCode.CannotDownloadUnsignedDocument.GetNumericString());
+            }
+            documentCollectionName = dbDocumentCollection.Name;
+            var documents = new Dictionary<Guid, (string, byte[])>();
+            foreach (var document in dbDocumentCollection.Documents ?? Enumerable.Empty<Document>())
+            {
+
+                if (!_fileWrapper.Documents.IsDocumentExist(DocumentType.Document, document.Id))
+                {
+                    throw new Exception($"File type [{DocumentType.Document}] [{document.Id}] not exist");
+                }
+                documents.Add(document.Id, (document.Name, _fileWrapper.Documents.ReadDocument(DocumentType.Document,
+                    document.Id)));
+            }
+
+            return (documents, documentCollectionName);
+        }
+
+        public async Task<Appendix> ReadAppendix(SignerTokenMapping signerTokenMapping, string appendixName)
+        {
+            var dbSignerTokenMapping = await _signerTokenMappingConnector.Read(signerTokenMapping);
+            var signer = _jwt.GetSigner(dbSignerTokenMapping?.JwtToken);
+            if (signer == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+            var documentCollection = new DocumentCollection()
+            {
+                Id = dbSignerTokenMapping.DocumentCollectionId
+            };
+            var dbDocumentCollection = await _documentCollectionConnector.Read(documentCollection);
+            if (dbDocumentCollection == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            var appendices = _appendices.Read(documentCollection.Id).Concat(_appendices.Read(documentCollection.Id, signer.Id));
+
+            return appendices.FirstOrDefault(x => x.Name == appendixName);
+        }
+
+        public async Task<string> DoneProcess(DocumentCollection dbDocumentCollection, Signer dbSigner)
+        {
+            string downloadLink;
+            await UpdateSignedStatusInDB(dbDocumentCollection, dbSigner);
+            var documentModeActionHandler = _documentModeHandler.ExecuteCreation(dbDocumentCollection.Mode);
+            downloadLink = await documentModeActionHandler.DoAction(dbDocumentCollection, dbSigner);
+            if (dbSigner.SendingMethod == SendingMethod.Tablet)
+            {
+                Group group = await _groupConnector.Read(new Group { Id = dbDocumentCollection.GroupId });
+
+                MoveToAd($"{group.CompanyId}_{dbSigner.Contact?.Name}");
+            }
+            return downloadLink;
+        }
+
+        public byte[] DownloadSmartCardDesktopClientInstaller()
+        {
+            return _fileWrapper.Signers.GetSmartCardDesktopClientInstaller();
+        }
+
+
+        public bool GetTemplateSignatureFieldMandatory(string fieldName)
+        {
+            return _tempateConnector.ReadTemplateSignatureFieldMandatory(fieldName);
+        }
+
+
+
+
+        #region Private Functions
+
+
+
+        private void UpdateAllFieldsExceptSignatures(Document document, DocumentCollection dbDocCollection, DocumentOperation operation)
+        {
+
+            // check all mandatory text fields....
+            _documentPdf.SaveCopy(document.Id);
+
+
+            var allFields = _documentPdf.GetAllFieldsWithoutSigFields();
+
+            var dateFields = _tempateConnector.GetTextFieldsByType(new Template { Id = dbDocCollection?.Documents?.FirstOrDefault(x => x.Id == document.Id)?.TemplateId ?? Guid.Empty }, TextFieldType.Date);
+
+
+            if (dateFields.Any())
+            {
+                allFields.TextFields.ForEach(field =>
+                {
+
+
+                    //More correct way is to load textfieldType and compare to it if it is date type
+                    if (dateFields.FirstOrDefault(x => x.Name == field.Name) != null &&
+                        DateTime.TryParse(field.Value, out DateTime dateTime))
+                    {
+                        field.Value = dateTime.ToString("dd MMM yyyy");
+                    }
+                });
+            }
+            foreach (var field in document?.Fields?.TextFields ?? Enumerable.Empty<TextField>())
+            {
+                var pdfField = allFields.TextFields.FirstOrDefault(x => x.Name == field.Name);
+                if (pdfField.Mandatory && string.IsNullOrWhiteSpace(field.Value))
+                {
+                    if (operation == DocumentOperation.Close)
+                    {
+                        throw new InvalidOperationException(ResultCode.NotAllMandatoryFieldsFilledIn.GetNumericString());
+                    }
+                }
+                if (pdfField != null && pdfField.Value != field.Value)
+                {
+                    if (dateFields.FirstOrDefault(x => x.Name == field.Name) != null &&
+                        DateTime.TryParse(field.Value, out DateTime dateTime))
+                    {
+                        pdfField.Value = dateTime.ToString("dd MMM yyyy");
+                    }
+                    else
+                    {
+                        pdfField.Value = field.Value;
+                    }
+                }
+            }
+            foreach (var field in document?.Fields?.ChoiceFields ?? Enumerable.Empty<ChoiceField>())
+            {
+                var pdfField = allFields.ChoiceFields.FirstOrDefault(x => x.Name == field.Name);
+                pdfField.SelectedOption = field.SelectedOption;
+            }
+            foreach (var field in document?.Fields?.CheckBoxFields ?? Enumerable.Empty<CheckBoxField>())
+            {
+                var pdfField = allFields.CheckBoxFields.FirstOrDefault(x => x.Name == field.Name);
+                pdfField.IsChecked = field.IsChecked;
+            }
+            foreach (var field in document?.Fields?.RadioGroupFields ?? Enumerable.Empty<RadioGroupField>())
+            {
+                var pdfField = allFields.RadioGroupFields.FirstOrDefault(x => x.Name == field.Name);
+                pdfField.SelectedRadioName = field.SelectedRadioName;
+            }
+
+            _documentPdf.TextFields.UpdateValue(allFields.TextFields);
+            _documentPdf.CheckBoxFields.UpdateValue(allFields.CheckBoxFields);
+            _documentPdf.ChoiceFields.UpdateValue(allFields.ChoiceFields);
+            _documentPdf.RadioGroupFields.UpdateValue(allFields.RadioGroupFields);
+
+            //_documentPdf.SaveDocumentIncludeOldSignatures(fileHandler);
+
+            _documentPdf.SaveDocument();
+
+            // PATCH Hebrew issue with Debenu
+            _documentPdf.EmbadTextDataFields(allFields.TextFields, allFields.ChoiceFields);
+
+        }
+
+        private bool IsSignerFieldsContainsField(IEnumerable<SignerField> signerFields, string fieldName)
+        {
+            return signerFields.FirstOrDefault(x => x.FieldName.ToLower() == fieldName.ToLower()) != null;
+        }
+
+        private async Task<(PDFFields SignerFields, PDFFields OtherFields)> ExtractSignerFields(int startPage, int endPage, Signer signer, Document document, DocumentMemoryCache documentMemoryCache)
+        {
+            var signerFields = signer.SignerFields.Where(x => x.DocumentId == document.Id);
+            PDFFields pdfFields = GetFields(startPage, endPage, documentMemoryCache, false);
+            var otherFields = new PDFFields();
+
+            ModifySignerFields(pdfFields, otherFields, signerFields);
+
+            await UpdateTextFieldsType(pdfFields.TextFields, signerFields);
+            await FillTemplateFieldsMissingData(document, otherFields);
+            await UpdateSignatureFieldsType(pdfFields.SignatureFields, signerFields);
+            LoadSignatureImages(document, otherFields);
+
+            return (pdfFields, otherFields);
+        }
+
+        #region Modify Signer Fields
+        private void ModifySignerFields(PDFFields pdfFields, PDFFields otherFields, IEnumerable<SignerField> signerFields)
+        {
+            ModifyTextFields(pdfFields, otherFields, signerFields);
+            ModifyCheckBoxFields(pdfFields, otherFields, signerFields);
+            ModifyChoiseFields(pdfFields, otherFields, signerFields);
+            ModifySignatureFields(pdfFields, otherFields, signerFields);
+            ModifyRadioGroupFields(pdfFields, otherFields, signerFields);
+
+        }
+        private void ModifyTextFields(PDFFields pdfFields, PDFFields otherFields, IEnumerable<SignerField> signerFields)
+        {
+            for (int i = pdfFields.TextFields.Count - 1; i >= 0; i--)
+            {
+                if (!IsSignerFieldsContainsField(signerFields, pdfFields.TextFields[i].Name) && !IsSignerFieldsContainsField(signerFields, pdfFields.TextFields[i].Description))
+                {
+                    otherFields.TextFields.Add(pdfFields.TextFields.ElementAt(i));
+                    pdfFields.TextFields.RemoveAt(i);
+                }
+            }
+        }
+        private void ModifyRadioGroupFields(PDFFields fields, PDFFields otherFields, IEnumerable<SignerField> signerFields)
+        {
+            for (int i = fields.RadioGroupFields.Count - 1; i >= 0; i--)
+            {
+                var radiosInGroup = fields.RadioGroupFields[i].RadioFields;
+                foreach (var item in radiosInGroup)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.Name) && !IsSignerFieldsContainsField(signerFields, item.Description) && !IsSignerFieldsContainsField(signerFields, item.Name))
+                    {
+                        string groupName = fields.RadioGroupFields[i].Name;
+                        var otherGroup = otherFields.RadioGroupFields.FirstOrDefault(x => x.Name.ToLower() == groupName.ToLower());
+                        otherGroup = new RadioGroupField
+                        {
+                            Name = groupName,
+                            RadioFields = radiosInGroup,
+                            SelectedRadioName = fields.RadioGroupFields[i].SelectedRadioName
+                        };
+                        otherFields.RadioGroupFields.Add(otherGroup);
+                        fields.RadioGroupFields.RemoveAt(i);
+                        break;
+
+                    }
+                }
+
+            }
+        }
+
+        private void ModifySignatureFields(PDFFields fields, PDFFields otherFields, IEnumerable<SignerField> signerFields)
+        {
+            for (int i = fields.SignatureFields.Count - 1; i >= 0; i--)
+            {
+                if (!IsSignerFieldsContainsField(signerFields, fields.SignatureFields[i].Name) && !IsSignerFieldsContainsField(signerFields, fields.SignatureFields[i].Description))
+                {
+                    otherFields.SignatureFields.Add(fields.SignatureFields.ElementAt(i));
+                    fields.SignatureFields.RemoveAt(i);
+                }
+            }
+        }
+
+        private void ModifyChoiseFields(PDFFields fields, PDFFields otherFields, IEnumerable<SignerField> signerFields)
+        {
+            for (int i = fields.ChoiceFields.Count - 1; i >= 0; i--)
+            {
+                if (!IsSignerFieldsContainsField(signerFields, fields.ChoiceFields[i].Name) && !IsSignerFieldsContainsField(signerFields, fields.ChoiceFields[i].Description))
+                {
+                    otherFields.ChoiceFields.Add(fields.ChoiceFields.ElementAt(i));
+                    fields.ChoiceFields.RemoveAt(i);
+                }
+            }
+        }
+
+        private void ModifyCheckBoxFields(PDFFields fields, PDFFields otherFields, IEnumerable<SignerField> signerFields)
+        {
+            for (int i = fields.CheckBoxFields.Count - 1; i >= 0; i--)
+            {
+                if (!IsSignerFieldsContainsField(signerFields, fields.CheckBoxFields[i].Name) && !IsSignerFieldsContainsField(signerFields, fields.CheckBoxFields[i].Description))
+                {
+                    otherFields.CheckBoxFields.Add(fields.CheckBoxFields.ElementAt(i));
+                    fields.CheckBoxFields.RemoveAt(i);
+                }
+            }
+        }
+
+
+        #endregion
+
+        private PDFFields GetFields(int startPage, int endPage, DocumentMemoryCache documentMemoryCache, bool includeSignatureImages = true)
+        {
+            if (documentMemoryCache == null)
+                return _documentPdf.GetAllFields(startPage, endPage, false);
+            return documentMemoryCache.pdfFields;
+        }
+
+        private async Task FillTemplateFieldsMissingData(Document document, PDFFields debenuFields)
+        {
+            if (debenuFields == null || debenuFields.TextFields == null || debenuFields.TextFields.Count == 0)
+            {
+                return;
+            }
+            var dbTemplate = await _tempateConnector.Read(new Template { Id = document.TemplateId });
+            PDFFields templateFields = dbTemplate?.Fields;
+            if (templateFields == null)
+            {
+                return;
+            }
+            //Dictionary<string, TextField> textFieldMap = templateFields.TextFields.ToDictionary(x => x.Name, x => x);
+            var textFieldMap = templateFields.TextFields.Select(textField => new Tuple<string, TextField>(textField.Name, textField));
+
+            foreach (var item in debenuFields.TextFields ?? Enumerable.Empty<TextField>())
+            {
+
+                if (textFieldMap.Any(x => x.Item1 == item.Name))
+                {
+                    item.TextFieldType = textFieldMap.FirstOrDefault(x => x.Item1 == item.Name).Item2.TextFieldType;
+                    item.CustomerRegex = textFieldMap.FirstOrDefault(x => x.Item1 == item.Name).Item2.CustomerRegex;
+
+                }
+            }
+
+        }
+
+        private void LoadSignatureImages(Document document, PDFFields otherFields)
+        {
+            var sigsDoc = _documentConnector.ReadSignatures(new Document { Id = document.Id });
+            foreach (var signatureField in otherFields.SignatureFields)
+            {
+
+                var sigDoc = sigsDoc.FirstOrDefault(x => x.FieldName == signatureField.Name);
+                if (sigDoc != null)
+                {
+                    signatureField.Image = sigDoc.Image;
+                }
+            }
+        }
+
+        private void LoadSignatureImages(DocumentCollection dbDcumentCollection)
+        {
+
+            IEnumerable<DocumentSignatureField> docuementsSignatureFields =
+                _documentConnector.ReadSignaturesByDocumentsId(dbDcumentCollection.Documents.Select(x => x.Id).Distinct().ToList());
+            foreach (var document in dbDcumentCollection.Documents)
+            {
+                var docSigs = docuementsSignatureFields.Where(x => x.DocumentId == document.Id);
+
+                foreach (var signer in dbDcumentCollection.Signers)
+                {
+                    foreach (var field in signer.SignerFields)
+                    {
+                        var docSig = docSigs.FirstOrDefault(x => x.FieldName == field.FieldName);
+                        if (docSig != null && string.IsNullOrWhiteSpace(field.FieldValue))
+                        {
+                            field.FieldValue = docSig.Image;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private async Task UpdateTextFieldsType(IList<TextField> textFields, IEnumerable<SignerField> signerFields)
+        {
+
+            foreach (var field in textFields ?? Enumerable.Empty<TextField>())
+            {
+                var templateId = signerFields.First(x => x.FieldName.ToLower() == field.Name.ToLower() || x.FieldName.ToLower() == field.Description?.ToLower())?.TemplateId ?? Guid.Empty;
+                if (templateId != Guid.Empty)
+                {
+                    var template = _memoryCache.Get<Template>($"UpdateTextFieldsType_{templateId}");
+                    if (template == null)
+                    {
+                        template = await _tempateConnector.Read(new Template { Id = templateId });
+                        if (template != null)
+                        {
+                            _memoryCache.Set($"UpdateTextFieldsType_{templateId}", template, TimeSpan.FromSeconds(20));
+                        }
+                    }
+
+                    if (template != null)
+                    {
+                        var currentTextField = template.Fields.TextFields.FirstOrDefault(x => x.Name.ToLower() == field.Name.ToLower() || x.Name == field.Description);
+                        if (currentTextField != null)
+                        {
+                            field.TextFieldType = currentTextField.TextFieldType;
+                        }
+                        else
+                        {
+                            field.TextFieldType = TextFieldType.Text;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private async Task UpdateSignatureFieldsType(IList<SignatureField> signatureFields, IEnumerable<SignerField> signerFields)
+        {
+
+            foreach (var field in signatureFields ?? Enumerable.Empty<SignatureField>())
+            {
+                var templateId = signerFields.First(x => x.FieldName.ToLower() == field.Name.ToLower() || x.FieldName.ToLower() == field.Description?.ToLower())?.TemplateId ?? Guid.Empty;
+
+                var template = _memoryCache.Get<Template>($"{templateId}_UpdateSignatureFieldsType");
+                if (template == null)
+                {
+                    template = await _tempateConnector.Read(new Template { Id = templateId });
+                    if (template != null)
+                    {
+                        _memoryCache.Set($"{templateId}_UpdateSignatureFieldsType", template, TimeSpan.FromSeconds(4));
+                    }
+                }
+                if (template != null)
+                {
+                    string name = string.IsNullOrWhiteSpace(field.Name) ? "" : field.Name.ToLower();
+                    string description = string.IsNullOrWhiteSpace(field.Description) ? "" : field.Description.ToLower();
+                    var sigField = template.Fields.SignatureFields.FirstOrDefault(x => x.Name.ToLower() == description || x.Name.ToLower() == name);
+                    field.SigningType = sigField?.SigningType ?? SignatureFieldType.Graphic;
+                    field.SignatureKind = sigField?.SignatureKind ?? SignatureFieldKind.Simple;
+                }
+            }
+        }
+
+
+
+        private string GetRedirectUrl(DocumentCollection documentCollection)
+        {
+            var documentURLSendByUser = !string.IsNullOrWhiteSpace(documentCollection.RedirectUrl);
+            string redirectUrl = "";
+            if (documentURLSendByUser)
+            {
+                redirectUrl = documentCollection.RedirectUrl.Replace("[docId]", documentCollection.Id.ToString());
+                if (documentCollection.RedirectUrl.Contains("[docStatus]"))
+                {
+                    var status = (DocumentStatus)documentCollection.DocumentStatus;
+                    redirectUrl = redirectUrl.Replace("[docStatus]", status.ToString());
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(_generalSettings.RedirectUrl))
+            {
+                redirectUrl = _generalSettings.RedirectUrl.Replace("[docId]", documentCollection.Id.ToString());
+            }
+
+            return redirectUrl;
+        }
+
+        private async Task UpdatePdfDocuments(DocumentCollection inputDocumentCollection, DocumentCollection dbDocCollection, DocumentOperation operation, Signer dbSigner, bool useForAllFields = false)
+        {
+
+            var signerTokensMapping = await _signerTokenMappingConnector.Read(new SignerTokenMapping { SignerId = dbSigner.Id });
+            foreach (var document in inputDocumentCollection.Documents ?? Enumerable.Empty<Document>())
+            {
+
+                // need to lock document
+                _documentPdf.Load(document.Id);
+                var signerFields = dbSigner.SignerFields.Where(x => x.DocumentId == document.Id).ToList();
+                var documentFields = _documentPdf.GetAllFields(false);
+                // check if comapny not in collection ....
+                Group signerGroup = await _groupConnector.Read(new Group() { Id = dbSigner.Contact.GroupId });
+                Company signerCompany = await _companyConnector.Read(new Company() { Id = signerGroup.CompanyId });
+
+                CheckAllMandatoryFields(signerFields, documentFields, document?.Fields, operation);
+                SetAllSignatureDescriptionsToFields(document.Fields.SignatureFields, documentFields);
+                UpdateAllFieldsExceptSignatures(document, dbDocCollection, operation);
+                if (operation == DocumentOperation.Close) // need to test
+                {
+                    await UpdateSignatureFieldsType(document.Fields.SignatureFields, dbSigner.SignerFields);
+                    var signingInfo = new SigningInfo
+                    {
+                        SignerAuthentication = dbSigner.SignerAuthentication,
+                        Certificate = _certificate.Get(dbSigner?.Contact, signerCompany.CompanyConfiguration),
+                        Signatures = document.Fields.SignatureFields,
+                        Reason = dbSigner?.Contact?.Name ?? "",
+                        CompanySigner1Details = signerCompany.CompanySigner1Details != null ? signerCompany.CompanySigner1Details : new CompanySigner1Details()
+                    };
+
+                    if (signingInfo.SignerAuthentication?.Signer1Credential != null)
+                    {
+                        var adName = signerTokensMapping?.ADName;
+                        signingInfo.SignerAuthentication.Signer1Credential.ShouldUseADDetails = !string.IsNullOrEmpty(adName);
+                    }
+                    if (!string.IsNullOrWhiteSpace(signerTokensMapping?.AuthName) && !string.IsNullOrWhiteSpace(signerTokensMapping?.AuthId))
+                    {
+                        signingInfo.Reason = $" {signerTokensMapping.AuthName} {_encryptor.Decrypt(signerTokensMapping.AuthId)}";
+                    }
+
+                    _documentPdf.Load(document.Id);
+                    _documentPdf.SetAllFieldsToReadOnly();
+                    _documentPdf.SaveDocument();
+                    await _documentPdf.Sign(signingInfo,false, useForAllFields);
+                    _logger.Debug("Successfully sign document collection [{DbDocumentCollectionId}: {DbDocumentCollectionName}] by signer [{DbSignerId}] [{DbSignerName}] ",
+                        dbDocCollection.Id, dbDocCollection.Name, dbSigner.Id, dbSigner?.Contact?.Name);
+                }
+            }
+        }
+
+        private void SetAllSignatureDescriptionsToFields(List<SignatureField> signatureFields, PDFFields documentFields)
+        {
+
+            foreach (var signature in signatureFields ?? Enumerable.Empty<SignatureField>())
+            {
+                if (string.IsNullOrWhiteSpace(signature.Description))
+                {
+                    var sign = documentFields.SignatureFields.FirstOrDefault(x => (x.Name == signature.Name || x.Description == signature.Name) && !string.IsNullOrWhiteSpace(x.Description));
+                    if (sign != null)
+                    {
+                        signature.Description = sign.Description;
+                    }
+                }
+            }
+
+        }
+
+        private void CheckAllMandatoryFields(List<SignerField> dignerFields, PDFFields fieldsFromPDF, PDFFields inputfields, DocumentOperation operation)
+        {
+            if (dignerFields.Count == 0)
+            {
+                return;
+            }
+            if (operation != DocumentOperation.Close)
+            {
+                return;
+            }
+
+            foreach (var signerField in dignerFields)
+            {
+                var textField = fieldsFromPDF.TextFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+                if (textField != null)
+                {
+                    signerField.IsMandatory = textField.Mandatory;
+                    if (signerField.IsMandatory)
+                    {
+                        var inputTextField = inputfields.TextFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+                        if (inputTextField == null && textField.Description == signerField.FieldName)
+                        {
+                            inputTextField = inputfields.TextFields.FirstOrDefault(x => x.Name == textField.Name);
+                        }
+                        if (inputTextField == null || string.IsNullOrWhiteSpace(inputTextField.Value))
+                        {
+                            throw new InvalidOperationException(ResultCode.NotAllMandatoryFieldsFilledIn.GetNumericString());
+                        }
+                    }
+
+                }
+
+                var checkBoxField = fieldsFromPDF.CheckBoxFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+                if (checkBoxField != null)
+                {
+                    signerField.IsMandatory = checkBoxField.Mandatory;
+
+                    if (signerField.IsMandatory)
+                    {
+                        var inputcheckBoxField = inputfields.CheckBoxFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+
+                        if (inputcheckBoxField == null || !inputcheckBoxField.IsChecked)
+                        {
+                            throw new InvalidOperationException(ResultCode.NotAllMandatoryFieldsFilledIn.GetNumericString());
+                        }
+                    }
+                }
+
+                var choiceBoxField = fieldsFromPDF.ChoiceFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+                if (choiceBoxField != null)
+                {
+                    signerField.IsMandatory = choiceBoxField.Mandatory;
+
+                    if (signerField.IsMandatory)
+                    {
+                        var inputChoiceBoxField = inputfields.ChoiceFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+
+                        if (inputChoiceBoxField == null || string.IsNullOrWhiteSpace(inputChoiceBoxField.SelectedOption))
+                        {
+                            throw new InvalidOperationException(ResultCode.NotAllMandatoryFieldsFilledIn.GetNumericString());
+                        }
+
+                    }
+                }
+
+                var signatureField = fieldsFromPDF.SignatureFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+                if (signatureField != null)
+                {
+                    signerField.IsMandatory = signatureField.Mandatory;
+
+                    if (signerField.IsMandatory)
+                    {
+                        var inputSignatureField = inputfields.SignatureFields.FirstOrDefault(x => x.Name == signerField.FieldName || x.Description == signerField.FieldName);
+
+                        if (inputSignatureField == null || string.IsNullOrWhiteSpace(inputSignatureField.Image))
+                        {
+                            throw new InvalidOperationException(ResultCode.NotAllMandatoryFieldsFilledIn.GetNumericString());
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private async Task SendCurrentSignerNoteEmailNotification(Signer signer, DocumentCollection documentCollection)
+        {
+            
+            if (signer == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidToken.GetNumericString());
+            }
+
+            if (signer != null && signer.Notes != null && !string.IsNullOrEmpty(signer.Notes.SignerNote))
+            {
+                var appConfiguration = await _configurationConnector.Read();
+                var companyConfiguration = await _companyConnector.ReadConfiguration(new Company() { Id = documentCollection.User.CompanyId });
+                await _sender.SendEmailNotification(MessageType.SignerNoteNotification, documentCollection, appConfiguration, signer, companyConfiguration);
+            }
+        }
+
+        private Task UpdateSingerInfoInDb(DocumentCollection inputDocumentCollection, DocumentCollection dbDcumentCollection, Signer dbSigner, DocumentOperation operation)
+        {
+            if (operation == DocumentOperation.Close)
+            {
+                dbSigner.TimeSigned = _dater.UtcNow();
+            }
+            SetSignatureImages(inputDocumentCollection, dbSigner);
+            LoadSignatureImages(dbDcumentCollection);
+            return _documentCollectionConnector.Update(dbDcumentCollection);
+        }
+
+        private void SetSignatureImages(DocumentCollection inputDocumentCollection, Signer dbSigner)
+        {
+            var documents = _documentConnector.ReadDocumentsById(dbSigner.SignerFields.Select(x => x.DocumentId).Distinct().ToList());
+            foreach (var signerField in dbSigner.SignerFields)
+            {
+                var document = documents.FirstOrDefault(x => x.Id == signerField.DocumentId);
+                signerField.TemplateId = document?.TemplateId ?? Guid.Empty;
+                signerField.FieldValue = inputDocumentCollection.Signers.FirstOrDefault().SignerFields
+                    .FirstOrDefault(x => x.FieldName == signerField.FieldName)?.FieldValue;
+            }
+        }
+
+        private Task UpdateDocumentDeclined(DocumentCollection inputDocumentCollection, DocumentCollection dbDocumentCollection, Signer dbSigner)
+        {
+            dbDocumentCollection.DocumentStatus = DocumentStatus.Declined;
+            dbSigner.Notes.SignerNote = inputDocumentCollection.Signers.First().Notes.SignerNote;
+            dbSigner.Status = SignerStatus.Rejected;
+            dbSigner.TimeRejected = _dater.UtcNow();
+            return _documentCollectionConnector.DocumentDeclined(dbDocumentCollection, dbSigner);
+        }
+
+        private async Task UpdateDocumentViewed(DocumentCollection dbDcumentCollection, Signer dbSigner, string signerIP)
+        {
+            if (dbSigner.Status != SignerStatus.Viewed)
+            {
+                dbSigner.TimeViewed = _dater.UtcNow();
+                // change here the ip of the viewer
+                dbSigner.Status = SignerStatus.Viewed;
+                dbSigner.FirstViewIPAddress = signerIP;
+                await _signersConnector.UpdateSignerStatus(dbSigner);
+
+                await _documentCollectionConnector.UpdateStatus(dbDcumentCollection, DocumentStatus.Viewed);
+
+            }
+            else if (dbSigner.Status == SignerStatus.Viewed)
+            {
+                dbSigner.TimeViewed = _dater.UtcNow();
+                await _signersConnector.UpdateSignerStatus(dbSigner);
+
+            }
+        }
+
+        private async Task<DocumentCollection> InputValidation(SignerTokenMapping signerTokenMapping, DocumentCollection inputDocumentCollection, DocumentOperation operation)
+        {
+            (Signer signer, Guid documentCollectionId) = await _validator.ValidateSignerToken(signerTokenMapping);
+            inputDocumentCollection.Id = documentCollectionId;
+            inputDocumentCollection.Signers.First().Id = signer.Id;
+            signer = inputDocumentCollection.Signers.FirstOrDefault(x => x.Id == signer.Id);
+            var dbDcumentCollection = await _documentCollectionConnector.Read(inputDocumentCollection);
+            if (dbDcumentCollection == null)
+            {
+                throw new InvalidOperationException(ResultCode.InvalidDocumentCollectionId.GetNumericString());
+            }
+            var dbSigner = dbDcumentCollection?.Signers?.FirstOrDefault(x => x.Id == signer.Id);
+            if (operation == DocumentOperation.Save)
+            {
+                dbDcumentCollection.DocumentStatus = DocumentStatus.Viewed;
+            }
+            dbSigner.IPAddress = signer.IPAddress;
+            if (!_validator.AreDocumentsBelongToDocumentCollection(dbDcumentCollection, inputDocumentCollection))
+            {
+                throw new InvalidOperationException(ResultCode.DocumentNotBelongToDocumentCollection.GetNumericString());
+            }
+            if (!_validator.AreAllFieldsExistsInDocuments(inputDocumentCollection))
+            {
+                throw new InvalidOperationException(ResultCode.NotAllFieldsExistsInDocuments.GetNumericString());
+            }
+            if (!_validator.AreAllFieldsBelongToSigner(dbSigner, signer, inputDocumentCollection))
+            {
+                throw new InvalidOperationException(ResultCode.NotAllFieldsBelongToSigner.GetNumericString());
+            }
+            if (operation == DocumentOperation.Close && !_validator.AreAllMandatoryFieldsFilledIn(dbSigner, signer))
+            {
+                throw new InvalidOperationException(ResultCode.NotAllMandatoryFieldsFilledIn.GetNumericString());
+            }
+
+            try
+            {
+                using var scope = _serviceScopeFactory.CreateScope();
+                IDetectionService dependencyService = scope.ServiceProvider.GetService<IDetectionService>();
+                var device = dependencyService.Device?.Type.ToString();
+                var platform = dependencyService.Platform?.Name;
+                var browser = dependencyService.Browser;
+                dbSigner.DeviceInformation = $"{device} {platform} {browser?.Name.ToString()} {browser?.Version.ToString()}";
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "failed to fetch signer browser and device information");
+            }
+
+
+            return dbDcumentCollection;
+        }
+
+        private IList<PdfImage> GetImages(Document document, int startPage, int endPage)
+        {
+            if (document.TemplateId != Guid.Empty)
+            {
+                _templatePdf.SetId(document.TemplateId);
+
+                return _templatePdf.GetPdfImages(startPage, endPage, document.TemplateId);
+            }
+
+            return _documentPdf.GetPdfImages(startPage, endPage, document.Id);
+        }
+
+        private void AddAttachmentsToFS(DocumentCollection inputDocumentCollection, Signer dbSigner)
+        {
+            inputDocumentCollection.Signers.FirstOrDefault().SignerAttachments.Where(x => !string.IsNullOrEmpty(x.Base64File))
+                                .ForEach(x =>
+                                {
+                                    _fileWrapper.Signers.SaveSignerAttachment(dbSigner, x);
+                                });
+        }
+
+        private Task UpdateSignedStatusInDB(DocumentCollection dbDcumentCollection, Signer dbSigner)
+        {
+            dbSigner.Status = SignerStatus.Signed;
+            dbSigner.TimeSigned = _dater.UtcNow();
+            if (_validator.AreAllSignersSigned(dbDcumentCollection.Signers))
+            {
+                dbDcumentCollection.DocumentStatus = DocumentStatus.Signed;
+                dbDcumentCollection.SignedTime = _dater.UtcNow();
+            }
+            LoadSignatureImages(dbDcumentCollection);
+            return _documentCollectionConnector.Update(dbDcumentCollection);
+        }
+
+        private void MoveToAd(string roomId)
+        {
+            roomId = roomId.ToLower();
+            Task.Run(async () =>
+            {
+                var connection = new HubConnectionBuilder().WithUrl(_generalSettings.AgentHubEndpoint).WithAutomaticReconnect().Build();
+                await connection.StartAsync();
+                await connection.InvokeAsync("Connect", roomId);
+                await connection.InvokeAsync("MoveToAd", roomId);
+            });
+        }
+
+
+
+        #endregion
+    }
+}

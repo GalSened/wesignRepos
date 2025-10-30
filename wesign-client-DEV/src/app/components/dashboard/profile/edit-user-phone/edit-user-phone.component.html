@@ -1,0 +1,61 @@
+<div class="ct-c-modal ">
+    <div class="modal__overlay">
+
+        <div class="modal__container">
+            <h3>{{'REGISTER.UPDATE_PHONE' | translate}}</h3>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+          
+            <span>{{'REGISTER.PHONE' | translate}}</span>
+            <input class="ct-input--primary ct-input--short" type="text" name="contactPhone" #phone="ngModel" 
+            [disabled]="OTPProccess"
+           required pattern="^05[0-9]?\d{7}$" minlength="10" maxlength="10"
+            [(ngModel)]="userPhone"
+           [class.is-confirm]="phone.valid && !isPhoneNumberEmpty()"
+            [class.is-error]="!phone.valid &&  !isPhoneNumberEmpty()  && (phone.dirty || phone.touched)">
+            <div class="ct-break--shorter"></div>
+            <ng-container  *ngIf="OTPProccess"> 
+                <span>{{'OTP.CODE' | translate}}</span>
+            <input class="ct-input--primary ct-input--short" type="text" name="OTP"  [class.ws_input--error]="phone.invalid && submited"
+             required pattern="^[0-9]{6}$" minlength="6" maxlength="6"
+                    [(ngModel)]="code">
+                    <div class="ct-break--shorter"></div>
+                    <a (click)="resendOtp()" *ngIf="showOtpResend ">{{'OTP.RESEND' | translate}}</a>
+                    <div class="ct-break--shorter"></div>
+                    <div *ngIf="hasOtpTimeLeft">
+                        <label class="is-confirm">{{'OTP.OTP_EXPIRATION_TIME' | translate}} {{otpLeftTime}}</label>
+                        <div class="ct-break--shorter"></div>
+                      </div>
+                      <div *ngIf="!hasOtpTimeLeft">
+                        <label class="is-error">{{'OTP.NO_VALID_OTP' | translate}}</label>
+                        <div class="ct-break--shorter"></div>
+                      </div>
+
+
+            </ng-container>
+
+            <div class="ct-float-left">
+                <ng-container *ngIf="errorMsg">
+                    <div class="ct-text-center">
+                        <label class="is-error">{{errorMsg}}</label>
+                    </div>
+                   
+                </ng-container>
+                </div>
+            <div class="ct-break--shorter"></div>
+            <div class="ct-float-right">               
+                <div class="ct-break--shorter"></div>
+                 <button id="updatePhone"  class="ct-button--primary" [disabled]="submited || isValidToShowSubmit(phone) " (click)="updatePhone()">{{'REGISTER.UPDATE_PHONE' | translate }}</button>                 
+                <button class="ct-button--outline" tabindex="5" id="cancelAddContactButton"
+                 (click)="this.errorMsg ='';cancel.emit()">{{'REGISTER.CANCEL' | translate}}</button>
+                 <div class="ct-break--shorter"></div>
+
+            </div>
+
+
+
+        </div>
+   </div>
+</div>

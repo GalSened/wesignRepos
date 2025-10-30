@@ -1,0 +1,10 @@
+<div class="ct-p-profile">
+    <sgn-alert-component></sgn-alert-component>
+
+    <sgn-top-header-title [title]="'DOCUMENT.MY_SENT_ITEMS' | translate"></sgn-top-header-title>
+
+    <main>
+        <sgn-side-page-menu  [links]="links" [menuAction]="'DATA.EXPORT_EXCEL'" (menuActionClicked)="export($event)"></sgn-side-page-menu>
+        <router-outlet></router-outlet>
+    </main>
+</div>

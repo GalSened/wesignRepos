@@ -1,0 +1,23 @@
+<sgn-merge-select-templats *ngIf="showTemplateSelector" (hide)="showTemplateSelectorForm()" (selectTemplate)="selectTemplate($event)"></sgn-merge-select-templats>
+<div class="ct-c-add-signers {{name}}">
+    <div class="add-signers__container is-lite ct-text-center">
+        <div class="ct-break--shorter"></div>
+        <span>{{title}}</span>
+        <div class="ct-break--shorter"></div>
+        <div class="ct-float-left " style="display: inline-flex;">
+            <div style="display: inline-flex;">
+                <button class="ct-button--icon add-remove">
+                      
+                </button>
+                <i-feather name="minus-circle" style="padding: 10px;cursor: pointer;" title="{{'SIGN_PAD.CLEAR' | translate}}" (click)="clearFile()"></i-feather>           
+            </div>                 
+                                                             
+            <input type="text" class="ct-input--primary" [(ngModel)]="fileName" disabled maxlength="50" >                    
+            <button class="ct-button--outline"  (click)="fileInput.click()" >{{'BUTTONS.UPLOAD' | translate}}</button>
+            <button class="ct-button--outline" (click)="showTemplateSelectorForm()">{{'GLOBAL.TEMPLATES' | translate}}</button>
+        </div>
+    <input type="file" #fileInput id={{name}} name={{name}} accept="{{acceptTypes}}"
+    (click)="fileInput.value = null" (change)="fileUpload()" [disabled]="isFileLoded" style="opacity: 0;">
+    </div>
+    
+</div>

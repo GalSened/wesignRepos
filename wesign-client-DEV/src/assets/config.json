@@ -1,0 +1,4 @@
+{
+    "apiUrl":"https://localhost:44348/userui/v3",
+    "paymentapi":"https://localhost:44339/paymentapi"
+}

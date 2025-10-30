@@ -1,0 +1,84 @@
+﻿
+namespace Common.Models.Emails
+{
+    public class Resource
+    {
+        public string ActivationLinkText { get; set; }
+        public string ActivationSubject { get; set; }
+        public string ActivationText { get; set; }
+        public string Copyright { get; set; }
+        public string Digital { get; set; }
+        public string ForgetPasswordLinkText { get; set; }
+        public string ForgetPasswordSubject { get; set; }
+        public string ForgetPasswordText { get; set; }
+        public string Hello { get; set; }
+        public string Visit { get; set; }
+        public string SigningLinkText { get; set; }
+        public string SignedDocumentText { get; set; }
+        public string SendYouDocument { get; set; }
+        public string SentYou { get; set; }
+        public string ForSigning { get; set; }
+        public string CompletedByAllParticipants { get; set; }
+        public string HasSigned { get; set; }
+        public string HasViewed { get; set; }
+        public string TheDocument { get; set; }
+        public string AttachmentSpace { get; set; }
+        public string AttachmentText { get; set; }
+        public string AttachmentDoNotReply { get; set; }
+        public string AttentionText { get; set; }
+        public string ProgramIsAboutExpiredIn { get; set; }
+        public string ProgramDocuments { get; set; }
+        public string ProgramSMS { get; set; }
+        public string ProgramVisualIdentification { get; set; }
+        public string CapacityIsOverThan { get; set; }
+        public string Percentages { get; set; }
+        public string Days { get; set; }
+        public string OtpCode { get; set; }
+        public string SubjectThankYou { get; set; }
+        public string DocumentAboutToBeDeleted { get; set; }
+        public string LoginToTheSystem { get; set; }
+        public string SignReminder { get; set; }
+        public string SharedADocumentWithYou { get; set; }
+        public string DeletionNotice { get; set; }
+        public string ReviewDocument { get; set; }
+        public string UserReportSubject { get; set; }
+        public string UserReportText { get; set; }
+        public string NoneUserReport { get; set; }
+        public string DailyReport { get; set; }
+        public string WeeklyReport { get; set; }
+        public string MonthlyReport { get; set; }
+        public string YearlyReport { get; set; }
+        public string ManagementReportText { get; set; }
+        public string ExpirationUtilizationReport { get; set; }
+        public string ProgramUtilizationReport { get; set; }
+        public string UsePercentageUtilizationReport { get; set; }
+        public string AllCompaniesUtilizationReport { get; set; }
+        public string GroupUtilizationReport { get; set; }
+        public string ProgramByUtilizationReport { get; set; }
+        public string ProgramsByUsageReport { get; set; }
+        public string GroupDocumentStatusesReport { get; set; }
+        public string DocsByUsersReport { get; set; }
+        public string DocsBySignersReport { get; set; }
+        public string CompanyUsersReport { get; set; }
+        public string FreeTrialUsersReport { get; set; }
+        public string UsageByUsersReport { get; set; }
+        public string UsageByCompaniesReport { get; set; }
+        public string TemplatesByUsageReport { get; set; }
+        public string UsageBySignatureTypeReport { get; set; }
+        public string DownloadReportLinkText { get; set; }
+        public string SentYoutVideoConfrenceSubject { get; set; }
+        public string SentYoutVideoConfrenceBody { get; set; }
+        public string SentYoutVideoConfrenceLinkButton { get; set; }
+        public string UserReportTableSubject { get; set; }
+        public string Company { get; set; }
+        public string Group { get; set; }
+        public string Sent { get; set; }
+        public string Signed { get; set; }
+        public string Declined { get; set; }
+        public string Canceled { get; set; }
+        public string Distribution { get; set; }
+        public string Total { get; set; }
+        public string SignerNoteNotificationSubject { get; set; }
+        public string SignerNoteNotificationContext { get; set; }
+    }
+}

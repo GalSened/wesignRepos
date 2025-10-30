@@ -1,0 +1,37 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <input type="search" #searchInput  class="ct-input--primary" placeholder="{{'CONTACTS.SEARCH_TABLET' | translate}}">
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-c-list">
+          <table cellpadding="0" cellspacing="0" class="ct-text-left">
+            <tr>
+              <th>{{'CONTACTS.TABLET_ID'|translate }}</th>
+            </tr>
+            <ng-container *ngFor="let tablet of tablets">
+                <tr>
+                    <td (click)="sendTabletToParent(tablet)">{{tablet.name}}</td>
+                  </tr>
+            </ng-container>
+            
+          </table>
+        </div>
+
+        <div class="ct-break--medium"></div>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,30 @@
+// plan
+.ct-c-plan {
+    display: inline-block;
+    vertical-align: top;
+    width: 220px;
+    margin: 10px;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    background: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
+    @include respond-to('small') {
+        width: 175px;
+        margin: 5px;
+        padding: 5px;
+    }
+
+    h1 {
+        margin: 10px;
+        font-size: 43px;
+        font-weight: 500;
+    }
+
+    select {
+        width: 75px;
+        height: 30px;
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,39 @@
+// signature pad
+.ct-c-signature-pad {
+  text-align: center;
+  background: white;
+
+  span {
+    position: relative;
+    top: 25px;
+    color: $color--grey-dark;
+  background: white;
+
+  }
+
+  canvas{
+    background: white;
+  }
+
+  .signature-pad__canvas {
+    height: 250px;
+    // width: 250px;
+    background: white;
+    border: solid 1px $color--border;
+  }
+
+  .canvas__drawline {
+    position: relative;
+    bottom: 70px;
+    width: 85%;
+    margin: 0 auto;
+    border-bottom: solid 3px $color--primary;
+    text-align: center;
+    background: white;
+    
+    a {
+      position: relative;
+      top: 25px;
+    }
+  }
+}

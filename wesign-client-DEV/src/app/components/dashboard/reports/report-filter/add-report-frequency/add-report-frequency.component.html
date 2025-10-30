@@ -1,0 +1,23 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-create-frequency-container">
+            <h3>{{'GLOBAL.REPORTS.NEW_REPORT' | translate}}</h3>
+            <span class="required-icon">*</span>
+            <ng-select [(ngModel)]="createReportFrequency.type"
+                class="ngselect-ct-select--short ngselect-ct-select--primary ct-c-frequency-button" [items]="reportTypes" bindLabel="name"
+                bindValue="id" [virtualScroll]="true" [searchable]="true" [clearable]="true" (change)="onReportTypeChanged($event)"
+                [clearSearchOnAdd]="true" [hideSelected]="true" placeholder="{{'GLOBAL.REPORTS.REPORT_TYPE' | translate}}">
+            </ng-select>
+            <span class="required-icon">*</span>
+            <ng-select [(ngModel)]="createReportFrequency.frequency"
+                class="ngselect-ct-select--short ngselect-ct-select--primary ct-c-frequency-button" [items]="reportFrequencies" bindLabel="name"
+                bindValue="id" [multiple]="false" [virtualScroll]="true" [searchable]="true" [clearable]="true"
+                [clearSearchOnAdd]="true" [hideSelected]="true" placeholder="{{'GLOBAL.REPORTS.FREQUENCY' | translate}}">
+            </ng-select>
+            <div class="frequency-buttons-container">
+            <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+            <button class="ct-button--primary" (click)="save()">{{'BUTTONS.SUBMIT' | translate}}</button>
+        </div>
+        </div>
+    </div>
+</div>

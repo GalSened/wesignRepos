@@ -1,0 +1,73 @@
+<!-- KPI Cards Grid -->
+<div class="kpi-cards-grid">
+
+  <div *ngFor="let card of kpiCards"
+       class="kpi-card"
+       [ngClass]="['card-' + card.color]"
+       [title]="card.description">
+
+    <!-- Card Header -->
+    <div class="card-header">
+      <div class="card-icon">
+        <i class="feather" [attr.data-feather]="card.icon"></i>
+      </div>
+      <div class="card-title">
+        <h3>{{ card.title }}</h3>
+      </div>
+    </div>
+
+    <!-- Card Value -->
+    <div class="card-value">
+      <span class="value-text">{{ formatValue(card.value, card.format) }}</span>
+
+      <!-- Trend Indicator -->
+      <div *ngIf="card.trend" class="trend-indicator" [ngClass]="getTrendClass(card.trend)">
+        <i class="feather" [attr.data-feather]="getTrendIcon(card.trend)"></i>
+        <span class="trend-text">{{ getTrendText(card.trend) }}</span>
+      </div>
+    </div>
+
+    <!-- Card Description -->
+    <div class="card-description">
+      <p>{{ card.description }}</p>
+    </div>
+
+    <!-- Progress Bar (for percentage KPIs) -->
+    <div *ngIf="card.format === 'percentage'" class="progress-bar">
+      <div class="progress-fill"
+           [style.width.%]="card.value"
+           [ngClass]="'progress-' + card.color">
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Summary Stats Row -->
+<div class="summary-stats">
+  <div class="stat-item">
+    <span class="stat-label">Total Documents</span>
+    <span class="stat-value">{{ formatValue(kpiData.documentsCreated, 'number') }}</span>
+  </div>
+
+  <div class="stat-item">
+    <span class="stat-label">Completed</span>
+    <span class="stat-value success">{{ formatValue(kpiData.documentsSigned, 'number') }}</span>
+  </div>
+
+  <div class="stat-item">
+    <span class="stat-label">Pending</span>
+    <span class="stat-value warning">{{ formatValue(kpiData.documentsOpened - kpiData.documentsSigned, 'number') }}</span>
+  </div>
+
+  <div class="stat-item">
+    <span class="stat-label">Declined</span>
+    <span class="stat-value danger">{{ formatValue(kpiData.documentsDeclined, 'number') }}</span>
+  </div>
+
+  <div class="stat-item">
+    <span class="stat-label">Time Range</span>
+    <span class="stat-value info">{{ getTimeRangeText() }}</span>
+  </div>
+</div>

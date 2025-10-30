@@ -1,0 +1,14 @@
+// templates reorder
+.ct-c-templates-reorder {
+    overflow: scroll;
+    max-height: 200px;
+    padding: 10px;
+    border: solid 1px $color--border;
+    background: $color--grey-light;
+
+    div {
+        input:disabled {
+            opacity: 1;
+        }
+    }
+}

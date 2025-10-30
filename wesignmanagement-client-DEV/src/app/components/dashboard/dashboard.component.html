@@ -1,0 +1,18 @@
+<div class="ws_container">
+    <app-header></app-header>
+
+    <main>
+        <app-sidebar></app-sidebar>
+        <div class="ws_body">
+            <app-companies *ngIf="dashboardMode == 1 && !appState.IsGhostUser"></app-companies>
+            <app-users *ngIf="dashboardMode == 2 && !appState.IsGhostUser"></app-users>
+            <app-programs *ngIf="dashboardMode == 3 && !appState.IsGhostUser"></app-programs>
+            <app-logs *ngIf="dashboardMode == 4 && !appState.IsGhostUser"></app-logs>
+            <app-configuration *ngIf="dashboardMode == 5 && !appState.IsGhostUser"></app-configuration>
+            <app-license *ngIf="dashboardMode == 6 && !appState.IsGhostUser"></app-license>
+            <app-qr-code *ngIf="dashboardMode == 7 && appState.IsGhostUser"></app-qr-code>
+            <app-reports *ngIf="dashboardMode == 8 && !appState.IsGhostUser"></app-reports>
+        </div>
+    </main>
+
+</div>

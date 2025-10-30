@@ -1,0 +1,36 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <h2>{{'TEMPLATE.UPLOAD' | translate}}</h2>
+        
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <h3>{{'DOCUMENT.SELECT_DOC' | translate}}</h3>
+
+        <div class="ct-break--short"></div>
+
+        <button class="ct-button--outline" (click)="fileInput.click()" [disabled]="busy">{{'BUTTONS.UPLOAD' | translate}}</button>
+
+        <input #fileInput type="file" (change)="uploaded()" accept="image/*,.pdf,.docx,.xls,.xlsx" title="" style="display: none;" [disabled]="busy">
+
+        <div class="ct-break--short"></div>
+
+        <div class="ct-separator"></div>
+        
+        <div class="ct-text-center" *ngIf="showErrorMessage">
+            <label class="is-error">{{errorMessage | translate}}</label>
+            <div class="ct-break--shorter"></div>
+        </div>
+        
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--outline" (click)="cancel()" [disabled]="busy">{{'BUTTONS.CANCEL' | translate}}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,286 @@
+<!-- Process Flow Container -->
+<div class="process-flow-container">
+
+  <!-- Chart Controls -->
+  <div class="chart-controls">
+    <div class="control-group">
+      <h3 class="section-title">{{ 'ANALYTICS.PROCESS_FLOW.TITLE' | translate }}</h3>
+      <p class="section-subtitle">{{ 'ANALYTICS.PROCESS_FLOW.SUBTITLE' | translate }}</p>
+    </div>
+
+    <div class="chart-actions">
+      <button class="btn btn-sm btn-outline-secondary" (click)="refreshCharts()" title="Refresh Charts">
+        <i class="feather" data-feather="refresh-cw"></i>
+      </button>
+
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <i class="feather" data-feather="download"></i>
+          Export
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="downloadChart('funnel')">Funnel Chart</a></li>
+          <li><a class="dropdown-item" (click)="downloadChart('conversion')">Conversion Chart</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+
+    <!-- Funnel Analysis Chart -->
+    <div class="chart-container funnel-chart">
+      <div class="chart-header">
+        <h4>Document Processing Funnel</h4>
+        <div class="chart-info">
+          <i class="feather" data-feather="filter"></i>
+          <span>Document flow through process stages</span>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #funnelChart></canvas>
+      </div>
+
+      <!-- Funnel Summary Stats -->
+      <div class="funnel-stats">
+        <div class="stat-item">
+          <span class="stat-label">Overall Conversion</span>
+          <span class="stat-value" [ngClass]="getOverallConversionRate() > 70 ? 'text-success' : 'text-warning'">
+            {{ getOverallConversionRate() }}%
+          </span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Avg Completion Time</span>
+          <span class="stat-value">
+            {{ getAverageTimeToComplete() }}min
+          </span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Biggest Drop-off</span>
+          <span class="stat-value text-danger">
+            {{ getBiggestDropOff().percentage }}%
+          </span>
+          <span class="stat-description">{{ getBiggestDropOff().stage }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversion Rate Trends -->
+    <div class="chart-container conversion-chart">
+      <div class="chart-header">
+        <h4>Conversion & Drop-off Rates</h4>
+        <div class="chart-info">
+          <i class="feather" data-feather="trending-up"></i>
+          <span>Performance metrics by stage</span>
+        </div>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas #conversionChart></canvas>
+      </div>
+
+      <!-- Stage Performance -->
+      <div class="stage-performance">
+        <div class="performance-item" *ngFor="let stage of processFlowData.funnelStages; let i = index">
+          <div class="stage-info">
+            <span class="stage-name">{{ stage.stageName }}</span>
+            <span class="stage-order">Stage {{ stage.stageOrder }}</span>
+          </div>
+          <div class="stage-metrics">
+            <div class="metric">
+              <span class="metric-label">Conversion</span>
+              <span class="metric-value" [ngClass]="stage.conversionRate > 80 ? 'text-success' : stage.conversionRate > 60 ? 'text-warning' : 'text-danger'">
+                {{ stage.conversionRate }}%
+              </span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Avg Time</span>
+              <span class="metric-value">{{ stage.averageTimeInStage }}min</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Stuck Documents Analysis -->
+  <div class="stuck-documents-analysis" *ngIf="processFlowData.stuckDocuments.length > 0">
+    <h4>{{ 'ANALYTICS.STUCK_DOCUMENTS.TITLE' | translate }}</h4>
+
+    <div class="stuck-documents-grid">
+
+      <!-- Priority Summary -->
+      <div class="priority-summary">
+        <h5>Documents by Priority</h5>
+
+        <div class="priority-cards">
+          <div class="priority-card high-priority">
+            <div class="priority-header">
+              <i class="feather" data-feather="alert-triangle"></i>
+              <span class="priority-label">High Priority</span>
+            </div>
+            <div class="priority-count">{{ getStuckDocumentsByPriority('high').length }}</div>
+            <div class="priority-description">Urgent attention needed</div>
+          </div>
+
+          <div class="priority-card medium-priority">
+            <div class="priority-header">
+              <i class="feather" data-feather="clock"></i>
+              <span class="priority-label">Medium Priority</span>
+            </div>
+            <div class="priority-count">{{ getStuckDocumentsByPriority('medium').length }}</div>
+            <div class="priority-description">Monitor closely</div>
+          </div>
+
+          <div class="priority-card low-priority">
+            <div class="priority-header">
+              <i class="feather" data-feather="info"></i>
+              <span class="priority-label">Low Priority</span>
+            </div>
+            <div class="priority-count">{{ getStuckDocumentsByPriority('low').length }}</div>
+            <div class="priority-description">Routine follow-up</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stuck Documents Table -->
+      <div class="stuck-documents-table">
+        <h5>Documents Requiring Attention</h5>
+
+        <div class="table-container">
+          <div class="table-header">
+            <span class="col-document">Document</span>
+            <span class="col-organization">Organization</span>
+            <span class="col-stage">Current Stage</span>
+            <span class="col-time">Time Stuck</span>
+            <span class="col-reason">Reason</span>
+            <span class="col-priority">Priority</span>
+            <span class="col-recoverable">Recoverable</span>
+          </div>
+
+          <div class="table-row" *ngFor="let doc of processFlowData.stuckDocuments; let i = index">
+            <div class="document-info">
+              <span class="document-id">{{ doc.documentId }}</span>
+              <span class="template-name">{{ doc.templateName }}</span>
+            </div>
+            <span class="organization-name">{{ doc.organizationName }}</span>
+            <span class="current-stage">{{ doc.currentStage }}</span>
+            <span class="time-stuck">{{ formatStuckTime(doc.timeStuck) }}</span>
+            <span class="stuck-reason">{{ doc.stuckReason }}</span>
+            <span class="priority-badge" [ngClass]="getStuckDocumentsBadgeClass(doc.priorityLevel)">
+              {{ doc.priorityLevel | titlecase }}
+            </span>
+            <span class="recoverable-badge" [ngClass]="getRecoverableBadgeClass(doc.isRecoverable)">
+              {{ doc.isRecoverable ? 'Yes' : 'No' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Process Optimization Insights -->
+  <div class="optimization-insights">
+    <h4>{{ 'ANALYTICS.OPTIMIZATION.INSIGHTS' | translate }}</h4>
+
+    <div class="insights-grid">
+
+      <!-- Bottleneck Analysis -->
+      <div class="insight-card bottleneck-analysis">
+        <div class="insight-header">
+          <i class="feather" data-feather="alert-circle"></i>
+          <h5>Bottleneck Analysis</h5>
+        </div>
+        <div class="insight-content">
+          <div class="bottleneck-item">
+            <div class="bottleneck-stage">{{ getBiggestDropOff().stage }}</div>
+            <div class="bottleneck-impact">
+              <span class="impact-label">Drop-off Rate:</span>
+              <span class="impact-value text-danger">{{ getBiggestDropOff().percentage }}%</span>
+            </div>
+            <div class="bottleneck-recommendation">
+              Consider implementing automated reminders or simplifying this transition
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Recommendations -->
+      <div class="insight-card performance-recommendations">
+        <div class="insight-header">
+          <i class="feather" data-feather="lightbulb"></i>
+          <h5>Optimization Opportunities</h5>
+        </div>
+        <div class="insight-content">
+          <div class="recommendation-list">
+            <div class="recommendation-item" *ngIf="getOverallConversionRate() < 75">
+              <div class="recommendation-icon">
+                <i class="feather" data-feather="arrow-up"></i>
+              </div>
+              <div class="recommendation-text">
+                <strong>Improve Overall Conversion</strong>
+                <span>Current rate is {{ getOverallConversionRate() }}%. Target: 75%+</span>
+              </div>
+            </div>
+
+            <div class="recommendation-item" *ngIf="getAverageTimeToComplete() > 180">
+              <div class="recommendation-icon">
+                <i class="feather" data-feather="clock"></i>
+              </div>
+              <div class="recommendation-text">
+                <strong>Reduce Processing Time</strong>
+                <span>Average {{ getAverageTimeToComplete() }}min. Consider automation</span>
+              </div>
+            </div>
+
+            <div class="recommendation-item" *ngIf="processFlowData.stuckDocuments.length > 10">
+              <div class="recommendation-icon">
+                <i class="feather" data-feather="alert-triangle"></i>
+              </div>
+              <div class="recommendation-text">
+                <strong>Address Stuck Documents</strong>
+                <span>{{ processFlowData.stuckDocuments.length }} documents need attention</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success Metrics -->
+      <div class="insight-card success-metrics">
+        <div class="insight-header">
+          <i class="feather" data-feather="award"></i>
+          <h5>Success Metrics</h5>
+        </div>
+        <div class="insight-content">
+          <div class="success-stats">
+            <div class="success-stat">
+              <span class="success-label">Documents Completed</span>
+              <span class="success-value text-success">
+                {{ processFlowData.funnelStages[processFlowData.funnelStages.length - 1]?.documentsCount | number }}
+              </span>
+            </div>
+            <div class="success-stat">
+              <span class="success-label">Recovery Rate</span>
+              <span class="success-value text-info">
+                {{ Math.round((processFlowData.stuckDocuments.filter(d => d.isRecoverable).length / processFlowData.stuckDocuments.length) * 100) || 0 }}%
+              </span>
+            </div>
+            <div class="success-stat">
+              <span class="success-label">Process Efficiency</span>
+              <span class="success-value" [ngClass]="getOverallConversionRate() > 80 ? 'text-success' : 'text-warning'">
+                {{ getOverallConversionRate() > 80 ? 'Excellent' : getOverallConversionRate() > 60 ? 'Good' : 'Needs Improvement' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

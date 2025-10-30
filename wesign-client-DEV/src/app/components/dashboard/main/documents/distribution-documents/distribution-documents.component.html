@@ -1,0 +1,290 @@
+<sgn-pop-up-confirm [data]="deleteSinglePopupData" (submitEvent)="deleteInnerDocEvent()"
+    (cancelEvent)="deleteSinglePopupData.showModal = false">
+</sgn-pop-up-confirm>
+<sgn-pop-up-confirm [data]="deleteAllPopupData" (submitEvent)="deleteAllDocsEvent()"
+    (cancelEvent)="deleteAllPopupData.showModal = false">
+</sgn-pop-up-confirm>
+
+<div class="main__content ct-animate-fadein">
+    <div class="ct-c-filter">
+        <input type="search" class="ct-input--primary ct-input--docSearch" [class.loading]="showSearchSpinner"
+            placeholder="{{'GLOBAL.SEARCH' | translate}} {{'GLOBAL.DOCUMENTS' | translate}}"
+            [(ngModel)]="distributionDocFilter.key" debounce [delay]="500" (func)="pageChanged(1)">
+
+            <div class="ct-c-filter-rowAmount">
+                <p>{{'GLOBAL.ROWS_PER_PAGE' | translate }}:</p>
+                <select class="ct-c-rowAmountSelector" #select (change)="onDropDownSelect(select.value)">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+
+    </div>
+
+    <div class="content__table">
+        <table cellpadding="0" cellspacing="0" style="padding: 1px;" class="ct-text-left">
+            <tbody>
+                <tr>
+                    <th class="sticky_header" width="80"></th>
+                    <th class="sticky_header"><a (click)="orderByFunction('name')">{{'DATA.TITLE' | translate}}</a></th>
+                    <th class="sticky_header"><a (click)="orderByFunction('signers[0].name')">{{'DATA.FILTER.SENT' |
+                            translate}}</a></th>
+                    <th class="sticky_header" width="200"><a (click)="orderByFunction('creationTime')">{{'FIELDS.DATE' |
+                            translate}}</a>
+                    </th>
+                    <th class="sticky_header" width="240">
+
+                        <div paginator class="ct-c-pagination ct-float-right" *ngIf="pageCalc"
+                            [currentPage]="currentPage" [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                    </th>
+                </tr>
+
+                <ng-container *ngIf="distributionDocs">
+                    <ng-container
+                        *ngFor="let docData of distributionDocs | orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i ">
+
+                        <tr [class.is-active]="activeDistributionDocumentId === docData.distributionId"
+                            [class.is-alert]="docData.isWillDeletedIn24Hours"
+                            (click)="onRowClick(docData.distributionId)">
+                            <td align="center">
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="onRowClick(docData.distributionId)">
+                                    <i-feather name="user-plus"></i-feather>
+                                </button>
+                            </td>
+                            <td>{{docData.name}}</td>
+                            <td>{{docData.user}}</td>
+                            <td>{{getLocalTime(docData.creationTime) | date:'MMM d, y, HH:mm'}}</td>
+                            <td align="right">
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="$event.stopPropagation(); downloadAllSignedDocs(docData.distributionId)">
+                                    <i-feather name="download-cloud"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.DOWNLOAD_SIGNED_DOCUMENTS' | translate}}</span>
+                                </button>
+
+
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="activeDistributionDocumentId == docData.distributionId && totalCreatedButNotSent > 0"
+                                    (click)="$event.stopPropagation(); resendFailedToSendDocs(docData.distributionId)">
+                                    <i-feather name="repeat"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.RESEND_CREATED_STATUS_DOCS' | translate}}</span>
+                                </button>
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="$event.stopPropagation(); resendUnsignedDocs(docData.distributionId)">
+                                    <i-feather name="send"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.RESEND_UNSIGNED_DOCS' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="$event.stopPropagation(); deleteAll(docData)">
+                                    <i-feather name="trash-2"></i-feather>
+
+                                    <span class="tooltiptext">{{'GLOBAL.DELETE_ALL' | translate}}</span>
+                                </button>
+
+                            </td>
+                        </tr>
+
+                        <tr class="collapsed" *ngIf="activeDistributionDocumentId === docData.distributionId">
+                            <td colspan="6">
+                                
+                                  
+                                
+                                <div>
+                                    <h4>{{'GLOBAL.DOCUMENTS_STATUS' | translate}} : </h4>
+                                    <h5 *ngIf="totalPending > 0"> {{'DATA.FILTER.PENDING' | translate}} :
+                                        {{totalPending}}</h5>
+
+
+                        <tr *ngIf="totalViewed > 0" class="color--alert" style="background: transparent">
+                            <h5> {{'DATA.FILTER.VIEWED' | translate}} : {{totalViewed}}</h5>
+                        </tr>
+                        <tr *ngIf="totalSigned > 0" class="color--confirm" style="background: transparent">
+                            <h5> {{'DATA.FILTER.SIGNED' | translate}} : {{totalSigned}}</h5>
+                        </tr>
+                        <tr *ngIf="totalServerSigned > 0" class="color--confirm" style="background: transparent">
+                            <h5> {{'DATA.FILTER.SERVER_SIGNED' | translate}} : {{totalServerSigned}}</h5>
+                        </tr>
+                        <tr *ngIf="totalDecline > 0" class="color--alert" style="background: transparent">
+
+                            <h5> {{ 'DATA.FILTER.DECLINED' | translate}} : {{totalDecline}}</h5>
+                        </tr>
+                        <tr *ngIf="totalCreatedButNotSent > 0" class="color--alert" style="background: transparent">
+                            <h5> {{ 'DATA.FILTER.CREATED_BUT_NOT_SENT' | translate}} : {{totalCreatedButNotSent}}</h5>
+                        </tr>
+                        <tr *ngIf="totalfailed > 0" class="color--error" style="background: transparent">
+                            <h5> {{ 'DATA.FILTER.FAILED' | translate}} : {{totalfailed}}</h5>
+                        </tr>
+                        
+
+                        <div  style="float: inline-end;" class="ct-c-filter-rowAmount">
+                            <p>{{'GLOBAL.ROWS_PER_PAGE' | translate }}:</p>
+                            <select class="ct-c-rowAmountSelector" #selectInner (change)="onDropDownInnerSelect(selectInner.value)">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                       
+                    </div>
+    </div>
+    
+   
+    </td>
+    </tr>
+    <tr class="collapsed" *ngIf="activeDistributionDocumentId === docData.distributionId">
+
+        <td colspan="6">
+            <table cellpadding="0" cellspacing="0" class="collapsed ct-text-left">
+                <tbody>
+                    <tr>
+                        <th width="175"><a (click)="orderByFunction('signer.contact.name')">{{'REGISTER.FULL_NAME' |
+                                translate}}</a></th>
+                        <th width="175"><a (click)="orderByFunction('signer.contact.email')">{{'FIELDS.EMAIL' |
+                                translate}}</a></th>
+                        <th width="175" (click)="orderByFunction('signer.contact.phone')"><a>{{'FIELDS.PHONE' |
+                                translate}}</a></th>
+                        <th width="175" (click)="orderByFunction('signer.timeSent')"><a>{{'DATA.FILTER.SENT' |
+                                translate}}</a></th>
+                        <th width="175" (click)="orderByFunction('signer.timeViewed')"><a>{{'DATA.FILTER.VIEWED' |
+                                translate}}</a></th>
+                        <th width="175" (click)="orderByFunction('signer.timeSigned')"><a>{{'DATA.FILTER.SIGNED' |
+                                translate}}</a></th>
+                        <th width="175" (click)="orderByFunction('signer.signerNote')"><a>{{'DATA.SIGNER_NOTES' |
+                                translate}}</a></th>
+                        <th><a>{{'DATA.STATUS' | translate}}</a></th>
+                        <th width="50">
+                            <div paginator class="ct-c-pagination ct-float-right" *ngIf="rowCalc"
+                            [currentPage]="innerCurrentPage" [last]="rowCalc.endPage" (changed)="rowPageChanged($event)"></div>
+                        </th>
+                    </tr>
+                    <ng-container
+                        *ngFor="let distributionInnerDoc of distributionInnerDocs | orderBy:orderByField:orderByDesc; trackBy: trackByFn; let j = index">
+                        <tr>
+                            <td [class.color--confirm]="distributionInnerDoc.signer.status == 3">
+                                {{distributionInnerDoc.signer.name}}
+                            </td>
+                            <td [class.color--confirm]="distributionInnerDoc.signer.status == 3">
+                                {{distributionInnerDoc.signer.contact.email}}
+                            </td>
+                            <td [class.color--confirm]="distributionInnerDoc.signer.status == 3">
+                                {{distributionInnerDoc.signer.contact.phone}}
+                            </td>
+                            <td>
+                                <ng-container
+                                    *ngIf="distributionInnerDoc.signer.timeSent && !dateIsDefault(distributionInnerDoc.signer.timeSent)">
+                                    {{getLocalTime(distributionInnerDoc.signer.timeSent) | date:'MMM
+                                    d,
+                                    y, HH:mm'}}
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container
+                                    *ngIf="distributionInnerDoc.signer.timeViewed && !dateIsDefault(distributionInnerDoc.signer.timeViewed)">
+                                    {{getLocalTime(distributionInnerDoc.signer.timeViewed) |
+                                    date:'MMM
+                                    d, y, HH:mm'}}
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container
+                                    *ngIf="distributionInnerDoc.signer.timeSigned && !dateIsDefault(distributionInnerDoc.signer.timeSigned)">
+                                    {{getLocalTime(distributionInnerDoc.signer.timeSigned) |
+                                    date:'MMM
+                                    d, y, HH:mm'}}
+                                </ng-container>
+                            </td>
+                            <td [class.color--confirm]="distributionInnerDoc.signer.status == 3">
+                                {{distributionInnerDoc.signer.signerNote}}
+                            </td>
+                            <td class="color--confirm" *ngIf="distributionInnerDoc.documentStatus==DocStatus.Signed">
+                                {{'DATA.FILTER.SIGNED' | translate}}
+                            </td>
+                            <td class="color--confirm"
+                                *ngIf="distributionInnerDoc.documentStatus==DocStatus.ExtraServerSigned">
+                                {{'DATA.FILTER.SERVER_SIGNED' | translate}}
+                            </td>
+                            <td class="color--error"
+                                *ngIf="distributionInnerDoc.documentStatus==DocStatus.Declined || distributionInnerDoc.documentStatus==DocStatus.SendingFailed">
+                                {{ (distributionInnerDoc.documentStatus==DocStatus.Declined ?
+                                'DATA.FILTER.DECLINED':'DATA.FILTER.FAILED') | translate}}
+                            </td>
+                            <td 
+                                *ngIf="distributionInnerDoc.documentStatus==DocStatus.Sent">
+                                {{'DATA.FILTER.PENDING' | translate}}
+                            </td>
+                            <td class="color--alert"
+                                *ngIf="distributionInnerDoc.documentStatus==DocStatus.Viewed">
+                                {{'DATA.FILTER.VIEWED' | translate}}
+                            </td>
+                            <td *ngIf="distributionInnerDoc.documentStatus==DocStatus.Created ">
+                                {{'DATA.FILTER.CREATED' | translate}}
+                            </td>
+
+                            <td *ngIf="distributionInnerDoc.documentStatus==DocStatus.Canceled">
+                                {{'DATA.FILTER.CANCELED' | translate}}
+                            </td>
+
+
+                            <td align="right" style="width: 200px;">
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="distributionInnerDoc.documentStatus==DocStatus.Signed"
+                                    (click)="openDocumentView($event, distributionInnerDoc.documentCollectionId, distributionInnerDoc.documentsIds[0])">
+                                    <i-feather name="eye"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.VIEW' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="shouldSignUsingSigner1AfterDocumentSigningFlow && distributionInnerDoc.documentStatus==DocStatus.Signed"
+                                    (click)="extraServerSign($event, docData.documentCollectionId)">
+                                    <i-feather name="hard-drive"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.EXTRA_SERVER_SIGN' | translate}}</span>
+                                </button>
+
+                                <button
+                                    *ngIf="(distributionInnerDoc.documentStatus==DocStatus.Created ||
+                                                                distributionInnerDoc.documentStatus==DocStatus.Sent ||
+                                                                distributionInnerDoc.documentStatus==DocStatus.Viewed ||
+                                                                distributionInnerDoc.documentStatus==DocStatus.SendingFailed) &&
+                                                                (distributionInnerDoc.signer.status != 3 && distributionInnerDoc.signer.status != 4 )"
+                                    (click)="resend($event, distributionInnerDoc.documentCollectionId, distributionInnerDoc.signer.id, distributionInnerDoc.signer.sendingMethod)"
+                                    class="ct-button--icon ct-tooltip--table-icons">
+                                    <i-feather name="send"></i-feather>
+                                    <span class="tooltiptext">{{'DATA.RESEND' | translate}}</span>
+                                </button>
+
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="distributionInnerDoc.documentStatus==DocStatus.Signed || distributionInnerDoc.documentStatus==DocStatus.ExtraServerSigned"
+                                    (click)="$event.stopPropagation(); downloadFile(distributionInnerDoc.documentCollectionId,distributionInnerDoc?.signer?.name)">
+                                    <i-feather name="download-cloud"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.DOWNLOAD_DOCUMENT' |
+                                        translate}}</span>
+                                </button>
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    *ngIf="distributionInnerDoc.documentStatus==DocStatus.Signed || distributionInnerDoc.documentStatus==DocStatus.ExtraServerSigned"
+                                    (click)="$event.stopPropagation(); downloadTraceDocument(distributionInnerDoc.documentCollectionId , distributionInnerDoc?.signer?.name)">
+                                    <i-feather name="clipboard"></i-feather>
+                                    <span class="tooltiptext">{{'BUTTONS.DOWNLOAD_TRACE' | translate}}</span>
+
+                                </button>
+                                <button class="ct-button--icon ct-tooltip--table-icons"
+                                    (click)="$event.stopPropagation(); deleteDocument($event,distributionInnerDoc)">
+                                    <i-feather name="trash-2"></i-feather>
+                                    <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    </ng-container>
+    </ng-container>
+
+    </tbody>
+    </table>
+</div>
+</div>

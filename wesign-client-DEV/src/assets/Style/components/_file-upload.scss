@@ -1,0 +1,48 @@
+// file-upload
+.ct-c-file-upload {
+  form {
+    height: 200px;
+    border: dashed 1px $color--border;
+    border-radius: 6px;
+    text-align: center;
+    background: $color--grey-light;
+
+    input {
+      opacity: 0;
+      width: -webkit-fill-available;
+      height: 200px;
+    }
+
+    span {
+      position: relative;
+      top: -125px;
+    }
+
+    button {
+      position: relative;
+      top: -110px;
+      background: white;
+    }
+  }
+}
+
+.ct-c-file-upload.file-upload--short {
+  display: inline-block;
+  width: 297px;
+
+  form {
+    height: 100px;
+
+    input {
+      height: 100px;
+    }
+
+    span {
+      top: -75px;
+    }
+
+    button {
+      top: -70px;
+    }
+  }
+}

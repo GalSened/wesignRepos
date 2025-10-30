@@ -1,0 +1,86 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay" >
+        <div class="modal__container ct-animate-slide-down modal__container__wide" style=" width: 90% !important" >
+            <div [class.ct-is-hidden]="contactsOriginMode!=0" [class.ct-is-shown]="contactsOriginMode==0">
+                <input type="text" #searchInput class="ct-input--primary" placeholder="{{'CONTACTS.SEARCH' | translate}}" 
+                [(ngModel)]="contactsFilter.key">
+            </div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-c-list">
+                <table cellpadding="0" cellspacing="0" class="ct-text-left" *ngIf="contacts$ | async as contacts">
+                    <tr>
+                        <th>    
+                            <label class="ct-checkbox ct-text-left">
+                                <span>&nbsp;</span>
+                                <input id="selectAllId" type="checkbox" value="1"                                    
+                                    (change)="selectedAll($event)">
+                                <span class="ct-checkbox__checkmark"></span>
+                            </label>                                                        
+                        </th>
+                        <th>{{'REGISTER.FULL_NAME' | translate}}</th>
+                        <th>{{'REGISTER.EMAIL' | translate}}</th>
+                        <th>{{'REGISTER.PHONE_NUMBER' | translate}}</th>
+                        <th>{{'REGISTER.SEND_BY' | translate}}</th>
+                        <th>{{'REGISTER.SEARCH_TAGS' | translate}}</th>
+                        <th><label class="ct-checkbox ct-text-left">
+                            <span>OTP</span>
+                            <input id="otpSelectAll" type="checkbox" value="1"                                    
+                                (change)="otpSelectedAll($event)">
+                            <span class="ct-checkbox__checkmark"></span>
+                        </label> 
+                            </th>
+                    </tr>
+                    <ng-container *ngFor="let contact of contacts">
+                        <tr >
+                            <td (click)="onRowClick(contact)">
+                                <label class="ct-checkbox ct-text-left">
+                                    <span>&nbsp;</span>
+                                    <input id="{{contact.id}}" type="checkbox" value="1"
+                                         name="checkboxOverlay[]"
+                                        (change)="selected($event, contact)">
+
+                                    <span class="ct-checkbox__checkmark"></span>
+                                </label>                                
+                            </td>
+                            <td (click)="onRowClick(contact)">{{contact.name}}</td>
+                            <td (click)="onRowClick(contact)">{{contact.email}}</td>
+                            <td (click)="onRowClick(contact)">{{contact.phone}}</td>
+                            <td (click)="onRowClick(contact)">
+                                <select class="ct-select--primary" (change)="onContactMethodChanged($event, contact)">
+                                    <option [disabled]="!contact.phone" [selected]="contact.defaultSendingMethod==1">SMS</option>
+                                    <option [disabled]="!contact.email" [selected]="contact.defaultSendingMethod==2">Email</option>
+                                </select>
+                            </td>
+                            <td (click)="onRowClick(contact)">{{contact.searchTag}}</td>
+                            <td >
+                                <label class="ct-checkbox ct-text-left">
+                                    <span>&nbsp;</span>
+                                    <input type="checkbox" value="1" id="{{contact.id}}" 
+                                    name="otpCheckboxOverlay[]"
+                                    (change)="selectOTP($event, contact)">
+                                    <span class="ct-checkbox__checkmark"></span>
+                                </label>                                
+                            </td>
+                        </tr>
+                    </ng-container>
+
+                </table>
+            </div>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="cancel()">{{'BUTTONS.CANCEL' | translate}}</button>
+                <button class="ct-button--primary" (click)="sendContactsToParent()">{{'REGISTER.SUBMIT_SEND' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

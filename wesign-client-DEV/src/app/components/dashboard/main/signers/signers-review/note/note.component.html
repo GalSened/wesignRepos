@@ -1,0 +1,23 @@
+<div class="ct-c-modal" >
+    <div class="modal__overlay" style="overflow: hidden;">
+        <div class="modal__container ct-animate-slide-down" style="overflow: hidden;">
+            <span>{{'SIGNERS.ADD_MESSAGE' | translate}}</span>
+
+            <div class="ct-break--shorter"></div>
+
+            <textarea rows="4" onfocus="this.rows = 4" maxlength="350" [(ngModel)]="note"></textarea>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--shorter"></div>
+             
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+                <button class="ct-button--primary" (click)="send()">{{'BUTTONS.SUBMIT' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

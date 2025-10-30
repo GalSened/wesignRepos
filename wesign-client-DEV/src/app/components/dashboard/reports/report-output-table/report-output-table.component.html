@@ -1,0 +1,23 @@
+<sgn-alert-component></sgn-alert-component>
+<div class="report-output-container">
+    <table cellpadding="0" cellspacing="0" class="ct-text-left ct-reports-output-table">
+        <tr>
+            <th>{{'GLOBAL.REPORTS.GROUPS_HEADER' | translate}}</th>
+            <th>{{'GLOBAL.REPORTS.PENDING_HEADER' | translate}}</th>
+            <th>{{'GLOBAL.REPORTS.SIGNED_HEADER' | translate}}</th>
+            <th>{{'GLOBAL.REPORTS.DECLINED_HEADER' | translate}}</th>
+            <th>{{'GLOBAL.REPORTS.CANCELED_HEADER' | translate}}</th>
+            <th>{{'GLOBAL.REPORTS.DISTRIBUTION_HEADER' | translate}}</th>
+        </tr>
+        <ng-container *ngIf="usageDataReports"></ng-container>
+        <tr *ngFor="let report of usageDataReports">
+            <td>{{report.groupName}}</td>
+            <td>{{report.pendingDocumentsCount !== -1 ? report.pendingDocumentsCount : '-'}}</td>
+            <td>{{report.signedDocumentsCount !== -1 ? report.signedDocumentsCount : '-'}}</td>
+            <td>{{report.declinedDocumentsCount !== -1 ? report.declinedDocumentsCount : '-'}}</td>
+            <td>{{report.canceledDocumentsCount !== -1 ? report.canceledDocumentsCount : '-'}}</td>
+            <td>{{report.distributionDocumentsCount !== -1 ? report.distributionDocumentsCount : '-'}}</td>
+        </tr>
+    </table>
+    <span class="ct-output-reports-total-amount">{{'GLOBAL.REPORTS.TOTAL_AMOUNT' | translate}} {{usageDataReports ? usageDataReports.length : 0}}</span>
+</div>

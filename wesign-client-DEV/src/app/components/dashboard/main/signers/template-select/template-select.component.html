@@ -1,0 +1,13 @@
+<div>
+    <input type="text" class="ct-input--primary" value="{{name}}" maxlength="50" draggable="true" disabled>
+
+    <div class="ct-float-right">
+      <button class="ct-button--icon add-remove" *ngIf="index+1!=templatesLength" (click)="move(index,1)" >                        
+        <i-feather name="chevron-down"></i-feather>
+      </button>
+
+      <button class="ct-button--icon add-remove" *ngIf="index>0" (click)="move(index,-1)">
+        <i-feather name="chevron-up"></i-feather>
+      </button>
+    </div>
+  </div>

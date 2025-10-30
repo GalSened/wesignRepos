@@ -1,0 +1,54 @@
+<div class="ct-p-inner">
+  <sgn-alert-component></sgn-alert-component>
+  <sgn-smart-card-signing-alert *ngIf="showOpenLink" (hide)="closePopUp() "
+    (sign)="signFile()"></sgn-smart-card-signing-alert>
+  <sgn-top-header-title [title]="'GLOBAL.GOVERNMENT_SIGNATURE' | translate"></sgn-top-header-title>
+  <main class="ct-animate-fadein">
+    <div class="container">
+      <div class="ct-break--short"></div>
+
+      <span>{{'DOCUMENT.NAME' | translate}}</span>
+
+      <div class="ct-break--shorter"></div>
+      <div class="ct-c-file-upload-rename">
+        <div>
+          <i data-feather="edit-2"></i>
+        </div>
+
+        <input type="text" class="ct-input--primary" value="{{name}}" maxlength="50" disabled>
+      </div>
+
+      <!-- <div class="ct-break--short"></div>
+  
+        <div class="ct-separator"></div>
+  
+        <div class="ct-break--short"></div>
+  
+        <nav class="add-signers">
+          <button class="tablinks is-active">{{'GLOBAL.SERVER_SIGNATURE' | translate}}</button>
+        </nav> -->
+
+      <div id="Group" class="tabcontent ct-animate-fadein">
+        <!-- <div class="ct-break--short"></div> -->
+        <!-- <ng-container *ngIf="showCertInput">
+            <div class="ct-text-center">
+  
+              <span>{{'GLOBAL.PLEASE_ENTER_CERT_ID_PASSWORD' | translate}}</span>
+            </div>
+  
+            <div class="ct-break--short"></div>
+  
+            
+          </ng-container> -->
+
+        <div class="ct-break--short"></div>
+
+        <div class="ct-text-center">
+          <button (click)="accept()" class="ct-button--primary ct-button--small" [disabled]="isBusy">
+            {{'BUTTONS.SIGN_SMARTCARD_DOCUMENT' | translate}}</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

@@ -1,0 +1,31 @@
+<div class="ct-c-plan" [ngClass]="{'is-active': plan.isBestPlan,'is-short':!showButton }" (click)="onClick()">
+
+    <h2 *ngIf="isEng">{{plan.title}}</h2>
+    <h2 *ngIf="!isEng">{{plan.hebtitle}}</h2>
+
+    <div class="ct-break--short"></div>
+    <span>{{plan.documentsPerMonth}} {{'GLOBAL.DOCUMENTS' | translate}}</span>
+    <div class="ct-break--short"></div>
+    <h1>{{getSelectdSign}}{{getSelectedPricePerMonth}}</h1>
+    <div class="ct-break--short"></div>
+   
+    <select class="ct-select--primary"
+        #mySelect (change)='onOptionsSelected(mySelect.value)'>
+        <option  [value]="2" selected>$ USD</option>        
+        <option [value]="1" >₪ ILS</option>
+      </select>
+
+    <div class="ct-break--short"></div>
+    
+    <span *ngIf="yearly" >{{'GLOBAL.PLAN_YEARLY_FOR_USER' | translate}}</span>
+    <span *ngIf="!yearly" >{{'GLOBAL.PLAN_MONTHLY_FOR_USER' | translate}}</span>
+
+
+    <div class="ct-break--short"></div>
+
+    <button class="ct-button--primary" *ngIf="showButton" (click)="payClick($event,'Credit2000')">
+        {{'TINY.PAYMENT.CREDIT_CARD' | translate}}
+    </button>
+
+    <div class="ct-break--short"></div>
+</div>

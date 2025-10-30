@@ -1,0 +1,29 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <h3>{{ "TEMPLATE.DIRECT_URL" | translate}} </h3>
+
+            <div class="ct-separator"></div>
+
+            <div class="ct-break--short"></div>
+            <sgn-attachments *ngIf="showAttachments" (hide)="hide()" (approve)="approve()" [signer]="currSigner" ></sgn-attachments>
+            <ng-container  *ngIf="!showAttachments">
+            <span>{{ "TEMPLATE.SEND_URL" | translate}}</span>
+
+            <div class="ct-break--short"></div>
+
+            <input type="text" class="ct-input--primary" value="{{selectedSingleLink}}" disabled>
+
+            <a (click)="copyMessage()">{{ "TEMPLATE.COPY_URL" | translate}}</a>
+
+            <div class="ct-break--short"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="Close()">{{ "BUTTONS.CLOSE" |
+                    translate}}</button>
+            </div>
+        </ng-container>
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

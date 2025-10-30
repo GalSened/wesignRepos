@@ -1,0 +1,21 @@
+{
+  "/userapi/*": {
+    "target": "https://wesign3.comda.co.il",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/userapi/": "/ui/"
+    }
+  },
+  "/signalr/*": {
+    "target": "https://wesign1",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/signalr/": "signalr/"
+    },
+    "ws": true
+  }
+}

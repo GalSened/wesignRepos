@@ -1,0 +1,71 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <title>Wesign</title>
+</head>
+
+    <div class="ws_container">
+
+        <!--header-->
+        <header class="ws_c-header ws_is-not-fixed">
+            <a href="dashboard.html">
+                <div class="header__image ws_animate-slide-down" alt="wesign logo" tabindex="0"></div>
+            </a>
+        </header>
+
+        <div class="ws_wrapper--1024px ws_margin-auto">
+            <div class="ws_text-center">
+                <div class="ws_break--medium"></div>
+
+                <h1>{{'GLOBAL.404PageNotFound' | translate}}</h1>
+
+                <div class="ws_break--short"></div>
+
+                <h3>{{'GLOBAL.PAGE_YOU_ARE_LOOKING_NO_VALID' | translate}}</h3>
+
+                <div class="ws_break--medium"></div>
+
+                <span>{{'GLOBAL.YOU_MAY_WANT_TO' | translate}}-</span>
+
+                <div class="ws_break--short"></div>
+
+                <button *ngIf="!tiny" class="button--onboard button-onboard--self ws_animate-fadein">
+                    <div>
+                        <!-- <h1>👤</h1> -->
+                        <div class="ws_icon__self-sign-alt ws_margin-auto"></div>
+                        <h1>{{'GLOBAL.SELFSIGN' | translate}}</h1>
+
+                        <span>
+                            {{'GLOBAL.ONBOARD.SELFSIGN' | translate}}
+                        </span>
+                    </div>
+                </button>
+
+                <button *ngIf="!tiny" class="button--onboard button-onboard--group ws_animate-fadein">
+                    <div>
+                        <!-- <h1>👥</h1> -->
+                        <div class="ws_icon__group-sign-alt ws_margin-auto"></div>
+                        <h1>{{'GLOBAL.GROUPSIGN' | translate}}</h1>
+
+                        <span>
+                            {{'GLOBAL.ONBOARD.GROUPSIGN' | translate}}
+                        </span>
+                    </div>
+                </button>
+
+                <button *ngIf="!tiny" class="button--onboard button-onboard--online ws_animate-fadein">
+                    <div>
+                        <!-- <h1>🖥</h1> -->
+                        <div class="ws_icon__online-sign-alt ws_margin-auto"></div>
+                        <h1>{{'GLOBAL.LIVESIGN' | translate}}</h1>
+
+                        <span>
+                            {{'GLOBAL.ONBOARD.LIVESIGN' | translate}}
+                        </span>
+                    </div>
+                </button>
+            </div>
+        </div>

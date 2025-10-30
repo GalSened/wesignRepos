@@ -1,0 +1,22 @@
+<ngx-spinner></ngx-spinner>
+
+<div  class="ws_body__wrapper" *ngIf="!appState.IsGhostUser">
+    <div class="ws_wrapper--1024px ws_margin-auto">
+        <div class="ws_break--short"></div>
+
+        
+        <h1>Manage Licenses</h1>
+        <h1>Licenses Status: {{message}}</h1>
+        <div class="ws_text-center">
+            <button class="ws_button--small" id="generate" (click)="toggleClick($event)">Generate Request</button>
+            <button class="ws_button--small" id="activate" (click)="toggleClick($event) ">Load License</button>
+            <button class="ws_button--small" id="properties" (click)="toggleClick($event) " *ngIf="showPropButton">Show License Properties</button>
+
+        </div>
+        <app-generate-request *ngIf="generateRequest"></app-generate-request>
+        <app-load-license (activeLicenseSucceedEvent)="activeLicenseSucceedEvent($event)"  *ngIf="loadLicense"> </app-load-license>
+        <app-show-properties   *ngIf="showProp"></app-show-properties>
+
+    </div>
+
+</div>

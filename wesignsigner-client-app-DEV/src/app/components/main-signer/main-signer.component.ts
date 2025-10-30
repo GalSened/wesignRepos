@@ -1,0 +1,522 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DocumentsService } from '../../services/documents.service';
+import { StateService } from '../../services/state.service';
+import { switchMap, tap, map, mergeAll, reduce, take } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { DocumentPage, DocumentPages } from 'src/app/models/responses/document-page.model';
+import { DocumentData } from 'src/app/models/state/document-data.model';
+import { pdfFields } from 'src/app/models/pdffields/pdffields.model';
+import { LiveEventsService } from 'src/app/services/live-events.service';
+import { AppState } from 'src/app/models/state/app-state.model';
+import { DocumentColectionMode } from 'src/app/enums/document-colection-mode.enum';
+import { Language, OtpMode } from 'src/app/models/responses/document-collection-count.model';
+import { LangComponent } from '../lang/lang.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { SignatureType } from 'src/app/enums/signature-type.enum';
+import { UpdateDocumentCollectionRequest } from 'src/app/models/requests/update-document-collection-request.model';
+import { DocumentOperation } from 'src/app/enums/document-operation.enum';
+import { UpdateDocumentRequest } from "src/app/models/requests/update-document-request.model";
+import { FieldRequest } from 'src/app/models/requests/fields-request.model';
+import { WeSignFieldType } from 'src/app/enums/we-sign-field-type.enum';
+import { AppConfigService } from 'src/app/services/app-config.service';
+import { FieldData } from 'src/app/models/responses/document-collectiond-ata-html-response.model';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { TextFieldType } from 'src/app/enums/text-field-type.enum';
+import { StoreOperationType } from 'src/app/enums/store-operation-type.enum';
+import { DocumentCount } from 'src/app/models/responses/document-count.model';
+import { SignatureFieldKind } from 'src/app/enums/signature-field-kind.enum';
+import { LanguageService } from 'src/app/language.service';
+import { Attachment } from 'src/app/models/responses/attachment.model';
+
+@Component({
+  selector: 'app-main-signer',
+  templateUrl: './main-signer.component.html',
+  styleUrls: ['./main-signer.component.scss']
+})
+export class MainSignerComponent implements OnInit {
+
+  public token: string;
+  public visualIdentitytoken: string;
+  public showSuccessPage = false;
+  public pages: DocumentPage[] = [];
+  public isDarkMode = true;
+  public zoomLevel = 1;
+  public showLoader = false;
+  public state: AppState;
+  public showOtpPage: boolean;
+  public inOauthFlow = false;
+  public approveDigitalSignature = true; // disable for now
+  public isCheckBoxApproved = false;
+  public collectionName: string;
+  public attachments: Attachment[] = [];
+  public appendices: string[] = [];
+  public hasAttachments = false;
+  public hasAppendices = false;
+  public hasNotes = false;
+  public showAttachments: boolean = false;
+  public showAppendices: boolean = false;
+  public isSenderFinish = false;
+  public isSenderRequestFinish = false;
+  public displaySignerNameInSignature = false;
+  public shouldDisplayMeaningOfSignature = false;
+  public shouldSetImageToAllSignatures: boolean;
+  private _showAppendicesFirstPopup = false;
+  @ViewChild('lang', { static: false }) lang: LangComponent;
+
+  showNotes: boolean;
+  senderNotes: string;
+  showDownloadButton: boolean;
+  otpMode: OtpMode;
+  signerMeans: string;
+  TemplateHtml;
+  TemplateScript;
+  isHtmlMode: boolean = false;
+  documentId: string;
+  htmlFieldsData: FieldData[] = [];
+  color: string;
+  documentsCount: DocumentCount[] = [];
+  isDocumentFromSingleTemplate: boolean = false;
+  optcode: string = "";
+  data$: Observable<any>;
+  public isOnlineMode: boolean = false;
+  public currentPage: number = 1;
+
+  constructor(private documentsService: DocumentsService, private router: Router, private route: ActivatedRoute,
+    private stateService: StateService, private liveEventsService: LiveEventsService, private appConfigService: AppConfigService,
+    private spinnerService: NgxSpinnerService, private languageService: LanguageService, private sanitizer: DomSanitizer) { }
+
+  public changePageNumber(pageNumer) {
+    this.currentPage = pageNumer;
+  }
+
+  ngOnInit(): void {
+    this.stateService.state$.subscribe(
+      x => {
+        this.state = x;
+        this.showOtpPage = this.state.otpMode != OtpMode.None;
+        if (this.showOtpPage) {
+          this.showSpinner();
+        } else {
+          this.closeSpinner();
+        }
+        this.otpMode = this.state.otpMode;
+        this.signerMeans = this.state.signerMeans;
+        if (x.OpenAppendicesFromRemote) {
+          this.showAppendices = true;
+        }
+        if (x.documentCollectionData && x.documentCollectionData.mode == DocumentColectionMode.Online) {
+          setTimeout(() => {
+            this.liveEventsService.listenToOnChangeBackgroud();
+            this.liveEventsService.backgroudSubject.subscribe(
+              (isDarkMode: boolean) => {
+                this.isDarkMode = isDarkMode;
+              }
+            );
+            this.liveEventsService.listenToOnFinishAsSender();
+            this.liveEventsService.signerSubject.subscribe(
+              () => {
+                this.isSenderRequestFinish = true;
+              }
+            );
+          }, 3000);
+        }
+
+        this.senderNotes = x.senderNotes;
+
+        if (x.storeOperationType == StoreOperationType.SetDocToken && x.Token) {
+          this.token = x.Token;
+          this.stateService.showLoader = true;
+          this.showSpinner();
+          this.documentsService.getCollectionData(x.Token).pipe(
+            take(1),
+
+            tap(res => {
+              let prevLang = localStorage.getItem("Language");
+              let prevLangEnum: Language = null;
+              if (prevLang) {
+                prevLangEnum = prevLang == "en" ? Language.en : Language.he;
+              }
+              this.languageService.fixLanguage(prevLangEnum ?? res.language);
+              this.color = res.sender.signatureColor;
+              this.stateService.setCompanyLogo(res.sender.base64Logo);
+
+              this.stateService.setLastSigner(res.signer.isLastSigner);
+              this.stateService.setSignerSeal(res.signer.seal);
+              this.stateService.setSignerName(res.signer.name);
+              this.stateService.setSignerMeans(res.signer.means)
+              this.signerMeans = res.signer.means;
+              this.stateService.setSignerADName(res.signer.adName, res.signer.authToken);
+              this.stateService.setSenderNotes(res.sender.note);
+              this.stateService.setSignerNotes(res.signer.note);
+              this.stateService.setAttachments(res.signer.attachments);
+              this.stateService.setSenderAppendices(res.sender.appendices);
+              this.stateService.setAreAllOtherSignersSigned(res.signer.areAllOtherSignersSigned);
+              this.stateService.setDocumentCollectionData(res.documentCollection);
+              this.collectionName = res.documentCollection.name;
+              this.hasAttachments = res.signer.attachments.length > 0;
+              this.hasAppendices = res.sender.appendices.length > 0;
+              this.showDownloadButton = (res.signer.isLastSigner && (res.documentCollection.mode == DocumentColectionMode.OrderedGroupSign)) ||
+                res.documentCollection.mode == DocumentColectionMode.Online;
+              this.isOnlineMode = res.documentCollection.mode == DocumentColectionMode.Online;
+              this.appendices = res.sender.appendices;
+              this.attachments = res.signer.attachments;
+              this.hasNotes = res.sender.note != null && res.sender.note != "";
+              if (res.documentCollection.mode == DocumentColectionMode.Online) {
+                this.liveEventsService.init();
+              }
+              this.isDocumentFromSingleTemplate = res.documents.length == 1;
+              this.documentsCount = res.documents;
+            }),
+            map(res => { return res.documents }),
+            mergeAll(),
+            reduce((a, b) => {
+              let limit = b.pagesCount < 100 ? 10 : Math.ceil(b.pagesCount / 10)
+              let offset = 1;
+              let arrSize = Math.ceil(b.pagesCount / limit);
+              let arrtest = new Array(arrSize).fill(b.id).map(
+                (id) => {
+                  let res = { id, offset, limit };
+                  offset = offset + limit;
+                  return res;
+                });
+
+              if ((this.inOauthFlow && !this.state.OauthDone) || !this.state) {
+                return a;
+              }
+              a.push(...arrtest.map(arra => this.documentsService.getDocumentsData(this.token, arra.id, arra.offset, arra.limit)));
+              return a;
+            }, []),
+            switchMap(ar => forkJoin(ar))
+          ).subscribe((data: DocumentPages[]) => {
+            let activeHTMLSupport = false;
+            if (this.isDocumentFromSingleTemplate) {
+              let documentId = data[0].documentPages[0].documentId;
+              if (activeHTMLSupport) {
+                // for future use not in use for now - 
+                this.documentsService.getDocumentsHtmlData(this.token, documentId).subscribe(
+                  x => {
+                    this.isHtmlMode = x.htmlContent != "";
+                    this.TemplateHtml = this.sanitizer.bypassSecurityTrustHtml(x.htmlContent);
+                    this.htmlFieldsData = x.fieldsData;
+                    setTimeout(() => this.loadfieldsDataToUI(), 700); // Will exe once, after a 0.7 second.
+                    let node = document.createElement('script');
+                    node.innerHTML = x.jsContent;
+                    node.type = 'text/javascript';
+                    node.async = false;
+                    document.getElementsByTagName('head')[0].appendChild(node);
+                  },
+                  (error) => { })
+              }
+            }
+
+            data.forEach(element => {
+
+              this.pages = this.pages.concat(element.documentPages);
+              this.pages.forEach(page => {
+                    if (page.ocrString) {
+                        page.ocrHtml = this.sanitizer.bypassSecurityTrustHtml(page.ocrString || '');
+                    }
+                });
+
+            });
+
+            this.stateService.showLoader = false;
+          },
+            error => {
+              this.router.navigate(["/"]);
+            },
+            () => {
+              if (this.inOauthFlow) {
+                return;
+              }
+
+              this.stateService.setSubmittion(false);
+              let documentsData = this.updateDocumentsData(this.pages);
+
+              if (this.state.senderNotes) {
+                this.showNotes = true;
+              }
+
+              if (this.hasAppendices) {
+                this.showAppendices = true;
+                this._showAppendicesFirstPopup = true;
+              }
+              else if (this.hasAttachments) {
+                this.showAttachments = true;
+                this.stateService.setAttachmentshown();
+              }
+
+              this.stateService.setDocumentsData(documentsData);
+              this.stateService.showLoader = false;
+              this.closeSpinner();
+            });
+        }
+      });
+
+    this.route.paramMap.subscribe(params => {
+      this.documentsService.getCollectionDataFlowInfo(params.get("id")).subscribe(
+        res => {
+          this.displaySignerNameInSignature = res.shouldDisplaySignerNameInSignature;
+          this.shouldDisplayMeaningOfSignature = res.shouldDisplayMeaningOfSignature;
+          this.languageService.fixLanguage(res.language);
+
+          if (res.visualIdentificationRequired && !this.state.OauthDone) {
+            //  this.CreateOauthFlow();
+            this.visualIdentitytoken = params.get("id");
+            this.stateService.SetOauthNeeded();
+            this.inOauthFlow = true;
+          }
+
+          else {
+            this.inOauthFlow = false;
+          }
+
+          if (res.shouldSignEidasSignatureFlow) {
+            this.stateService.setSetEIDASSigningFlow(res.shouldSignEidasSignatureFlow);
+          }
+
+          if (res.mapperID && res.mapperID != "00000000-0000-0000-0000-000000000000") {
+
+            this.token = res.mapperID;
+            this.stateService.SetDocuementToken(res.mapperID);
+            this.stateService.setOtpMode(OtpMode.None);
+            return;
+
+          }
+
+          this.stateService.setCompanyLogo(res.companyLogo);
+          this.stateService.setOtpMode(res.otpMode);
+          this.stateService.setSignerName(res.name);
+          this.stateService.setSignerMeans(res.means);
+          this.signerMeans = res.means;
+        },
+        err => {
+          this.router.navigate(["/"])
+
+        },
+        () => { }
+      );
+    });
+
+    this.stateService.showLoader = false;
+    this.closeSpinner();
+  }
+
+  onShouldSetImageToAllSignaturesChange(value: boolean): void {
+    this.shouldSetImageToAllSignatures = value;
+  }
+
+  public approvedDigitalSignatureCanGoToDoc() {
+    this.approveDigitalSignature = !this.approveDigitalSignature;
+
+    if (this.senderNotes) {
+      this.showNotes = true;
+    }
+  }
+
+  private updateDocumentsData(documents: DocumentPage[]): DocumentData[] {
+    if (!document || documents.length < 1)
+      return [];
+    //Deep copy
+    let docsCopy = JSON.parse(JSON.stringify(documents));
+
+    let docs: DocumentData[] = [];
+
+    docsCopy.forEach((doc: DocumentPage) => {
+      let currDocument = docs.find(x => x.documentId == doc.documentId);
+      if (currDocument == null) {
+        let dd = new DocumentData();
+        dd.documentId = doc.documentId; dd.pdfFields = doc.signerFields;
+        docs.push(dd);
+      } else {
+        this.concatFields(currDocument.pdfFields, doc.signerFields);
+      }
+    });
+
+    return docs;
+  }
+
+  private concatFields(orig: pdfFields, add: pdfFields) {
+    orig.textFields = orig.textFields.concat(add.textFields);
+    orig.signatureFields = orig.signatureFields.concat(add.signatureFields);
+    orig.radioGroupFields = orig.radioGroupFields.concat(add.radioGroupFields);
+    orig.checkBoxFields = orig.checkBoxFields.concat(add.checkBoxFields);
+    orig.choiceFields = orig.choiceFields.concat(add.choiceFields);
+
+    this.fixRadioGroupFields(orig);
+  }
+
+  private fixRadioGroupFields(orig: pdfFields) {
+    if (orig && orig.radioGroupFields && orig.radioGroupFields.length > 0) {
+      let radioGroupMap = new Map<string, any>();
+      for (let radioGroup of orig.radioGroupFields) {
+        if (radioGroupMap.has(radioGroup.name)) {
+          // Merge radio fields if the group already exists
+          let existingGroup = radioGroupMap.get(radioGroup.name);
+          existingGroup.radioFields = [...existingGroup.radioFields, ...radioGroup.radioFields];
+        } else {
+          // Add new group to the map
+          radioGroupMap.set(radioGroup.name, { ...radioGroup });
+        }
+      }
+      orig.radioGroupFields = Array.from(radioGroupMap.values());
+    }
+  }
+
+  public moveToSuccessPage(downloadLink: string) {
+    this.showDownloadButton = downloadLink != "";
+    this.showSuccessPage = true;
+    let newToken = downloadLink.substring(downloadLink.lastIndexOf('/') + 1);
+    this.token = newToken;
+  }
+
+  public changeLoader(event) {
+    this.showLoader = event.show;
+  }
+
+  public changeZoomLevel(event) {
+    this.zoomLevel = event.zoomLevel;
+  }
+
+  public changeBackgroud() {
+    this.isDarkMode = !this.isDarkMode;
+
+    if (this.state.documentCollectionData && this.state.documentCollectionData.mode == DocumentColectionMode.Online) {
+      this.liveEventsService.changeBackgroud(this.state.Token, this.isDarkMode);
+    }
+  }
+
+  private CreateOauthFlow() {
+    let url = this.appConfigService.idpURL + 'authorize';
+
+    let obj: any = {
+      response_type: 'code',
+      client_id: this.appConfigService.idpClientId,
+      redirect_uri: this.appConfigService.baseUrl + 'oauth',
+      scope: 'openid profile',
+      state: this.token
+
+    }
+
+    let searchParams = new URLSearchParams(obj)
+    window.location.href = url + "?" + searchParams;
+  }
+
+  //Functions for HTML template files 
+
+  public loadfieldsDataToUI() {
+    this.htmlFieldsData.forEach(element => {
+      if (((element.type == WeSignFieldType.TextField && element.textFieldType == TextFieldType.Date) || element.type == WeSignFieldType.ChoiceField) && element.value != '') {
+        let d = new Date(element.value);
+        let day = ("0" + d.getDate()).slice(-2);
+        if (day && day != 'aN') {
+          let month = d.getMonth();
+          month = month + 1;
+          let monthString = ("0" + month).slice(-2);
+          let year = d.getFullYear();
+          let value = `${year}-${monthString}-${day}`;
+          (<HTMLInputElement>document.getElementById(element.name)).value = value;
+          (<HTMLInputElement>document.getElementById(element.name)).type = 'date'
+        }
+
+        else {
+          (<HTMLInputElement>document.getElementById(element.name)).value = element.value;
+        }
+      }
+
+      if (element.type == WeSignFieldType.CheckBoxField && element.value != '') {
+        (<HTMLInputElement>document.getElementById(element.name)).checked = element.value.toLowerCase() == "true";
+      }
+
+      if (element.type == WeSignFieldType.RadioGroupField && element.value != '') {
+
+        (<HTMLInputElement>(document.getElementsByName(element.name)[0])).checked = true;
+      }
+    });
+  }
+
+  public openSignaturePad() {
+    //   console.log("Call openSignaturePad from simple js in external html")
+    let name = document.getElementById("openSignaturePad").innerHTML;
+    this.stateService.setselectedSignField({
+      name: name,
+      documentId: this.documentId,
+      type: SignatureType.Graphic,
+      kind: SignatureFieldKind.Simple,
+    });
+    this.stateService.state$.subscribe(
+      x => {
+        let documentData = x.documentsData.find(y => y.documentId == this.documentId);
+        let image = documentData.pdfFields.signatureFields.find(s => s.name == name).image;
+        (<HTMLImageElement>document.getElementById(name)).src = image;
+        document.getElementById(name).style.visibility = "visible";
+      });
+  }
+
+  public doneProcess() {
+    //  console.log("Send data to server");
+    var input = new UpdateDocumentCollectionRequest();
+    input.Operation = DocumentOperation.Close;
+    input.UseForAllFields = this.shouldSetImageToAllSignatures;
+    this.shouldSetImageToAllSignatures = false;
+    let updateDocumentRequest = new UpdateDocumentRequest();
+    updateDocumentRequest.DocumentId = this.documentId;
+    updateDocumentRequest.Fields = [];
+    for (let index = 0; index < this.htmlFieldsData.length; index++) {
+      const item = this.htmlFieldsData[index];
+      const element = new FieldRequest();
+      element.fieldName = item.name;
+      element.fieldType = item.type;
+      element.fieldValue = element.fieldType == WeSignFieldType.SignatureField ?
+        (<HTMLInputElement>document.getElementById(item.name)).src :
+        element.fieldType == WeSignFieldType.CheckBoxField ?
+          (<HTMLInputElement>document.getElementById(item.name)).checked.toString() :
+          element.fieldType == WeSignFieldType.RadioGroupField ?
+            (<HTMLInputElement>document.querySelector('input[name=' + item.name + ']:checked')).value :
+            (<HTMLInputElement>document.getElementById(item.name)).value;
+      updateDocumentRequest.Fields.push(element);
+    }
+    input.Documents = [updateDocumentRequest];
+    this.documentsService.updateDocument(this.token, input).subscribe(
+      res => {
+        this.moveToSuccessPage(res.downloadUrl);
+        if (res.redirectUrl != undefined && res.redirectUrl != "") {
+
+          let redirectTimeout = this.appConfigService.redirectTimeoutconfig;
+          setTimeout(() => {
+
+            window.location.href = res.redirectUrl;
+          }, redirectTimeout);
+        }
+      },
+      (error) => {
+
+      });
+  }
+
+  public onAppendicesClose() {
+    if (this._showAppendicesFirstPopup && this.hasAttachments) {
+      this._showAppendicesFirstPopup = false;
+      this.showAttachments = true;
+      this.stateService.setAttachmentshown();
+    }
+  }
+
+  continueSigning() {
+    this.isSenderRequestFinish = false;
+  }
+
+  letSenderFinishSigning() {
+    this.isSenderFinish = true;
+    this.isSenderRequestFinish = false;
+  }
+
+  closeSpinner() {
+    this.spinnerService.hide();
+  }
+
+  showSpinner() {
+    this.spinnerService.show();
+  }
+}

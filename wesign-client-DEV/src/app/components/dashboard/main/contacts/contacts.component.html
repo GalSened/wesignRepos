@@ -1,0 +1,229 @@
+<sgn-alert-component></sgn-alert-component>
+<sgn-pop-up-confirm [data]="deleteAllPopupData" (submitEvent)="doDeleteAllContactEvent()"
+    (cancelEvent)="deleteAllPopupData.showModal = false">
+</sgn-pop-up-confirm>
+<sgn-pop-up-ok [data]="deleteContactWithPendingDocsData" (submitEvent)="onDeleteContactWithPendingDocsSubmitted()"></sgn-pop-up-ok>
+<div class="ws_body__wrapper">
+
+    <body class="ct-p-profile">
+        <div class="ct-c-titlebar">
+            <main>
+                <div></div>
+
+                <h1>{{'GLOBAL.CONTACTS' | translate}}</h1>
+            </main>
+
+            <nav>
+                <button (click)='this.router.navigate(["dashboard"]);' class="ct-button--titlebar-outline">
+                    {{'FORGET.BACK' | translate}}
+                </button>
+            </nav>
+        </div>
+
+        <main>
+            <aside>
+                <menu id="contactsMenu">
+                    <ul style="  display: grid; align-items: center;justify-content: center; ">
+                        <a style="display: block;">
+                            <li id="addContact" style="font-size: large;"
+                                (click)="this.showContactEdit = !this.showContactEdit;this.isEditMode = false">
+                                {{'CONTACTS.ADD_NEW'
+                                | translate}}
+                            </li>
+                        </a>
+
+                        <input #file type="file" (click)="file.value = null" (change)="importFile($event)"
+                            style="display:none" accept=".xlsx">
+
+                        <li class="ws_button--table-info ws_float-right" #upload (click)="file.click()">
+                            {{'GLOBAL.IMPORT_EXCEL' | translate}}
+
+                            <button class="ct-button--icon ct-tooltip--aside-menu-icons" style="padding: 0 !important;">
+                                <i-feather name="info"></i-feather>
+
+                                <span class="tooltiptext">
+                                    {{'CONTACTS.UPLOAD_ROW_1_EXCEL' | translate}}
+                                    <br /><br />
+                                    {{'CONTACTS.UPLOAD_ROW_2_EXCEL' | translate}}
+                                </span>
+                            </button>
+                        </li>
+
+                        <div class="ct-break--shorter"></div>
+
+                        <li>
+                            <a href="/assets/Contacts.xlsx"
+                                class="ct-button--icon ct-tooltip--aside-menu-icons no-blue-link">{{'GLOBAL.IMPORTED_EXCEL_STRUCTURE'
+                                | translate}}</a>
+                        </li>
+                    </ul>
+                </menu>
+            </aside>
+
+            <div class="main__content ct-animate-fadein" style="width: 100%">
+                <div class="ct-c-filter">
+
+                    <input type="search" #searchInput class="ct-input--primary" [(ngModel)]="contactFilter.key"
+                        [class.loading]="showSearchSpinner" placeholder="{{'CONTACTS.SEARCH' | translate}}">
+
+                    <!-- <input type="search" class="ct-input--primary" placeholder="{{'CONTACTS.SEARCH' | translate}}"> -->
+                </div>
+                <div class="ct-c-filter">
+                    <button class="ct-button--icon ct-tooltip--table-icons" *ngIf="selectedContacts.length > 1"
+                        (click)="deleteContactsAllSelected($event)">
+                        <i-feather name="trash-2"></i-feather>
+                        <span class="tooltiptext">{{'GLOBAL.DELETE_ALL_SELECTED' | translate}}</span>
+                    </button>
+                </div>
+                <div class="content__table">
+                    <table cellpadding="0" cellspacing="0" style="padding: 1px;" class="ct-text-left">
+                        <tr>
+                            <th class="sticky_header" width="70">
+                                <label class="ct-checkbox ct-text-left ct-tooltip--table-icons">
+                                    <span>&nbsp;</span>
+                                    <input type="checkbox" value="1" [checked]="allSelected" (change)="selectedALL()">
+                                    <span class="ct-checkbox__checkmark"></span>
+                                    <span class="tooltiptext" *ngIf="!allSelected">{{'BUTTONS.SELECT_ALL' |
+                                        translate}}</span>
+                                    <span class="tooltiptext" *ngIf="allSelected">{{'BUTTONS.UNSELECT_ALL' |
+                                        translate}}</span>
+                                </label>
+                            </th>
+
+
+                            <th class="sticky_header" width="1*"><a (click)="orderByFunction('name')">{{
+                                    "REGISTER.FULL_NAME" |
+                                    translate}}</a></th>
+                            <th class="sticky_header" width="1.2*"><a (click)="orderByFunction('email')">{{
+                                    "REGISTER.EMAIL" |
+                                    translate}}</a></th>
+                            <th class="sticky_header" width="1*"><a (click)="orderByFunction('phone')">{{
+                                    "REGISTER.PHONE_NUMBER" |
+                                    translate}}</a></th>
+                            <th class="sticky_header" width="1*" align="center">
+                                <a (click)="orderByFunction('defaultSendingMethod')">{{ "REGISTER.SEND_BY" |
+                                    translate}}</a>
+                            </th>
+                            <th class="sticky_header" width="1*" align="center">
+                                <a (click)="orderByFunction('searchTag')">{{ "CONTACTS.SEARCH_TAGS" |
+                                    translate}}</a>
+                            </th>
+                            <th class="sticky_header" width="1*" align="center">
+                                <a (click)="orderByFunction('seals')">{{ "CONTACTS.CUSTOM_SEAL" |
+                                    translate}}</a>
+                            </th>
+
+                            <th class="sticky_header" width="1*" align="left">
+                                <div paginator class="ct-c-pagination" *ngIf="pageCalc" [currentPage]="currentPage"
+                                    [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                            </th>
+                        </tr>
+                        <ng-container *ngIf="contacts$ | async as contacts  ">
+                            <ng-container
+                                *ngFor="let contact  of contacts  | orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i ">
+                                <tr class="ws_tr__menu">
+                                    <td align="center">
+
+                                        <label class="ct-checkbox ct-text-left">
+                                            <span>&nbsp;</span>
+
+                                            <input id="{{contact.id}}" type="checkbox" value="1"
+                                                [checked]="isContactSelected(contact.id)"
+                                                (change)="selecteContact($event,contact.id)" name="checkboxOverlay[]">
+
+                                            <span class="ct-checkbox__checkmark"></span>
+                                        </label>
+
+                                    </td>
+                                    <td class="outer ws_td__input">
+                                        <label>
+                                            {{contact.name}}
+                                        </label>
+                                    </td>
+                                    <td class="outer ws_td__input">
+                                        <label>
+                                            {{contact.email}}
+                                        </label>
+
+                                    </td>
+                                    <td class="outer ws_td__input">
+                                        <label>
+                                            {{contact.phone}}
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <select (change)="dropDownUpdate($event,contact,'defaultSendingMethod')">
+                                            <ng-container *ngFor='let method of SendingMethodOptions'>
+                                                <option
+                                                    [selected]="SendingMethod[contact.defaultSendingMethod]==method">
+                                                    {{method}}</option>
+                                            </ng-container>
+                                        </select>
+
+                                    </td>
+                                    <td class="outer ws_td__input">
+                                        <label>
+                                            {{contact.searchTag}}
+                                        </label>
+                                    </td>
+                                    <td align="center">
+                                        <ng-container *ngIf="contact.seals.length > 0">
+                                            <ng-container *ngFor="let seal of contact.seals">
+                                                <div class="ct-c-seal">
+                                                    <form class="is-uploaded"
+                                                        [ngStyle]="{'background-image': 'url(' + seal.base64Image + ')'}">
+                                                        <input type="file" disabled>
+                                                    </form>
+
+
+                                                    <button class="ct-button--icon">
+                                                        <i-feather (click)="removeSeal(contact,seal.id)" name="x">
+                                                        </i-feather>
+                                                    </button>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+
+                                        <div class="ct-text-center" *ngIf="contact.seals.length == 0">
+                                            <div class="ct-c-seal">
+                                                <form>
+                                                    <input #seal type="file" (click)="file.value = null"
+                                                        (change)="sealChange($event,contact)" accept="image/*">
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="ct-c-seal" *ngIf="contact.seals.length == 0"
+                                            class="ct-button--outline ct-button--small" #upload>
+
+                                        </div>
+
+
+                                    </td>
+                                    <td class="ct-text-ct-text-right-no-direction">
+
+                                        <button class="ct-button--icon ct-tooltip--table-icons"
+                                            (click)=openEditForm(contact)>
+                                            <i-feather name="edit-2"></i-feather>
+                                            <span class="tooltiptext">{{'DATA.EDIT' | translate}}</span>
+                                        </button>
+                                        <button id="deleteContact" class="ct-button--icon ct-tooltip--table-icons"
+                                            (click)=deleteContact(contact)>
+                                            <i-feather name="trash-2"></i-feather>
+                                            <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+                                        </button>
+
+
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+                    </table>
+                </div>
+
+            </div>
+        </main>
+        <sgn-edit-contact *ngIf="showContactEdit" [class.ws_is-hidden]="!showContactEdit" [isInEditMode]="isEditMode"
+            [class.ws_is-shown]="showContactEdit" [contact]="newContact" (cancel)="closeEditForm()"
+            (accept)="addOrEditContact()">
+        </sgn-edit-contact>
+    </body>

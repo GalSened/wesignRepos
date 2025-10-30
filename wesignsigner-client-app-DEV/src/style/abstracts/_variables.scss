@@ -1,0 +1,26 @@
+// signers colors
+$signer-color: lightblue,
+lightcoral,
+lightgreen,
+lightpink,
+lightsalmon,
+lightseagreen,
+lightskyblue,
+lightslategray,
+lightslategrey,
+lightsteelblue;
+$repeat: 1;
+
+@for $i from 1 through $repeat {
+  .ct-signer-border-color:nth-child(#{length($signer-color)}n+#{$i}) {
+    border-color: lighten(nth($signer-color, random(length($signer-color))), 0%) !important;
+  }
+
+  .ct-signer-color:nth-child(#{length($signer-color)}n+#{$i}) {
+    color: lighten(nth($signer-color, random(length($signer-color))), 0%) !important;
+  }
+
+  .ct-signer-bg-color:nth-child(#{length($signer-color)}n+#{$i}) {
+    background: lighten(nth($signer-color, random(length($signer-color))), 0%) !important;
+  }
+}

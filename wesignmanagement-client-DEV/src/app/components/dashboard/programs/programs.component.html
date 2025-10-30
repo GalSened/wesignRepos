@@ -1,0 +1,129 @@
+<app-program-form [class.ws_is-hidden]="!isFormShown" [class.ws_is-shown]="isFormShown"
+    (removeProgramForm)="hideForm($event)" [program]="program" [operation]='operation'
+    (bannerAlertEvent)="showBannerAlert($event)">
+</app-program-form>
+
+<div [class.ws_is-hidden]="isFormShown" [class.ws_is-shown]="!isFormShown">
+    <div class="ws_body__wrapper">
+        <!--alert-->
+        <app-banner-alert #bannerAlert></app-banner-alert>
+
+        <!--filters-->
+        <div class="ws_c-table-filter">
+            <div class="table-filter__icon">
+                <div class="ws_icon__filter"></div>
+            </div>
+
+            <input class="ws_select--custom select-custom--filter" placeholder="Search..." #searchInput
+                [(ngModel)]="programFilter.key">
+        </div>
+    </div>
+
+    <!--info-->
+    <div class="ws_c-table-info">
+        <span>&nbsp;</span>
+
+        <button class="ws_button--table-info ws_float-right" [disabled]="!appState.IsActivated" (click)="showProgramForm()">New Program</button>
+    </div>
+
+    <!--table-->
+    <table cellpadding="0" cellspacing="0" class="ws_animate-slide-down">
+        <tr class="header">
+            <th>Program Name
+                <button class="ws_button--icon ws_align-vert--middle" (click)="nameSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Users
+                <button class="ws_button--icon ws_align-vert--middle" (click)="usersSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Templates
+                <button class="ws_button--icon ws_align-vert--middle" (click)="templatesSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Documents Per Month
+                <button class="ws_button--icon ws_align-vert--middle" (click)="documentsSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>SMS Per Month
+                <button class="ws_button--icon ws_align-vert--middle" (click)="smsSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Visual Identifications Per Month
+                <button class="ws_button--icon ws_align-vert--middle" (click)="visualIdentificationsSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Video Conference Per Month
+                <button class="ws_button--icon ws_align-vert--middle" (click)="videoConferenceSort()">
+                    <div class="ws_icon__sort"></div>
+                </button>
+            </th>
+            <th>Server Signature
+            </th>
+            <th>Smart Card
+            </th>
+    
+            <th>Notes
+            </th>
+            <th width="100">
+                <!--pagination-->
+                <div class="ws_pagination ws_float-right">
+                    <div paginator class="ws_float-right" *ngIf="pageCalc" [last]="pageCalc.endPage"
+                        (changed)="pageChanged($event)"></div>
+                </div>
+            </th>
+        </tr>
+
+        <ng-container *ngIf="programs$ | async as programs">
+            <ng-container *ngFor="let program of programs; index as i">
+                <tr class="ws_tr__menu">
+
+                    <td><span>{{program.name}}</span></td>
+                    <td><span>{{program.users == -1? 'Unlimited':program.users }}</span></td>
+                    <td><span>{{program.templates == -1? 'Unlimited':program.templates }}</span></td>
+                    <td><span>{{program.documentsPerMonth == -1? 'Unlimited':program.documentsPerMonth }}</span></td>
+                    <td><span>{{program.smsPerMonth == -1? 'Unlimited':program.smsPerMonth }}</span></td>
+                    <td><span>{{program.visualIdentificationsPerMonth == -1? 'Unlimited':program.visualIdentificationsPerMonth }}</span></td>
+                    <td><span>{{program.videoConferencePerMonth == -1? 'Unlimited':program.videoConferencePerMonth }}</span></td>
+                    <td><span>{{program.serverSignature  }}</span></td>
+                    <td><span>{{program.smartCard }}</span></td>                                      
+                    <td  width="250"><span>{{program.note }}</span></td>
+                    <td class="ws_text-right outer">
+                        <div class="ws_table-menu">
+                            <div class="table-menu__icon ws_tooltip">
+                                <button class="ws_button--icon" [disabled]="!appState.IsActivated" (click)="editProgramUsingForm(program)">
+                                    <div class="ws_icon__edit"></div>
+                                    <span class="ws_tooltip--edit">Edit</span>
+                                </button>
+                            </div>
+
+                            <div class="table-menu__icon ws_tooltip" 
+                            *ngIf="program.id != '00000000-0000-0000-0000-000000000001' &&
+                                   program.id != '00000000-0000-0000-0000-000000000002' &&
+                                   program.id != '00000000-0000-0000-0000-000000000003'">
+                                <button class="ws_button--icon" [disabled]="!appState.IsActivated" (click)="openDeletionAlert()">
+                                    <div class="ws_icon__delete"></div>
+                                    <span class="ws_tooltip--delete">Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <app-alert [class.ws_is-hidden]="!showDeletionAlert" [class.ws_is-shown]="showDeletionAlert"
+                    (removeDeletionAlert)="hideAlert()" (deleteOperation)="deleteProgram(program)"
+                    [itemName]='program.name' [itemType]="'Program'" [operationType]="'delete'">
+                </app-alert>
+
+            </ng-container>
+        </ng-container>
+
+    </table>
+
+</div>

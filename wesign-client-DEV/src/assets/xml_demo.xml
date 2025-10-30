@@ -1,0 +1,40 @@
+﻿<?xml version="1.0"?>
+<PDFMetaData>
+<PlaceholderColor>white</PlaceholderColor>
+<Parenthesis>{}</Parenthesis>
+<SkipValidation>true</SkipValidation>
+<Fields>
+<Field Fieldname="Signer1_sig" Type="Graphic_Signature"/>
+<Field Fieldname="Signer2_sig" Type="Graphic_Signature"/>
+<Field Fieldname="Signer1_text" Type="Text" Description="Signer1_text"/>
+<Field Fieldname="Signer2_text" Type="Text" Description="Signer2_text"/>
+<Field Fieldname="Signer1_email" Type="Email" Description="Signer1_email"/>
+<Field Fieldname="Signer2_email" Type="Email" Description="Signer2_email"/>
+<Field Fieldname="Signer1_phone" Type="Phone" IsMandatory="false" Description="Signer1_phone"/>
+<Field Fieldname="Signer2_phone" Type="Phone" IsMandatory="false" Description="Signer2_phone"/>
+<Field Fieldname="Signer1_number" Type="Number" IsMandatory="false" Description="Signer1_number"/>
+<Field Fieldname="Signer2_number" Type="Number" IsMandatory="false" Description="Signer2_number"/>
+<Field Fieldname="Signer1_date" Type="Date" IsMandatory="false" Description="Signer1_date"/>
+<Field Fieldname="Signer2_date" Type="Date" IsMandatory="false" Description="Signer2_date"/>
+<Field Fieldname="Signer1_checkbox" Type="Checkbox" IsChecked="false"/>
+<Field Fieldname="Signer2_checkbox" Type="Checkbox" IsChecked="false"/>
+<GroupField Fieldname="Signer1_list" Type="ChoiceGroup" IsMandatory="false" Description="Signer1_list">
+<Field Type="Choice" IsSelected="true" Option="1"/>
+<Field Type="Choice" Option="2"/>
+<Field Type="Choice" Option="3"/>
+</GroupField>
+<GroupField Fieldname="Signer2_list" Type="ChoiceGroup" IsMandatory="false" Description="Signer2_list">
+<Field Type="Choice" IsSelected="true" Option="1"/>
+<Field Type="Choice" Option="2"/>
+<Field Type="Choice" Option="3"/>
+</GroupField>
+<GroupField Type="RadioGroup" GroupName="Signer1_grp1">
+<Field Fieldname="radio_8" Value="44" IsSelected="true"/>
+<Field Fieldname="radio_9" Value="55"/>
+</GroupField>
+<GroupField Type="RadioGroup" GroupName="Signer2_grp1">
+<Field Fieldname="radio_11" Type="RadioField" Value="11" IsSelected="true"/>
+<Field Fieldname="radio_12" Type="RadioField" Value="22"/>
+</GroupField>
+</Fields>
+</PDFMetaData>

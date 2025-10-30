@@ -1,0 +1,15 @@
+﻿<Window x:Class="WeSignSetup.LoadingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WeSignSetup"
+        mc:Ignorable="d"
+        Title="LoadingWindow" Height="367" Width="800">
+    <Grid Background="Black">
+
+        <ProgressBar Visibility="Visible" Minimum="0" Maximum="100" Name="pbStatus" IsIndeterminate="True" Margin="10,155,10,109" />
+        <Label Content="PLEASE WAIT ..." FontSize="50"  Foreground="WhiteSmoke"  HorizontalAlignment="Left" Margin="210,57,0,0" VerticalAlignment="Top" Height="93" Width="374"/>
+
+    </Grid>
+</Window>

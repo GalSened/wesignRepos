@@ -1,0 +1,138 @@
+<!-- <ngx-spinner size="medium" [type]="typeSelected"></ngx-spinner>      -->
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" 
+type = "ball-clip-rotate-pulse" [fullScreen] = "true"><p style="color: white" > {{'GLOBAL.LOADING' | translate}} </p></ngx-spinner>
+
+
+<app-otp-details *ngIf="showOtpPage" [mode]="otpMode" [signerMeans]="signerMeans"
+ (closeSpinner)="closeSpinner()" (showSpinner)="showSpinner()"></app-otp-details>
+<app-oauth-comsign-idp  *ngIf="inOauthFlow" [token]="visualIdentitytoken"
+(closeSpinner)="closeSpinner()" (showSpinner)="showSpinner()"
+>
+
+</app-oauth-comsign-idp>
+<div *ngIf="!showOtpPage && !approveDigitalSignature" class="ct-c-modal">
+  <div class="modal__overlay">
+    <div class="modal__container ct-animate-slide-down">
+
+
+      <header>
+        <div class="header__logo"></div>
+        <app-lang #lang></app-lang>
+      </header>
+      <div class="ct-break--short"></div>
+      <h3>{{collectionName}}</h3>
+
+      <div class="ct-separator">
+
+      </div>
+
+      <div class="ct-break--shorter"></div>
+      <label class="ct-checkbox ct-text-left">
+        <span>{{'GLOBAL.APPROVE_DIGITAL_SIG' | translate}}</span>
+        <input type="checkbox" (change)="isCheckBoxApproved = !isCheckBoxApproved">
+        <span class="ct-checkbox__checkmark"></span>
+      </label>
+      <div class="ct-break--short"></div>
+      <div class="ct-separator"></div>
+      <div class="ct-break--shorter"></div>
+      <span>{{'GLOBAL.CHOOSING_TO_PROCEED_APPROVE_DIGITAL_SIG' | translate}}<a
+          [routerLink]="[ '/terms']">{{'OTP.TERM_OF_USE' | translate}}</a> {{'GLOBAL.AND' | translate}} <a
+          [routerLink]="['/privacy']">{{'OTP.PRIVACY_POLICY' | translate}}</a></span>
+      <div class="ct-separator"></div>
+
+      <div class="ct-break--shorter"></div>
+
+      <div class="ct-float-right">
+        <button class="ct-button--primary" [disabled]="!isCheckBoxApproved"
+          (click)="approvedDigitalSignatureCanGoToDoc()">start</button>
+      </div>
+
+      <div class="ct-is-clear"></div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="isSenderRequestFinish">
+
+  <div class="ct-c-modal ct-is-shown">
+      <div class="modal__overlay">
+        <div class="modal__container">
+          <h3>{{'DOCUMENT.LIVE_SESSION_FINISHING' | translate}}</h3>
+  
+          <div class="ct-separator"></div>
+  
+          <div class="ct-break--short"></div>                  
+         
+      
+          <span>{{'DOCUMENT.SENDER_REQUESTED_FINISHING' | translate}}</span>
+
+          <div class="ct-break--shorter"></div>
+
+          <span> {{'DOCUMENT.CLICK_PROCEED' | translate}}</span>
+          <span> {{'DOCUMENT.CLICK_BACK' | translate}}</span>
+  
+          <div class="ct-break--medium"></div>
+          
+          <div class="ct-float-right">
+
+            <div class="ct-flex"> 
+              <button  class="ct-button--primary" (click)="continueSigning()">{{'DOCUMENT.BACK' | translate}} </button>
+              <div class="ct-break-horizontal-short"></div>
+              <button  class="ct-button--primary" (click)="letSenderFinishSigning()" >{{'DOCUMENT.PROCEED' | translate}} </button>
+            </div>
+          
+          </div>
+  
+          <div class="ct-is-clear"></div>
+  
+          <div class="ct-break--shorter"></div>
+        </div>
+      </div>
+    </div>
+
+  <div class="ct-c-alert ct-animate-fadein">
+    
+ </div>
+</ng-container>
+<app-appendices [showAppendices]="showAppendices" [appendices]="appendices" [token]="token" (onClose)="onAppendicesClose()"></app-appendices>
+<app-attachments [showAttachments]="showAttachments" [attachments]="attachments"></app-attachments>
+
+<app-notes [senderNotes]="senderNotes" [showNotes]="showNotes"></app-notes>
+
+<ng-container *ngIf="!showOtpPage && !inOauthFlow">
+  <app-loader></app-loader>
+  <app-success-page [token]='token' [collectionTitle]='collectionTitle' *ngIf="showSuccessPage"
+    [showDownloadButton]='showDownloadButton'></app-success-page>
+
+  <body class="ct-p-user-sign" *ngIf="!showSuccessPage">
+    <app-sign-pad
+     [token]="token"
+     [color]="color" 
+     [shouldDisplayMeaningOfSignature]="shouldDisplayMeaningOfSignature" 
+     [displaySignerNameInSignature]="displaySignerNameInSignature"  
+     (closeSpinner)="closeSpinner()" 
+     (showSpinner)="showSpinner()"
+     (shouldSetImageToAllSignaturesChange)="onShouldSetImageToAllSignaturesChange($event)">
+    </app-sign-pad>
+    <div *ngIf="!isHtmlMode">
+      <app-header></app-header>
+      <app-second-header 
+        (closeSpinner)="closeSpinner()" [isSenderFinish]="isSenderFinish" (showSpinner)="showSpinner()"
+        [token]="token" (changeLoaderEvent)="changeLoader($event)"
+        [shouldSetImageToAllSignatures]="shouldSetImageToAllSignatures"
+        (moveToSuccessPage)="moveToSuccessPage($event)"></app-second-header>
+      <main>
+
+        <app-view-settings [token]="token" [showNotes]="hasNotes" [showAppendixesIcon]="hasAppendices" [senderView]="false"  [currentPage]="currentPage" 
+           [showAttchments]="hasAttachments" [totalPages]="pages?.length" (changeBackgroundEvent)="changeBackgroud()"
+          (changeZoomLevelEvent)="changeZoomLevel($event)"></app-view-settings>
+        <app-documents-group [pages]="pages" [zoomLevel]="zoomLevel" [isDark]="isDarkMode" [isSender]="false" (changePageScroll) = "changePageNumber($event)">
+        </app-documents-group>
+      </main>
+    </div>
+    <div *ngIf="isHtmlMode" style="height: 100%; width: 100%;" [innerHtml]="TemplateHtml"></div>
+    <button id="openSignaturePad" class="ct-is-hidden" (click)="openSignaturePad()"> </button>
+    <button id="doneProcessButton" class="ct-is-hidden" (click)="doneProcess()"> </button>
+
+  </body>
+</ng-container>

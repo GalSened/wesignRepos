@@ -1,0 +1,87 @@
+// login
+.ct-p-login {
+    background: white;
+
+    main {
+        display: table;
+
+        @include respond-to('small') {
+            display: block;
+        }
+
+        .main__img {
+            width: 768px;
+            height: 100vh;
+            background-image: url(../../images/images/ct-login.png);
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            @include respond-to('medium') {
+                width: 350px;
+            }
+
+            @include respond-to('small') {
+                display: none;
+            }
+        }
+
+        .main__content {
+            display: table-cell;
+            vertical-align: top;
+            width: 400px;
+            height: 100vh;
+            margin: 0;
+            padding: 0 50px;
+
+            @include respond-to('medium') {
+                padding: 0 25px;
+            }
+
+            @include respond-to('small') {
+                display: block;
+                width: auto;
+                padding: 0 10px;
+                // background-image: url(../assets/images/ct-login-trans.png);
+                background-repeat: no-repeat;
+                background-position: center 0;
+                background-position-x: -300px;
+            }
+
+            .content__logo {
+                width: 150px;
+                height: 75px;
+                background-image: url(../../images/images/ws_logo.png);
+                background-repeat: no-repeat;
+                background-position: center center;
+
+                @include respond-to('small') {
+                    margin: 0 auto;
+                }
+            }
+
+            .content__form {
+                margin-top: 5%;
+
+                h2 {
+                    word-break: normal;
+                }
+
+                .form__plan {
+                    padding: 10px 10px 20px 10px;
+                    border: solid 1px $color--border;
+                    background: $color--grey-light;
+
+                    @include respond-to('small') {
+                        padding: 0 3px 7px 3px;
+                    }
+
+                    h3 {
+                        @include respond-to('small') {
+                            font-size: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

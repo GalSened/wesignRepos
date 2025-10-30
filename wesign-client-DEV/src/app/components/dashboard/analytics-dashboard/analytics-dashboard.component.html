@@ -1,0 +1,148 @@
+<!-- Analytics Dashboard Header -->
+<div class="analytics-header">
+  <div class="header-title">
+    <h1>{{ 'ANALYTICS.DASHBOARD.TITLE' | translate }}</h1>
+
+    <!-- Real-time Status Bar -->
+    <div class="status-bar">
+      <div class="data-status" [ngClass]="getDataAgeStatus()">
+        <i class="feather" [data-feather]="autoRefreshEnabled ? 'refresh-cw' : 'refresh-ccw'"></i>
+        {{ getDataAgeText() }}
+      </div>
+
+      <div class="connection-status" [ngClass]="getConnectionStatusClass()">
+        <i class="feather" [data-feather]="connectionState === 'connected' ? 'wifi' : 'wifi-off'"></i>
+        {{ getConnectionStatusText() }}
+      </div>
+
+      <div class="health-status" [ngClass]="getHealthStatusClass()">
+        <i class="feather" [data-feather]="healthStatus?.status === 'healthy' ? 'check-circle' : 'alert-circle'"></i>
+        {{ getHealthStatusText() }}
+      </div>
+    </div>
+  </div>
+
+  <div class="header-controls">
+    <!-- Time Range Filter -->
+    <div class="control-group">
+      <label>{{ 'ANALYTICS.FILTERS.TIME_RANGE' | translate }}</label>
+      <select [(ngModel)]="selectedTimeRange" (ngModelChange)="onTimeRangeChange($event)" class="form-control">
+        <option value="24h">{{ 'ANALYTICS.TIME.24H' | translate }}</option>
+        <option value="7d">{{ 'ANALYTICS.TIME.7D' | translate }}</option>
+        <option value="30d">{{ 'ANALYTICS.TIME.30D' | translate }}</option>
+        <option value="90d">{{ 'ANALYTICS.TIME.90D' | translate }}</option>
+      </select>
+    </div>
+
+    <!-- Organization Filter -->
+    <div class="control-group">
+      <label>{{ 'ANALYTICS.FILTERS.ORGANIZATION' | translate }}</label>
+      <select [(ngModel)]="selectedOrganization" (ngModelChange)="onOrganizationChange($event)" class="form-control">
+        <option value="all">{{ 'ANALYTICS.FILTERS.ALL_ORGS' | translate }}</option>
+        <!-- Add organization options dynamically -->
+      </select>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button (click)="onRefreshClick()" class="btn btn-secondary" [disabled]="isLoading">
+        <i class="feather" data-feather="refresh-cw"></i>
+        {{ 'ANALYTICS.ACTIONS.REFRESH' | translate }}
+      </button>
+
+      <button (click)="toggleAutoRefresh()" class="btn btn-outline-secondary"
+              [ngClass]="{'active': autoRefreshEnabled}">
+        <i class="feather" [data-feather]="autoRefreshEnabled ? 'pause' : 'play'"></i>
+        {{ autoRefreshEnabled ? ('ANALYTICS.ACTIONS.PAUSE' | translate) : ('ANALYTICS.ACTIONS.RESUME' | translate) }}
+      </button>
+
+      <button (click)="toggleRealtimeUpdates()" class="btn btn-outline-info"
+              [ngClass]="{'active': realtimeEnabled}">
+        <i class="feather" [data-feather]="realtimeEnabled ? 'zap' : 'zap-off'"></i>
+        Real-time
+      </button>
+
+      <button *ngIf="connectionState === 'disconnected'" (click)="forceReconnect()" class="btn btn-outline-warning">
+        <i class="feather" data-feather="wifi"></i>
+        Reconnect
+      </button>
+
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <i class="feather" data-feather="download"></i>
+          {{ 'ANALYTICS.ACTIONS.EXPORT' | translate }}
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" (click)="exportDashboard('csv')">CSV</a></li>
+          <li><a class="dropdown-item" (click)="exportDashboard('excel')">Excel</a></li>
+          <li><a class="dropdown-item" (click)="exportDashboard('pdf')">PDF</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p>{{ 'ANALYTICS.LOADING' | translate }}</p>
+</div>
+
+<!-- Dashboard Grid -->
+<div class="analytics-dashboard-grid" [class.loading]="isLoading">
+
+  <!-- Area 1: KPI Cards (Top Row) -->
+  <div class="grid-area kpi-area">
+    <sgn-kpi-cards
+      [kpiData]="kpiData"
+      [timeRange]="selectedTimeRange"
+      [connectionState]="connectionState"
+      [dataFreshness]="dataFreshness">
+    </sgn-kpi-cards>
+  </div>
+
+  <!-- Area 2: Usage Charts (Top Right) -->
+  <div class="grid-area usage-charts-area">
+    <sgn-usage-charts
+      [usageData]="usageAnalytics"
+      [timeRange]="selectedTimeRange">
+    </sgn-usage-charts>
+  </div>
+
+  <!-- Area 3: Segmentation Charts (Bottom Left) -->
+  <div class="grid-area segmentation-area">
+    <sgn-segmentation-charts
+      [segmentationData]="segmentationData"
+      [timeRange]="selectedTimeRange">
+    </sgn-segmentation-charts>
+  </div>
+
+  <!-- Area 4: Process Flow (Bottom Right) -->
+  <div class="grid-area process-flow-area">
+    <sgn-process-flow
+      [processFlowData]="processFlowData"
+      [timeRange]="selectedTimeRange">
+    </sgn-process-flow>
+  </div>
+</div>
+
+<!-- Dashboard Insights Panel (Collapsible) -->
+<div class="insights-panel" *ngIf="!isLoading">
+  <div class="panel-header" data-bs-toggle="collapse" data-bs-target="#insightsCollapse">
+    <h3>{{ 'ANALYTICS.INSIGHTS.TITLE' | translate }}</h3>
+    <i class="feather" data-feather="chevron-down"></i>
+  </div>
+
+  <div id="insightsCollapse" class="collapse">
+    <div class="panel-content">
+      <sgn-analytics-insights
+        [kpiData]="kpiData"
+        [usageData]="usageAnalytics"
+        [segmentationData]="segmentationData"
+        [processFlowData]="processFlowData">
+      </sgn-analytics-insights>
+    </div>
+  </div>
+</div>

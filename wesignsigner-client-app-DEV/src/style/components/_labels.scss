@@ -1,0 +1,26 @@
+// labels
+.ct-label {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 0 0 10px;
+  background: $color--label;
+  border: solid 1px $color--grey-light;
+  border-radius: 50px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  white-space: nowrap;
+
+  span {
+    overflow: hidden;
+    position: relative;
+    top: 1px;
+    text-overflow: ellipsis;
+  }
+
+  i-feather {
+    width: 16px;
+    height: 16px;
+    color: $color--error;
+  }
+}

@@ -1,0 +1,35 @@
+<div class="calendar ws_animate-slide-down" [class.ws_is-shown]="isShown" [class.ws_is-hidden]="!isShown">
+    <div class="calendar--navbar">
+
+        <div class="calendar-navbar__calendar-navbar-icons calendar-navbar-icons--left" [ngClass]="{'disabled' : isAfterPastLimit}" (click)="prevMonth($event)">
+        </div>
+       
+   
+        <app-custom-drop-down [additionalClass]="'select-custom--calendar'" [options]="monthNames" [LastValidOptionIndex]="presentMonth"
+            [(currentSelection)]="selectedMonth" (currentSelectionChange)="monthChanged()" [shouldDisable]="selectedYear == presentYear">
+        </app-custom-drop-down>
+ 
+
+        <app-custom-drop-down [additionalClass]="'select-custom--calendar'" [options]="yearsList"
+            [(currentSelection)]="selectedYear" (currentSelectionChange)="yearChanged()">
+        </app-custom-drop-down>
+
+        <div class="calendar-navbar__calendar-navbar-icons calendar-navbar-icons--right" [ngClass]="{'disabled' : isInTheFuture}" (click)="nextMonth($event)">
+        </div>
+
+        <div class="calendar__calendar-date">
+            <div class="calendar-date disabled" *ngFor="let d of daysLastMonth">
+                <button class="calendar-date--date-item" (click)="selectPrevMonthDate(d)">{{d}}</button>
+            </div>
+            <div class="calendar-date" *ngFor="let d of daysThisMonth" [ngClass]="{'disabled' : daysInTheFuture.includes(d)}">
+                <button class="calendar-date--date-item" 
+                    [class.active]="d === selectedDate.getDate() && currentDate.getMonth() == selectedDate.getMonth() && currentDate.getFullYear() == selectedDate.getFullYear()"
+                    
+                    (click)="selectMonthDate(d)">{{d}}</button>
+            </div>
+            <div class="calendar-date disabled" *ngFor="let d of daysNextMonth">
+                <button class="calendar-date--date-item" (Click)="selectNextMonthDate(d)">{{d}}</button>
+            </div>
+        </div>
+    </div>
+</div>

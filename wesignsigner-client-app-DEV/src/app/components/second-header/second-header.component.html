@@ -1,0 +1,52 @@
+
+
+<app-confirm-message-pop-up 
+[title]="confirmMessagePopupTitle" [message]="confirmMessagePopup" [messageBold]="confirmMessagePopupBold" [message2]="confirmMessage2Popup"
+(closePopup)="showConfirmMessagePopup = false"  *ngIf="showConfirmMessagePopup"></app-confirm-message-pop-up>
+
+<app-smart-card-alert #smartCardAlert *ngIf="showSmartCardAlert" 
+(hide)="showSmartCardAlert = false; smartCardAlertClose() " (sign)="handleSmartCardSigningType()"></app-smart-card-alert>
+<app-server-sign [errorMessage]="errorMessageToServerCredential" [showErrorMessage]="showErrorMsgInServerCredential"
+    (parentFun)="sendRequestToServer(false)">
+</app-server-sign>
+<app-iedas-signing-flow  #iedasSigningFlow  *ngIf="showiedasSigningFlow"  (hide)="showiedasSigningFlow = false;eidasAlertClose()" (sign)="handleEIDASSigningFlow()">
+
+</app-iedas-signing-flow>
+<div class="ct-c-titlebar is-user-sign">
+
+    <main>
+        <ng-container *ngIf="!isSenderLink">
+
+            <button id="menuButton" class="ct-button--titlebar-outline ct-button--small" (click)="shouldOpenMenu =! shouldOpenMenu" >
+                {{'MENU.MENU' | translate}}  
+            </button>            
+        </ng-container>
+
+
+        <span *ngIf="!isSenderLink && inProcess">{{'GLOBAL.DOC_IN_PROCESS' | translate}}</span>
+
+        
+        <span *ngIf="!isSenderLink && !inProcess"> {{'GLOBAL.DOC_DONE' | translate}}</span>
+    </main>
+
+    <nav class="ct-c-rightbar__nav">
+        <app-lang class="lang_in-navbar">
+
+        </app-lang>
+        <button *ngIf="!isSenderLink" (click)='save()' [disabled]="isBusy" class="ct-button--titlebar-outline ">
+            {{'BUTTONS.SAVE' | translate}}
+        </button>
+
+        <button *ngIf="!isSenderLink && inProcess" class="ct-button--titlebar-primary" [disabled]="isBusy" (click)="nextField()">
+            {{'BUTTONS.NEXT' | translate}}
+        </button>
+
+        <button *ngIf="isSenderLink || !inProcess"  class="ct-button--titlebar-primary" [disabled]="isBusy" (click)="onFinish()">
+            {{'BUTTONS.FINISH' | translate}}
+        </button>
+    </nav>
+
+    <app-menu *ngIf="shouldOpenMenu" (clickOutside)="onClickedOutside($event)"  [token]="token" (showErrorEvent)="writeToErrorAlert($event)"></app-menu>
+    <app-attachments [attachments]="attachments" [showAttachments]="showAttachmentsIsMain"> </app-attachments>
+</div>
+<app-alert [isError]="showErrorMessage" [isConfirm]="showSuccessMessage" [message]="alertMessage" *ngIf="showErrorMessage||showSuccessMessage" (closeAlertEvent)="closeAlert()"></app-alert>

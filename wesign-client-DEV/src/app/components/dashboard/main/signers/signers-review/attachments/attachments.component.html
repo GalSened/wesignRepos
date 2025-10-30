@@ -1,0 +1,49 @@
+<div class="ct-c-modal">
+    <div class="modal__overlay">
+        <div class="modal__container ct-animate-slide-down">
+            <span>{{'DOCUMENT.WHICH_ATTACHMENT' | translate}}</span>
+
+            <div class="ct-break--short"></div>
+
+            <div class="modal-container__wrapper" *ngFor="let attachment of signerAttachments ; let i = index">
+
+                
+
+                <input type="text" class="ct-input--primary" [(ngModel)]="attachment.name" placeholder="{{'GLOBAL.AG_ID_COPY' | translate}}"
+                    maxlength="50">
+
+                <div class="ct-float-right" *ngIf="attachment.name">
+                    <button class="ct-button--icon add-remove" (click)="removeAttachment(i)">
+                        <i-feather name="minus-circle"></i-feather>
+                    </button>
+
+                    <button class="ct-button--icon add-remove" (click)="addAttachment()">
+                        <i-feather name="plus-circle"></i-feather>
+                    </button>
+                </div>
+
+                <div class="ct-break--shorter"></div>
+
+                <label class="ct-checkbox ct-text-left" (click)="updateIsMandatory(i)">
+                    <span>{{'GLOBAL.IS_REQUIRED' | translate}} </span>
+                    <input type="checkbox" id="{{i}}" [checked]="attachment.isMandatory">
+
+                    <span class="ct-checkbox__checkmark"></span>
+                </label>
+
+                <div class="ct-is-clear"></div>
+
+            </div>
+
+            <div class="ct-break--shorter"></div>
+
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="close()">{{'BUTTONS.CANCEL' | translate}}</button>
+
+                <button class="ct-button--primary" (click)="send($event)">{{'BUTTONS.SUBMIT' | translate}}</button>
+            </div>
+
+            <div class="ct-is-clear"></div>
+        </div>
+    </div>
+</div>

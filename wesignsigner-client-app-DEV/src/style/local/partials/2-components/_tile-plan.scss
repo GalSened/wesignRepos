@@ -1,0 +1,70 @@
+/*tile-plan*/
+.ws_c-tile-plan {
+
+    display: inline-block;
+    vertical-align: bottom;
+    width: 300px;
+    height: 375px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4);
+
+    header {
+        width: 299px;
+        height: 50px;
+        border: solid 1px $color--border;
+        border-radius: 10px 10px 0 0;
+        text-transform: none;
+        background: $color--grey-lighter;
+    }
+
+    section {
+        width: 299px;
+        height: 324px;
+        padding: 0 0 25px 0;
+        border: solid 1px $color--border;
+        border-radius: 0 0 10px 10px;
+
+        h1 {
+            font-size: 35px !important;
+            color: $color--primary;
+        }
+    }
+}
+
+.ws_c-tile-plan:hover {
+    cursor: pointer;
+
+    header {
+        color: white;
+        background: $color--primary;
+    }
+}
+
+.ws_c-tile-plan.is-short {
+    height: 200px;
+
+    section {
+        height: 149px;
+    }
+}
+
+.ws_c-tile-plan.tile-plan--valuated {
+
+    background: white;
+
+    header {
+        color: white;
+        background: $color--primary;
+    }
+}
+
+.ws_c-tile-plan.is-active {
+
+    background: white;
+
+    header {
+        color: white;
+        background: $color--primary;
+    }
+}

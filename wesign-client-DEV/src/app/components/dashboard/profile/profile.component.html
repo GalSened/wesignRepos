@@ -1,0 +1,197 @@
+<div class="main__content ct-animate-fadein" *ngIf="user$ | async as user">
+    <h3>{{user.name}}</h3>
+
+    <div class="ct-flex--columnGap">
+        <div>
+
+            <span>{{user.email}}</span>
+
+            <div class="ct-break--short"></div>
+
+            <span>{{'GLOBAL.USER_TYPE' | translate}}</span>
+            <span>:</span>
+            <span> {{ userTypeJsonWithValue | translate}}</span>
+            <div class="ct-break--short"></div>
+
+            <span>{{'GLOBAL.USER_COMPANY' | translate}}</span>
+            <span>:</span>
+            <span> {{ user.companyName }}</span>
+            <div class="ct-break--short"></div>
+
+            <span>{{'GLOBAL.USER_GROUP' | translate}}</span>
+            <span>:</span>
+            <span> {{ user.groupName }}</span>
+        </div>
+
+    </div>
+    <div class="ct-break--short"></div>
+
+<sgn-edit-user-phone [user]="user" (accept)="phoneUpdated(); " (cancel)="showHideupdatePhoneModal()" *ngIf="showUpdatePhone"></sgn-edit-user-phone>
+    <div class="ct-separator"></div>
+
+    <div class="ct-break--short"></div>
+
+    <span>{{'REGISTER.FULL_NAME' | translate}}</span>
+
+    <div class="ct-break--shorter"></div>
+
+    <input type="text" class="ct-input--primary ct-input--short" required pattern=".{2,}" minlength="2" maxlength="50"
+        #name="ngModel" [class.ws_input--error]="name.invalid && submited" name="name" [(ngModel)]="user.name">
+
+    <div class="ct-break--shorter"></div>
+
+    <span>{{'REGISTER.EMAIL' | translate}}</span>
+
+    <div class="ct-break--shorter"></div>
+
+    <input class="ct-input--primary ct-input--short" type="email" email required minlength="2" maxlength="50"
+        #email="ngModel" name="email" [class.ws_input--error]="email.invalid && submited" [(ngModel)]="user.email">
+
+    <div class="ct-break--shorter"></div>
+
+
+    
+    <span>{{'REGISTER.PHONE' | translate}}</span>
+
+    <div class="ct-break--shorter"></div>
+
+    <input class="ct-input--primary ct-input--short" type="text" disabled  name="phone" 
+        [ngModel]="user.phone">
+   <button id="updatePhone" class="ct-button--primary" [disabled]="submited" (click)="showHideupdatePhoneModal()">{{'REGISTER.UPDATE_PHONE' |
+        translate }}</button>
+
+    <div class="ct-break--shorter"></div>
+
+
+    <span>{{'REGISTER.USERNAME' | translate}}</span>
+
+    <div class="ct-break--shorter"></div>
+
+    <input class="ct-input--primary ct-input--short" type="text" username minlength="6" maxlength="15"
+        #username="ngModel" name="username" [class.ws_input--error]="username.invalid && submited"
+        [(ngModel)]="user.username">
+
+    <div class="ct-break--shorter"></div>
+    <span>{{'LANGUAGE.BASE' | translate}}</span>
+
+    <div class="ct-break--shorter"></div>
+
+    <ng-select [(ngModel)]="selectedOption" class="ngselect-ct-select--short ngselect-ct-select--primary"
+        [searchable]="false" [clearable]="false">
+        <ng-option value="English">
+            <img class="ngSelect-icon-usa" width="16" height="16" />
+            {{'LANGUAGE.ENGLISH' | translate}}
+        </ng-option>
+        <ng-option value="עברית">
+            <img class="ngSelect-icon-israel" width="16" height="16" />
+            {{'LANGUAGE.HEBREW' | translate}}
+        </ng-option>
+    </ng-select>
+
+    <div class="ct-break--shorter"></div>
+
+    <div>
+        <span>{{'GLOBAL.SIGNATURE_COLOR' | translate}}</span>
+        <div class="ct-break--shorter"></div>
+        <button class="signature-color-button" (click)="onBlueSelected()" [class.selected-color]="isBlue"
+            style="background-color: #0000FF;"></button>
+        <button class="signature-color-button" (click)="onBlackSelected()" [class.selected-color]="!isBlue"
+            style="background-color: #000000;"></button>
+
+    </div>
+
+    <!-- <input [(colorPicker)]="color" [style.background]="color"/> -->
+
+    <div class="ct-break--shorter"></div>
+
+    <!-- <div style="display:flex; flex-direction:column; flex-wrap: wrap; height: 16vh; width: 30vw;"> -->
+     <div class="ct-flex-columnWrap ct-flex-smallContainer">
+        <label class="ct-checkbox ct-text-left">
+            <span id="sendNotificationSpan">{{'REGISTER.SEND_NOTIFICATION' | translate}}</span>
+            <input id="sendNotificationInput" type="checkbox"
+                [(ngModel)]="user.userConfiguration.shouldSendSignedDocument">
+
+            <span class="ct-checkbox__checkmark"></span>
+        </label>
+
+        <div class="ct-break--shorter"></div>
+
+        <label class="ct-checkbox ct-text-left">
+            <span id="receiveNotificationSpan">{{'REGISTER.RECEIVE_NOTIFICATION' | translate}}</span>
+            <input id="receiveNotificationInput" type="checkbox"
+                [(ngModel)]="user.userConfiguration.shouldNotifyWhileSignerSigned">
+
+            <span class="ct-checkbox__checkmark"></span>
+        </label>
+
+        <div class="ct-break--shorter"></div>
+
+        <label class="ct-checkbox ct-text-left">
+            <span id="receiveNotificationViewSpan">{{'REGISTER.RECEIVE_NOTIFICATION_VIEW' | translate}}</span>
+            <input id="receiveNotificationViewInput" type="checkbox"
+                [(ngModel)]="user.userConfiguration.shouldNotifyWhileSignerViewed">
+            <span class="ct-checkbox__checkmark"></span>
+        </label>
+
+        <div class="ct-break--shorter"></div>
+
+        <label *ngIf="enableDisplaySignerNameInSignature" class="ct-checkbox ct-text-left">
+            <span id="displayNameInSignatureSpan">{{'REGISTER.DISPLAY_NAME_IN_SIGNATURE' | translate}}</span>
+            <input id="displayNameInSignatureInput" type="checkbox"
+                [(ngModel)]="user.userConfiguration.shouldDisplayNameInSignature">
+            <span class="ct-checkbox__checkmark"></span>
+        </label>
+
+        <div class="ct-break--shorter"></div>
+
+
+        <label *ngIf="enableSignReminderSettings" class="ct-checkbox ct-text-left">
+            <span id="enableSignReminderSpan">{{'REGISTER.SIGN_REMINDER' | translate}}</span>
+            <input (change)="changeDayState(user)" id="enableSignReminderSpan" type="checkbox"
+                [(ngModel)]="user.userConfiguration.shouldNotifySignReminder">
+            <span class="ct-checkbox__checkmark"></span>
+            <button class=" ct-button--ProfileIcon ct-button--icon ct-tooltip--aside-menu-icons ">
+                <i-feather class="feather-small" name="info"></i-feather>
+
+                <span class="tooltiptext">
+                    {{'REGISTER.SIGN_REMIDNER_TOOLTIP' | translate}}
+                </span>
+            </button>
+           
+        </label>
+
+        <div class="ct-break--short"></div>
+
+        <div *ngIf="enableSignReminderSettings && user.userConfiguration.shouldNotifySignReminder">
+
+            <span>{{'REGISTER.REMINDER_FREQUENCY' | translate}}</span>
+            <button class=" ct-button--ProfileIcon ct-button--icon ct-tooltip--aside-menu-icons ">
+                <i-feather class="feather-small" name="info"></i-feather>
+
+                <span class="tooltiptext">
+                    {{'REGISTER.REMINDER_FREQUENCY_TOOLTIP' | translate}}
+                </span>
+            </button>
+
+            <div class="ct-break--shorter"></div>
+
+            <input class="ct-input--primary ct-input--short" type="text" placeholder="1-25" required minlength="1"
+                maxlength="2" pattern="\b(0?[1-9]|1[0-9]|2[0-5])\b"
+                [(ngModel)]="user.userConfiguration.signReminderFrequencyInDays" #reminderFrequency="ngModel"
+                name="reminderFrequency" [class.ws_input--error]="reminderFrequency.invalid && submited">
+
+        </div>
+
+    </div>
+    <ng-container *ngIf="errorsArr && errorsArr.length > 0">
+        <label class="ws_error_msg_big_font is-error" *ngFor="let err of errorsArr">
+            {{err | translate}}<br />
+        </label>
+        <div class="ct-break--short"></div>
+    </ng-container>
+
+    <button id="updateButton" class="ct-button--primary" [disabled]="submited" (click)="update(user)">{{'RESET.UPDATE' |
+        translate }}</button>
+
+
+</div>

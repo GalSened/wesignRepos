@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<PDFMetaData>
+	<PlaceholderColor>white</PlaceholderColor>
+	<Parenthesis>{}</Parenthesis>
+	<SkipValidation>true</SkipValidation>
+	<Fields>
+		<Field Type="Graphic_Signature" Fieldname="sig_1"/>
+		<Field Type="SmartCard_Signature" Fieldname="sig_2"/>
+		<Field Type="Server_Signature" Fieldname="sig_3"/>
+		<Field Type="Checkbox" Fieldname="cb_2" IsChecked="false"/>
+		<Field Type="Text" Fieldname="txt_3" Value="MyText_3" IsMandatory="true"/>
+		<Field Type="Email" Fieldname="txt_4" Value="MyText_3" IsMandatory="true"/>
+		<Field Type="Phone" Fieldname="phone_4" IsMandatory="true"/>
+		<Field Type="Time" Fieldname="time_5" IsMandatory="true"/>
+		<Field Type="Number" Fieldname="number_6" IsMandatory="true"/>
+		<Field Type="Date" Fieldname="date_7" IsMandatory="true"/>
+
+		<GroupField Type="ChoiceGroup" Fieldname="chs_14" IsMandatory="true" Description="bla bla bla">
+			<Field Type="Choice" Option="ערן" IsSelected="true"/>
+			<Field Type="Choice" Option="חדד"/>
+			<Field Type="Choice" Option="המלך"/>
+		</GroupField>
+
+		<GroupField Type="RadioGroup" GroupName="1">
+			<Field Fieldname="radio_8" Value="44" IsSelected="true" />
+			<Field Fieldname="radio_9" Value="55" />
+			<Field Fieldname="radio_10" Value="33" />
+		</GroupField>
+
+		<GroupField Type="RadioGroup" GroupName="2">
+			<Field Type="RadioField" Fieldname="radio_11" IsSelected="true" Value="11" />
+			<Field Type="RadioField" Fieldname="radio_12" Value="22"/>
+			<Field Type="RadioField" Fieldname="radio_13"  Value="33"/>
+		</GroupField>
+
+	</Fields>
+</PDFMetaData>

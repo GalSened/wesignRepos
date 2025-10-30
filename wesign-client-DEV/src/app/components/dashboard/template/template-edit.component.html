@@ -1,0 +1,29 @@
+<div class="ct-p-edit-document">
+
+    <sgn-assign-modal  [pages$]="pages$" [pagesCount]="pagesCount" [signers]="signers"></sgn-assign-modal>
+
+    <sgn-alert-component></sgn-alert-component>
+    <sgn-top-header-title [nextButtonText]="'TEMPLATE.SAVE' | translate" (nextButton)="next($event)" [title]="'TEMPLATE.EDIT_TEMPLATE' | translate">
+    </sgn-top-header-title>
+    <main>
+        <sgn-add-fileds-sidebar [showtemplateName]="true" [templateName]="templateName"
+            (templateNameChange)="updateTemplateName($event)">
+        </sgn-add-fileds-sidebar>
+
+        <div class="main__content">
+
+            <sgn-zoom [totalPages]="pagesCount" [(zmodel)]="zmodel" [currentPage]="currentPage" (changeBackgroundEvent)="changeBackgroud()">
+            </sgn-zoom>
+
+            <div class="ct-c-document" [class.bg-is-dark]="isDark" [class.bg-is-light]="!isDark">
+                <div class="doc__image"
+                    [ngStyle]="{'zoom': zmodel.ZoomLevel}"
+                    *ngFor="let page of pages$ | async ; let i = index;" editpage [ocrHtml]="templatePages[page-1]?.ocrHtml"  [pageNumber]="templatePages[page-1].pageNumber" [pageData]="templatePages[page-1]"
+                    [templateId]="templateId" [displayPageNumber]="i+1" (changePageScroll) = "changePageNumber($event)">
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+

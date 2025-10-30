@@ -1,0 +1,33 @@
+<div class="ct-c-modal" *ngIf="showAppendices">
+    <div class="modal__overlay">
+      <div class="modal__container ct-animate-slide-down">
+        <h3>{{'APPENDICES.TITLE' | translate}}</h3>
+
+        <div class="ct-separator"></div>
+
+        <span>{{'APPENDICES.REVIEW' | translate}}</span>
+
+        <div class="ct-break--short"></div>
+
+        <ul>
+            <ng-container *ngFor="let appendix of appendices">
+                <li><a (click)="downloadAppendix(appendix)" target="_blank">{{appendix}}</a></li>
+            </ng-container>
+        </ul>
+
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-is-clear"></div>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--shorter"></div>
+
+        <div class="ct-float-right">
+          <button class="ct-button--primary" (click)="close()">{{ 'BUTTONS.CLOSE' | translate }}</button>
+        </div>
+
+        <div class="ct-is-clear"></div>
+      </div>
+    </div>
+  </div>

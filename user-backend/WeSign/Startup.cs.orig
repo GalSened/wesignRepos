@@ -1,0 +1,208 @@
+﻿namespace WeSign
+{
+    using Extensions;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Middlewares;
+    using Microsoft.Extensions.Hosting;
+    using FluentValidation.AspNetCore;
+    using Microsoft.AspNetCore.Mvc;
+    using Common.Models.Settings;
+    using System;
+    using Common.Hubs;
+    using AspNetCoreRateLimit;
+    using Hangfire;
+    using Hangfire.MemoryStorage;
+    using Common.Interfaces;
+    using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.FeatureManagement;
+    using Common.Interfaces.RabbitMQ;
+    using WeSign.Providers;
+    using Microsoft.AspNetCore.ResponseCompression;
+    using System.IO.Compression;
+    using Org.BouncyCastle.Utilities;
+
+    public class Startup
+    {
+        private  GeneralSettings _generalSettings;
+        public Startup(IConfiguration configuration, IWebHostEnvironment _env)
+        {
+            Configuration = configuration;
+            env = _env;
+        }
+
+        public IConfiguration Configuration { get; }
+        public IWebHostEnvironment env { get; }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddConfiguration(Configuration);
+            _generalSettings = new GeneralSettings();
+            Configuration.GetSection("GeneralSettings").Bind(_generalSettings);
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder => builder.WithOrigins(_generalSettings.UserFronendApplicationRoute)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
+            /*to disable CORS need to install https://www.iis.net/downloads/microsoft/iis-cors-module in IIS 
+             and add  to api web config
+                <system.webServer>
+                    ..
+                    ..
+                    ..
+                    <cors enabled="true" failUnlistedOrigins="true">
+                        <add origin="*">
+                            <allowHeaders allowAllRequestedHeaders="true" />
+                        </add>
+                    </cors>
+               </system.webServer>
+             */
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FreeForAllCorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            });
+            
+            //services.AddResponseCompression(options =>
+            //{
+            //    options.EnableForHttps = true;
+                
+            //    options.Providers.Add<BrotliCompressionProvider>();
+            //    options.Providers.Add<GzipCompressionProvider>();
+            //});
+            services.Configure<BrotliCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Fastest;
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
+
+            services.AddMvc().AddFluentValidation().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddControllersWithViews(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new GuidListModelBinderProvider());
+                options.ModelBinderProviders.Insert(1, new EnumListModelBinderProvider());
+            })
+                .AddNewtonsoftJson();
+            services.AddRazorPages();
+            
+         
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = TimeSpan.FromSeconds(3);
+<<<<<<< HEAD
+                //hubOptions.MaximumReceiveMessageSize = 65536; // bytes ~ 64KB
+                //hubOptions.MaximumReceiveMessageSize = 20971520; // 20MB
+                hubOptions.MaximumReceiveMessageSize = 5242880; // 5 MB × 1,048,576 bytes = 5,242,880 bytes
+=======
+                hubOptions.MaximumReceiveMessageSize = 65536; // bytes ~ 64KB
+                //hubOptions.MaximumReceiveMessageSize = 20971520; // 20MB
+>>>>>>> DEV
+            });
+            services.AddBearerAuthentication(Configuration);
+            services.AddHttpContextAccessor();
+            services.AddHandlers(env, _generalSettings);
+            services.AddValidation();
+            if (_generalSettings.ShowSwaggerUI)
+            {
+                services.AddSwagger();
+            }
+            services.AddHangfire(config =>
+            {
+                config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseDefaultTypeSerializer()
+                .UseMemoryStorage();
+            });
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = _generalSettings.MaxUploadFileSize;
+            });
+            services.AddFeatureManagement();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
+        {
+            if (_generalSettings.ShowSwaggerUI)
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("v3/swagger.json", "WeSign V3");
+                });
+            }
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseHsts();
+            }
+           // app.UseResponseCompression();
+            app.UseIpRateLimiting();
+            app.UseRouting();
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseCors("CorsPolicy");
+            app.UseCors("FreeForAllCorsPolicy");
+
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("x-total-count", "token-expired", "x-file-name"));
+
+            app.UseErrorHandlingMiddleware();
+            app.UseInputHTMLSanititionMiddleware();
+
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+
+                // prod path will look like this https://devtest.comda.co.il/userapi/v3/smartcardsocket
+                // debug path will look like this https://localhost:44348/v3/smartcardsocket
+                endpoints.MapHub<SmartCardSigningHub>("v3/smartcardsocket");
+            });
+
+            app.UseHangfireDashboard("/jobs");
+            app.UseHangfireServer();
+
+            LoadMQConnectors(app);
+            
+        }
+
+        private void LoadMQConnectors(IApplicationBuilder app)
+        {
+            var rabbitMQSettings = new RabbitMQSettings();
+            Configuration.GetSection("RabbitMQSettings").Bind(rabbitMQSettings);
+            if (rabbitMQSettings != null && rabbitMQSettings.UseRabbitSync)
+            {
+                app.ApplicationServices.GetService<IMessageQSmartCardConnector>();
+            }
+        }
+
+
+        //private static void AddJobs(IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
+        //{
+        //    var _jobService = serviceProvider.GetService<IUserHangfire>();
+
+        //    recurringJobManager.AddOrUpdate("WakeUpManagementHangfire",
+        //                                    () => _jobService.WakeUpManagementHangfire(),
+        //                                    Cron.MinuteInterval(20));
+        //}
+    }
+}

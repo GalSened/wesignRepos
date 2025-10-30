@@ -1,0 +1,29 @@
+<div class="header__nav ws_float-right">
+    <div class="ws_tooltip" *ngIf="!tiny">
+        <button class="ws_button--header"
+            [routerLink]="['/dashboard','selfsign']">{{'GLOBAL.SELFSIGN' | translate}}</button>
+        <span class="ws_tooltip--self-sign">
+            {{'GLOBAL.ONBOARD.SELFSIGN' | translate}}
+        </span>
+    </div>
+
+    <div class="ws_tooltip" *ngIf="!tiny">
+        <button class="ws_button--header"
+            [routerLink]="['/dashboard', 'main','templates','workflowsign']">{{'GLOBAL.GROUPSIGN' | translate}}</button>
+        <span class="ws_tooltip--group-sign">
+            {{'GLOBAL.ONBOARD.GROUPSIGN' | translate}}
+        </span>
+    </div>
+
+    <div class="ws_tooltip" *ngIf="!tiny"> 
+        <button class="ws_button--header" [routerLink]="['/dashboard','main','templates','onlinesign']"
+            >{{'GLOBAL.LIVESIGN' | translate}}</button>
+        <span class="ws_tooltip--online-sign">
+            {{'GLOBAL.ONBOARD.LIVESIGN' | translate}}
+        </span>
+    </div>
+
+    <button class="ws_button--header"
+        [routerLink]="['/dashboard','tiny-send-document']" *ngIf="tiny">{{'TINY.SENDDOC' | translate}}</button>
+
+</div>

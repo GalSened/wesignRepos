@@ -1,0 +1,76 @@
+.center_data{
+    text-align: center;
+    margin: 10px;
+    
+}
+div.center_data_margin{
+   
+    max-width: 600px;
+    margin: 6vh auto 0; 
+
+}
+.imageswraper{
+    display: inline-flex;
+    div{
+        margin: 10px 10px 10px 30px;
+    }
+}
+.start_process{
+    max-width: 200px;
+    min-width: fit-content;
+}
+.decline_recognition{
+    border: solid 1px red;
+    background:  red;
+    color: white;
+    min-width: 150px;
+}
+
+.round_input{
+    border-radius:10px;
+    margin: 10px;
+}
+
+.light_blue{
+color: rgb(92, 92, 175);
+}
+
+.face_camera_image{
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 200px;
+    background-image: url(../assets/images/FaceRecognition3.png);
+}
+.id_camara_image{
+    padding-right: 50px;
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 200px;
+    background-image: url(../assets/images/IDCamara.jpg);
+}
+
+
+.recog_inputs
+{
+ 
+    contain: inline-size;
+}
+
+
+@media (max-width: 640px)
+{
+    .imageswraper{
+        display: initial !important;
+    }
+
+    .recog_inputs
+{
+    display: initial!important;
+    
+}
+
+}
+
+.bold_text{
+    font-weight: bold
+}

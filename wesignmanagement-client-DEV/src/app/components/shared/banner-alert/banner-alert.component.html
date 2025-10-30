@@ -1,0 +1,11 @@
+<div class="ws_alert alert--error-full ws_animate-fadein" id="js-alert-primary" 
+    [class.alert--error-full] = "alertType === 2"
+    [class.alert--confirm] = "alertType === 1"
+    [class.ws_is-hidden] = "!showBanner"
+    [class.ws_is-shown] = "showBanner">
+    <h4>{{bannerMessage}}</h4>
+
+    <button class="ws_button--icon ws_float-right">
+        <div class="ws_icon__remove--white"></div>
+    </button>
+</div>

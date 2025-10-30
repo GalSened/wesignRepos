@@ -1,0 +1,17 @@
+//flex
+
+.ct-flex--columnGap {
+    display: flex;
+    column-gap: 50px;
+}
+
+.ct-flex-columnWrap {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.ct-flex-smallContainer {
+    height: 16vh;
+    width: 30vw;
+}

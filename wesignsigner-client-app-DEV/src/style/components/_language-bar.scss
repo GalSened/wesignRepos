@@ -1,0 +1,34 @@
+// language bar
+.ct-c-language-bar {
+    position: absolute;
+    right: 0;
+    margin: -57px 15px 0 15px;
+
+    @include respond-to('small') {
+        margin: -65px 10px 0 10px;
+    }
+
+    select {
+        width: 100px;
+        height: 35px;
+
+        @include respond-to('small') {
+            width: 75px;
+            height: 25px;
+            font-size: 12px;
+        }
+    }
+
+    .ng-select {
+        width: 100px;
+        height: 35px;
+        ;
+    }
+}
+
+.lang_in-navbar {
+    .ct-c-language-bar {
+        position: static;
+        margin: 0 0 7px 0;
+    }
+}

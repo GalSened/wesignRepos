@@ -1,0 +1,123 @@
+// tooltips
+
+.ct-tooltip--password {
+  position: relative;
+}
+
+.ct-tooltip--password .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: -10px;
+  left: 415px;
+  padding: 5px;
+  width: 250px;
+  border: solid 1px $color--grey-dark;
+  border-radius: 3px;
+  color: $color--grey-dark;
+  background: white;
+  z-index: 1000;
+
+  @include respond-to('small') {
+    top: -63px;
+    left: 0;
+    width: 97%;
+  }
+}
+
+.ct-tooltip--password:hover .tooltiptext {
+  visibility: visible;
+}
+
+.ct-tooltip--password:active .tooltiptext {
+  visibility: visible;
+}
+
+.ct-tooltip--password:focus .tooltiptext {
+  visibility: visible;
+}
+
+//
+.ct-tooltip--home {
+  position: relative;
+  display: inline-block;
+}
+
+.ct-tooltip--home .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 80%;
+  width: 85px;
+  margin-left: -65px;
+  padding: 3px 0 5px 0;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+}
+
+.ct-tooltip--home:hover .tooltiptext {
+  visibility: hidden;
+
+  @include respond-to('medium') {
+    visibility: visible;
+  }
+}
+
+//
+.ct-tooltip--aside-menu-icons {
+  position: relative;
+  display: inline-block;
+}
+
+.ct-tooltip--aside-menu-icons .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  width: 475px;
+  margin-left: -10px;
+  padding: 3px 0 5px 0;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+
+  @include respond-to('small') {
+    width: 100px;
+  }
+}
+
+.ct-tooltip--aside-menu-icons:hover .tooltiptext {
+  visibility: visible;
+}
+
+//
+.ct-tooltip--table-icons {
+  position: relative;
+  display: inline-block;
+}
+
+.ct-tooltip--table-icons .tooltiptext {
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  width: 75px;
+  margin-left: -50px;
+  padding: 3px 0 5px 0;
+  border-radius: 6px;
+  font-weight: 400;
+  font-size: 15px;
+  color: white;
+  text-align: center;
+  background-color: $color--text;
+  z-index: 5000;
+}
+
+.ct-tooltip--table-icons:hover .tooltiptext {
+  visibility: visible;
+}

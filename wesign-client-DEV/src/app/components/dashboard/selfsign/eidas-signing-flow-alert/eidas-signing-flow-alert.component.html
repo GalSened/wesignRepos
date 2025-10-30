@@ -1,0 +1,44 @@
+<div class="ct-c-modal ct-is-shown">
+    <div class="modal__overlay">
+      <div class="modal__container">            
+        <h3>{{'EIDAS.TITLE' | translate}}</h3>
+
+        <div class="ct-separator"></div>
+
+        <div class="ct-break--short"></div>
+        <span> {{'EIDAS.YOU_ARE_TRANSFERRED' | translate}}</span> 
+
+        <div class="ct-break--short"></div>
+
+
+        <span>{{'EIDAS.IN_ORDER_TO_PERFORM' | translate}}</span>
+
+        <div class="ct-break--short"></div>
+
+        <span> {{'EIDAS.IF_YOU_DO_NOT_HAVE_THE_PASSWORD' | translate}}</span>
+
+        <div class="ct-break--medium"></div>
+
+
+        <span> {{'EIDAS.TO_CONTINUE_THE_PROCESS_CLICK' | translate}}</span>
+        <div class="ct-break--shorter"></div>
+
+        <span> {{'EIDAS.TO_CLOSE_THE_PROCESS_CLICK' | translate}}</span>
+               
+        <div class="ct-break--short"></div>
+        
+        <div class="ct-float-right">              
+            <button  class="ct-button--primary" (click)="eidasStartProcess()"> {{'DOCUMENT.PROCEED' | translate}} </button>      
+            <button  class="ct-button--outline" (click)="closePopUp()"> {{'BUTTONS.CLOSE' | translate}} </button>            
+        </div>
+
+        <div class="ct-is-clear"></div>
+
+        <div class="ct-break--shorter"></div>
+      </div>
+    </div>
+  </div>
+
+<div class="ct-c-alert ct-animate-fadein">
+  
+</div>

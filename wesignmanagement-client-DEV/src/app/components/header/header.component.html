@@ -1,0 +1,24 @@
+<header class="ws_c-header">
+    <a [routerLink]="['/dashboard/license']">
+        <div class="header__image ws_animate-slide-down" alt="wesign logo" tabindex="0"></div>
+    </a>
+
+    <div class="header__nav ws_float-right">
+        <div class="ws_c-top-dropdown ws_float-right" (click)="showHeaderMenu = !showHeaderMenu"
+                                                      (clickOutside)="showHeaderMenu = false">
+            <span>Admin - {{appState.UserEmail}}</span>
+
+            <button class="ws_button--icon top-dropdown__icon ws_float-right" >
+                <div class="ws_icon__arrow-down--white"></div>
+            </button>
+
+            <nav class="ws_text-right ws_animate-slide-down" id="js-header-top-dropdown" 
+                 [class.ws_is-hidden]="!showHeaderMenu"
+                 [class.ws_is-shown]="showHeaderMenu">
+                <ul>
+                    <li><a (click)=logout()>Sign Out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>

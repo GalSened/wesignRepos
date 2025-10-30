@@ -1,0 +1,75 @@
+<sgn-pop-up-confirm [data]="unsubsribePopupData" (submitEvent)="doDUnsubsribeEvent()"
+(cancelEvent)="unsubsribePopupData.showModal = false">
+</sgn-pop-up-confirm>
+
+<sgn-pop-up-ok [data]="okModel"  (submitEvent)="okModel.showModal = false"></sgn-pop-up-ok>
+
+
+<div class="main__content ct-animate-fadein">
+
+    
+    <h3 *ngIf="!showSubscription">{{'GLOBAL.PROGRAM_EXPIRE_IN' | translate}}: {{diffDays}} {{'GLOBAL.DAYS' | translate}}</h3>
+
+    <div class="ct-break--short"></div>
+    <div *ngIf="showRenewProgramDate">
+        <h3>{{'GLOBAL.PROGRAM_RENEW_IN' | translate}}: {{renewProgramDate | date:'MMM d, y'}}</h3>
+        <div class="ct-break--short"></div>
+    </div>
+    <h2 class="color--confirm"style="display: inline">{{'GLOBAL.DOCUMENT_LEFT' | translate}} {{remiderDocs}} </h2>
+    <h2 class="color--confirm" style="display: inline" *ngIf="documentsForMonth  != 'Unlimited' && documentsForMonth!='ללא הגבלה'">&nbsp; {{'GLOBAL.QUOTA' | translate}} {{documentsForMonth}} </h2>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingDocumentsForMonth != -1 && this.user.program.programResetType != 3">{{'GLOBAL.MONTHLY_RESET' | translate}}</h3>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingSMS != -1 && this.user.program.programResetType == 3 ">{{'GLOBAL.YEARLY_RESET' | translate}}</h3>
+    <div class="ct-break--short"></div>
+    <h2 class="color--confirm" style="display: inline">{{'GLOBAL.SMS_LEFT' | translate}} {{remiderSMS}} </h2>
+    <h2 class="color--confirm" style="display: inline" *ngIf="documentsForMonth  != 'Unlimited' && documentsForMonth!='ללא הגבלה'">&nbsp; {{'GLOBAL.QUOTA' | translate}} {{smsLimit}} </h2>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingSMS != -1 && this.user.program.programResetType != 3 ">{{'GLOBAL.MONTHLY_RESET' | translate}}</h3>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingSMS != -1 && this.user.program.programResetType == 3 ">{{'GLOBAL.YEARLY_RESET' | translate}}</h3>
+    <div class="ct-break--short"></div>
+<ng-container *ngIf="user.enableVideoConferenceFlow">
+    <h2 class="color--confirm" style="display: inline">{{'GLOBAL.VIDEO_CONFRENCE_LEFT' | translate}} {{remainingIdentifications}} </h2>
+    <h2 class="color--confirm" style="display: inline" *ngIf="documentsForMonth  != 'Unlimited' && documentsForMonth!='ללא הגבלה'">&nbsp; {{'GLOBAL.QUOTA' | translate}} {{visualIdentificationsLimit}} </h2>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingVideoConference != -1 && this.user.program.programResetType != 3 ">{{'GLOBAL.MONTHLY_RESET' | translate}}</h3>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingVideoConference != -1 && this.user.program.programResetType == 3 ">{{'GLOBAL.YEARLY_RESET' | translate}}</h3>
+    <div class="ct-break--short"></div>
+</ng-container>
+    <h2 class="color--confirm" style="display: inline">{{'GLOBAL.VISUAL_IDENTIFICATIONS_LEFT' | translate}} {{remainingIdentifications}} </h2>
+    <h2 class="color--confirm" style="display: inline" *ngIf="documentsForMonth  != 'Unlimited' && documentsForMonth!='ללא הגבלה'">&nbsp; {{'GLOBAL.QUOTA' | translate}} {{visualIdentificationsLimit}} </h2>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingVisualIdentifications != -1 && this.user.program.programResetType != 3 ">{{'GLOBAL.MONTHLY_RESET' | translate}}</h3>
+    <h3 class="color--confirm" *ngIf="this.user.program.remainingVisualIdentifications != -1 && this.user.program.programResetType == 3 ">{{'GLOBAL.YEARLY_RESET' | translate}}</h3>
+    <div class="ct-break--short"></div>
+
+    <h2 class="color--confirm" style="display: inline">{{'GLOBAL.TEMPLATES_LEFT' | translate}} {{remiderTemplates}} </h2>
+    <h2 class="color--confirm" style="display: inline" *ngIf="documentsForMonth  != 'Unlimited' && documentsForMonth!='ללא הגבלה'">&nbsp; {{'GLOBAL.QUOTA' | translate}} {{templatesLimit}} </h2>
+    <div class="ct-break--short"></div>
+    <h2 class="color--confirm" style="display: inline">{{'GLOBAL.USERS_LEFT' | translate}} {{remiderUsers}} </h2>
+    <h2 class="color--confirm" style="display: inline" *ngIf="documentsForMonth  != 'Unlimited' && documentsForMonth!='ללא הגבלה'">&nbsp; {{'GLOBAL.QUOTA' | translate}} {{usersLimit}} </h2>
+    <div class="ct-break--short"></div>
+    <div class="ct-separator"></div>
+    <div class="ct-break--short"></div>
+
+    <div class="ct-text-center" *ngIf="tiny && showUpgradePlan">
+        <h2 class="ct-is-inline"> {{'GLOBAL.PLAN_YEARLY' | translate}}</h2>
+
+        <div class="ct-c-switch"><input type="checkbox" (change)="changeSelection()">
+            <div></div>
+        </div>
+
+        <h2 class="ct-is-inline">{{'GLOBAL.PLAN_MONTHLY' | translate}}</h2>
+    </div>
+
+    <div class="ct-break--short"></div>
+
+    <form class="is-fixed" *ngIf="showSubscription">
+
+    <input type="submit" value="{{'BUTTONS.CANCEL_SUBSCRIPTION' | translate}}"  (click)="unsubsribePaymetProgram()">
+    <div class="ct-break--short"></div>
+
+
+    <input type="submit" value="{{'BUTTONS.UPDATE_PAYMENT_METHOD' | translate}}"  (click)="changePaymentRule()">
+    </form>
+    <div class="ct-text-center" *ngIf="tiny && showUpgradePlan">
+        <sgn-plan [plan]="plan" [userEmail]="user.email" [name]="user.name" [fromIsrael]="fromIsrael"
+            *ngFor="let plan of plans">
+        </sgn-plan>
+    </div>
+</div>

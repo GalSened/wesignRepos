@@ -1,0 +1,64 @@
+
+<nav id="viewSettingNav">
+    <div class="ct-float-left">
+        <div class="ct-c-pagination">
+            <button class="ct-button--icon" (click)="goToPage(currentPage-1)">
+                <i-feather name="chevron-left"></i-feather>
+            </button>
+
+            <input type="number" [(ngModel)]="currentPage" min="1" max="{{totalPages}}" (keyup)="goToPage(currentPage)">
+
+            <span> / </span><span>{{totalPages}}</span>
+
+            <button class="ct-button--icon" (click)="goToPage(currentPage+1)">
+                <i-feather name="chevron-right"></i-feather>
+            </button>
+            <ng-container *ngIf="isOnlineMode">    
+                <span class="dot ct-tooltip--table-icons" [ngClass]="greenPing ? 'dot--green' : 'dot--red'" >
+                    <span class="tooltiptext" *ngIf="!greenPing">{{'GLOBAL.WAITING_FOR_CONNECTION' | translate}}</span>
+                    <span class="tooltiptext" *ngIf="greenPing">{{'GLOBAL.CONNECTED' | translate}}</span>       
+                </span>
+                <ng-container *ngIf="!greenPing">    
+                    <div class="ct-c-loader-simple">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+
+                </ng-container>
+               
+            </ng-container>
+        </div>
+    </div>
+    
+    <ng-container *ngIf="isDesktopDevice">
+        <button class="ct-button--icon" (click)="changeBackground()">
+            <i-feather *ngIf="this.isDark" name="maximize-2"></i-feather>
+            <i-feather *ngIf="!this.isDark" name="minimize-2"></i-feather>
+        </button>
+    </ng-container>
+
+    <div class="ct-float-right">
+        
+        <button class="ct-button--icon" *ngIf="showAttchments" (click)="addAttchments()">
+            <i-feather name="paperclip"></i-feather>
+        </button>
+
+        <button class="ct-button--icon"  *ngIf="showAppendixesIcon" (click)="showAppendixes()">
+            <i-feather name="bookmark"></i-feather>
+        </button>
+
+        
+        <button class="ct-button--icon" *ngIf="showNotes" (click)="readNotes()">
+            <i-feather name="info"></i-feather>
+        </button>
+
+        <button class="ct-button--icon" (click)="zoomIn()">
+            <i-feather name="zoom-in"></i-feather>
+        </button>
+
+        <button class="ct-button--icon" (click)="zoomOut()">
+            <i-feather name="zoom-out"></i-feather>
+        </button>
+    </div>
+</nav>

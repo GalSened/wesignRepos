@@ -1,0 +1,170 @@
+<sgn-alert-component></sgn-alert-component>
+<sgn-upload-template *ngIf="showUploadTemplate" (hide)="showUploadTemplate=!showUploadTemplate"
+    [templateMode]="true"></sgn-upload-template>
+<sgn-pop-up-confirm [data]="deleteAllPopupData" (submitEvent)="doDeleteAllTempatesEvent()"
+    (cancelEvent)="deleteAllPopupData.showModal = false"></sgn-pop-up-confirm>
+<ng-container *ngIf="state$ | async as state">
+
+    <body class="ct-p-profile">
+
+        <!-- direct url -->
+        <sgn-single-link *ngIf="showSingleLink" (done)="this.showSingleLink = false"
+            [selectedSingleLink]="selectedSingleLink" [templateId]="selectedtemplateId" [currSigner]="currSigner"
+            #singleLinkComponent></sgn-single-link>
+
+        <div class="ct-c-titlebar">
+            <main>
+                <div></div>
+
+                <h1>{{'GLOBAL.TEMPLATES' | translate}}</h1>
+            </main>
+
+            <nav>
+                <button (click)='router.navigate(["dashboard"]);' class="ct-button--titlebar-outline">
+                    {{'FORGET.BACK' | translate}}
+                </button>
+
+                <button class="ct-button--titlebar-primary" (click)='onSignTemplates()'
+                    [disabled]="state.SelectedTemplates.length == 0">
+                    {{'BUTTONS.SIGN' | translate}}
+                </button>
+            </nav>
+        </div>
+
+        <main>
+
+            <aside>
+                <menu>
+                    <ul style="  display: grid; align-items: center;justify-content: center; ">
+                        <a style="display: block;">
+                            <li style="font-size: large;" *ngIf="showAddTemplate" (click)="showUploadTemplate=true">{{
+                                "TEMPLATE.NEW" | translate}}
+                            </li>
+                        </a>
+                    </ul>
+                </menu>
+            </aside>
+
+            <div class="main__content ct-animate-fadein" style="width: 100%">
+                <div class="ct-c-filter">
+
+                    <input type="search" [(ngModel)]="templateFilter.Search" debounce [delay]="500" maxlength="50"
+                        (func)="pageChanged(1)" class="ct-input--primary" [class.loading]="showSearchSpinner"
+                        placeholder="{{'GLOBAL.SEARCH_TEMPLATES' | translate}}">
+
+                </div>
+                <div class="ct-c-filter">
+                    <button class="ct-button--icon ct-tooltip--table-icons" *ngIf="state.SelectedTemplates.length  > 1"
+                        (click)="deleteBatchTemplates($event, state)">
+                        <i-feather name="trash-2"></i-feather>
+                        <span class="tooltiptext">{{'GLOBAL.DELETE_ALL_SELECTED' | translate}}</span>
+                    </button>
+
+                    <div class="ct-c-filter-rowAmount ct-c-filter-rowAmountTemplate">
+                        <p>{{'GLOBAL.ROWS_PER_PAGE' | translate }}:</p>
+                        <select class="ct-c-rowAmountSelector" #select (change)="onDropDownSelect(select.value)">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="content__table">
+                    <table cellpadding="0" cellspacing="0" style="padding: 1px;" class="ct-text-left">
+                        <tr>
+                            <th class="sticky_header" width="70">
+                                <label class="ct-checkbox ct-text-left ct-tooltip--table-icons">
+                                    <span>&nbsp;</span>
+                                    <input type="checkbox" value="1" [checked]="allSelected"
+                                        (change)="selectedALL($event, state)">
+                                    <span class="ct-checkbox__checkmark"></span>
+                                    <span class="tooltiptext" *ngIf="!allSelected">{{'BUTTONS.SELECT_ALL' |
+                                        translate}}</span>
+                                    <span class="tooltiptext" *ngIf="allSelected">{{'BUTTONS.UNSELECT_ALL' |
+                                        translate}}</span>
+                                </label>
+                            </th>
+
+                            <th class="sticky_header"><a (click)="orderByFunction('name')">{{ "DATA.TITLE" |
+                                    translate}}</a></th>
+                            <th class="sticky_header"><a (click)="orderByFunction('userName')">{{'DATA.CREATED_BY' |
+                                    translate}}</a></th>
+                            <th class="sticky_header"><a (click)="orderByFunction('timeCreated')">{{'DATA.CREATED' |
+                                    translate}}</a></th>
+                            <th width="200" class="sticky_header">
+
+                                <div paginator class="ct-c-pagination" *ngIf="pageCalc" [currentPage]="currentPage"
+                                    [last]="pageCalc.endPage" (changed)="pageChanged($event)"></div>
+                            </th>
+                        </tr>
+
+                        <ng-container *ngIf="templateInfos">
+                            <tr
+                                *ngFor="let templateInfo of templateInfos.templates| orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i">
+                                <td align="center">
+
+                                    <label class="ct-checkbox ct-text-left">
+                                        <span>&nbsp;</span>
+
+                                        <input id="{{templateInfo.templateId}}" type="checkbox" value="1"
+                                            [checked]="isSelected(state, templateInfo)" name="checkboxOverlay[]"
+                                            (change)="selected($event, templateInfo)">
+
+                                        <span class="ct-checkbox__checkmark"></span>
+                                    </label>
+
+                                </td>
+                                <td>
+                                    {{templateInfo.name}}
+                                </td>
+
+                                <td>{{templateInfo.userName}}
+                                </td>
+                                <td>{{getLocalTime(templateInfo.timeCreated) | date:'MMM d, y, HH:mm'}}
+                                </td>
+                                <td class="ct-text-right-no-direction">
+                                    <div #btnNav *ngIf="!showCheckboxes">
+
+                                        <button class="ct-button--icon ct-tooltip--table-icons"
+                                            [routerLink]="['/dashboard','template','edit',templateInfo.templateId]">
+                                            <i-feather name="edit-2"></i-feather>
+                                            <span class="tooltiptext">{{'DATA.EDIT' | translate}}</span>
+                                        </button>
+
+                                        <button class="ct-button--icon ct-tooltip--table-icons"
+                                            (click)="duplicate(templateInfo.templateId)">
+                                            <i-feather name="copy"></i-feather>
+                                            <span class="tooltiptext">{{'DATA.DUPLICATE' | translate}}</span>
+                                        </button>
+
+                                        <button class="ct-button--icon ct-tooltip--table-icons"
+                                            (click)="url($event, templateInfo.templateId,templateInfo.singleLinkUrl)">
+                                            <i-feather name="link"></i-feather>
+                                            <span class="tooltiptext">URL</span>
+
+                                        </button>
+
+                                        <button class="ct-button--icon ct-tooltip--table-icons"
+                                            (click)="download(templateInfo.templateId)">
+                                            <i-feather name="download-cloud"></i-feather>
+                                            <span class="tooltiptext">{{'DATA.DOWNLOAD_TEMPLATE' | translate}}</span>
+                                        </button>
+
+                                        <button class="ct-button--icon ct-tooltip--table-icons"
+                                            (click)="deleteTemplate(templateInfo)">
+                                            <i-feather name="trash-2"></i-feather>
+                                            <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+    </body>
+</ng-container>

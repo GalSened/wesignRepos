@@ -1,0 +1,7 @@
+<div class="ct-c-field is-radio ct-animate-fadein" style="position: absolute;" [style.width.px]="width"
+[class.is-signed]="disabled" [style.height.px]="height" [style.top.px]="top" [style.left.px]="left">
+    <div class="marker" *ngIf="radio.mandatory && !disabled" ></div>
+        <input type="radio"  [ngStyle]="{width: '100%', height: '100%', margin:'0px !important'}" 
+        [(ngModel)]="selected" name="{{groupname}}" [attr.name]="groupname" id="{{groupname}}_{{radio.value}}" 
+        value="{{radio.value}}" [disabled]="disabled" [attr.data-groupname]="groupname"/>
+</div>

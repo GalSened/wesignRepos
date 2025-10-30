@@ -1,0 +1,90 @@
+<div class="ws_body__wrapper">
+
+
+    <div class="ws_wrapper--1024px ws_margin-auto">
+
+        <form method="post">
+            <div class="ws_break--short"></div> 
+
+            <h1>Manage Users</h1>
+
+            <div class="ws_break--short"></div>
+            <span>User Type*</span>
+            <div class="ws_break--shorter"></div>
+            <app-custom-drop-down [options]="CollectionToUserTypeOptions()" [currentSelection]="selectedUserType"
+                (currentSelectionChange)="dropDownUpdateUserType($event)">
+            </app-custom-drop-down>
+            <div class="ws_break--shorter"></div>
+
+            <div class="ws_break--short"></div>
+            <span>User Email*</span>
+            <input type="email" required minlength="2" maxlength="50" #email="ngModel" name="email"
+                [(ngModel)]="userEmail" [class.ws_input--error]="email.invalid && submited">
+            <div class="ws_break--shorter"></div>
+
+            <div *ngIf="isSystemAdmin && mode==1">
+                <div class="ws_break--short"></div>
+                <span>Password*</span>
+                <input type="password" required minlength="2" maxlength="50" #password="ngModel" name="password"
+                    [(ngModel)]="sysPassword" [class.ws_input--error]="password.invalid && submited">
+                <div class="ws_break--shorter"></div>
+            </div>
+            
+            <div class="ws_break--short"></div>
+            <span>Username</span>
+            <input type="text" minlength="6" name="userUsername"
+            [(ngModel)]="userUsername">
+            <div class="ws_break--shorter"></div>
+            <!-- #userUsername="ngModel" -->
+
+            <div *ngIf="!isSystemAdmin">
+                <div class="ws_break--short"></div>
+                <span>User Nickname*</span>
+                <input type="text" required minlength="2" maxlength="50" #name="ngModel" name="name"
+                    [(ngModel)]="userName" [class.ws_input--error]="email.invalid && submited">
+   
+                    <div class="ws_break--short"></div>
+
+                <div *ngIf="mode==1">                
+                    <span>Company Name*</span>
+                    <div class="ws_break--shorter"></div>
+                    <app-custom-drop-down [options]="CollectionToOptions()" [currentSelection]="selectedCompant" [enableSearch]="true"
+                        (currentSelectionChange)="dropDownUpdateCompany($event, 'company', 'groups')">
+                    </app-custom-drop-down>
+                    
+                    <div class="ws_break--shorter"></div>
+                    <div class="ws_break--short"></div>
+                    <span>Group Name*</span>
+                
+                    <div class="ws_break--shorter"></div>
+                    <app-custom-drop-down [options]="CollectionToGroupsOptions()" [currentSelection]="selectedGroup"  [enableSearch]="true"
+                        (currentSelectionChange)="dropDownUpdateGroup($event)">
+                    </app-custom-drop-down>
+                
+                    <div class="ws_break--short"></div>
+                </div>
+            </div>
+
+            <div class="ws_break--short"></div>
+            <div class="ws_text-center">
+                <span class="ws_alert alert--error"
+                    *ngIf="passMinLengthMsg">{{passMinLengthMsg}}</span>
+                <span class="ws_alert alert--error" *ngIf="isError">{{errorMessage}}</span>
+
+                <div class="ws_break--short"></div>
+            </div>
+
+            <div class="ws_text-center">
+                <button type="button" class="ws_button--small ws_button--cancel" (click)="cancel()"
+                    [disabled]="isBusy">CANCEL</button>
+
+                <button type="submit" class="ws_button--small" (click)="submit()" [disabled]="isBusy">{{submitText}}</button>
+                <div id="ws_button--preloader" *ngIf="isBusy">
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                    <span class="button-preloader__dot"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

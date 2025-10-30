@@ -1,0 +1,102 @@
+<div class="main__content ct-animate-fadein">
+
+    <sgn-manage-gourp *ngIf="showManageGroup" [groups]="groups" (cancel)="showManageGroup = !showManageGroup; updateData(true)">
+    </sgn-manage-gourp>
+
+    <sgn-add-user *ngIf="showAddUser" [errorMsg]="errorMsg" [currentUser]="currentUser"
+        (cancel)="cancel()" [isUpdateMode]="isUpdateMode" [user]="newUser" [groups]="groups" [groupsNames]="groupsNames"
+        (accept)="createUser(newUser)" (update)="updateUser($event)">
+    </sgn-add-user>
+
+     
+    <nav>
+        <button class="ct-button--primary ct-button--short ct-button--small" (click)="toggleNewUser()">{{'MANAGEMENT.ADD_NEW_USER' | translate}} </button>
+        <span>&nbsp;</span>
+        <button class="ct-button--primary ct-button--short ct-button--small" (click)="toggleManageGroup()">{{'MANAGEMENT.MANAGE_GROUPS' | translate}}</button>
+        <div class="ct-break--short"></div>        
+    </nav>
+    
+    <div class="ct-c-filter">
+        <input type="search" #searchInput class="ct-input--primary" placeholder="{{'GLOBAL.SEARCH' | translate}}" [(ngModel)]="userFilter.key" [class.loading]="showSearchSpinner">
+    </div>
+        
+    <div class="content__table">
+
+
+        <table cellpadding="0" cellspacing="0" style="padding: 1px; width: 100%;"  class="ct-text-left">
+            
+                <tr >
+                    <th class="sticky_header"  width="50"></th>
+                    <th  class="sticky_header" ><a (click)="orderByFunction('name')">{{'REGISTER.FULL_NAME' | translate}}</a></th>
+                    <th class="sticky_header" ><a (click)="orderByFunction('email')">{{'REGISTER.EMAIL' | translate}}</a></th>
+                    <!-- <th><a (click)="orderByFunction('phone')">{{'REGISTER.PHONE_NUMBER' | translate}}</a></th> -->
+                    <th class="sticky_header" > <a (click)="orderByFunction('type')">{{'GLOBAL.TYPE' | translate}}</a> </th>
+                    <th class="sticky_header" ><a (click)="orderByFunction('groupId')">{{'GLOBAL.GROUP_NAME' | translate}}</a> </th>                
+                                     
+                    <th class="sticky_header" width="125">
+                        <!--pagination-->
+                        <div >
+                            <div class="ct-c-pagination" paginator  *ngIf="pageCalc" [last]="pageCalc.endPage"
+                                (changed)="pageChanged($event)"></div>
+                        </div>
+                    </th>
+                </tr>
+
+                <ng-container *ngIf="users$ | async as users">
+                    <ng-container
+                        *ngFor="let user of users | orderBy:orderByField:orderByDesc; trackBy: trackByFn; index as i ">
+                        <tr  (click)="onRowClick(user)">
+
+                            <td align="center">
+                                <button class="ct-button--icon">                                 
+                                    <i-feather name="user"></i-feather>
+                              </button>
+                            </td>
+                            <td>{{user.name}} </td>                             
+                            <td>{{user.email}} </td>                             
+                            <!-- <td>{{user.phone}} </td>                 -->
+                            <td>{{userType[user.type]}} </td>
+                            <td>{{getGroupName(user.groupId)}} </td>                             
+
+                            <td class="ct-text-right-no-direction">
+                                <button class="ct-button--icon ct-tooltip--table-icons" (click)="editUser(user)">                                  
+                                  <i-feather name="edit-2"></i-feather>
+                                  <span class="tooltiptext">{{'DATA.EDIT' | translate}}</span>
+                                </button>
+                  
+                                <button class="ct-button--icon ct-tooltip--table-icons" *ngIf="currentUser.id != user.id"
+                                (click)="deleteUserModal(user)">                                   
+                                  <i-feather name="trash-2"></i-feather>                                  
+                                  <span class="tooltiptext">{{'GLOBAL.DELETE' | translate}}</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsed" *ngIf="activeUserId === user.id">
+                            <td colspan="6">
+                              
+                                <table cellpadding="0" cellspacing="0" class="collapsed ct-text-left">
+                                    <tbody>
+                                        <tr>
+                                            <th >{{'MANAGEMENT.ADDITIONAL_GROUP' | translate}}   </th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            {{groupsToView}}
+                                         </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </td>
+                           
+                        </tr>
+                    </ng-container>
+                </ng-container>
+            
+        </table>
+
+    </div>
+
+
+
+</div>

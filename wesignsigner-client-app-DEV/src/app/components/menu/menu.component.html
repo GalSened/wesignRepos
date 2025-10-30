@@ -1,0 +1,45 @@
+<app-decline [token]="token"></app-decline>
+<app-attachments [attachments]="attachments" [showAttachments]="showAttachments"> </app-attachments>
+<app-appendices [showAppendices]="showAppendices" [appendices]="appendices" [token]="token" ></app-appendices>
+<app-notes [senderNotes]="notes" [showNotes]="showNotes"></app-notes>
+
+<div class="titlebar__options-dropdown ct-is-shown ct-animate-slide-left">
+  <ul class="ct-text-left">
+    <li id="decline-doc" (click)="decline()">
+      <i-feather name="x-circle"></i-feather>
+      <a class="color--error">{{'MENU.DECLINE_DOCUMENT' | translate}}</a>
+    </li>
+    <!-- <li>
+      <div class="ct-separator"></div>
+    </li> -->
+
+    <li *ngIf="notes" >
+      <i-feather name="info"></i-feather> 
+
+      <a  (click)="readNotes()">{{'MENU.READ_NOTES' | translate}}</a>
+    </li>
+    <li *ngIf="appendices && appendices.length > 0" >
+      <i-feather name="bookmark"></i-feather>  
+      <a  (click)="viewAppendices()">{{'MENU.VIEW_APPENDICES' | translate}}
+
+      </a>
+    </li>
+    <li *ngIf="attachments && attachments.length > 0">
+      <i-feather name="paperclip"></i-feather>
+      <a  (click)="addAttachments()">   {{'MENU.ADD_ATTACHMENTS' | translate}}</a>
+    </li>
+    <div class="ct-separator"></div>
+
+    <li>
+      {{'MENU.WISH_SEND_DOCUMENTS' | translate}}
+      <div class="ct-break--shorter"></div>
+      <button  (click)="moveToRegister()" class="ct-button--primary ct-button--outline ct-button--small ">
+      {{'MENU.REGISTER' | translate}}
+          </button>
+      
+    </li>
+  </ul>
+  <!-- <div class="ct-separator"></div> -->
+  <!-- <a [routerLink]="[ '/terms']">{{'OTP.TERM_OF_USE' | translate}}</a> | <a [routerLink]="['/privacy']">{{'OTP.PRIVACY_POLICY' | translate}}</a><ng-container *ngIf="showAAA"> | <a (click)="openAAAUrl()">{{'GLOBAL.AAA' | translate}}</a></ng-container> -->
+</div>
+

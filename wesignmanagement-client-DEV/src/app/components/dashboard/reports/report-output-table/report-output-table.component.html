@@ -1,0 +1,187 @@
+<!--info-->
+<div class="ws_c-table-info" >
+    <span>&nbsp;</span>
+    <div class="ws_c-table-date-range" *ngIf="!isEmptyTable && (reportMode == ReportMode.UsageByUsers || reportMode == ReportMode.UsageByCompanies || reportMode==ReportMode.TemplatesByUsage) && reportRequest">
+    <span>
+        {{reportRequest.from | date:'dd.MM.yy'}} - {{reportRequest.to | date:'dd.MM.yy'}}
+    </span>
+</div>
+</div>
+
+<!--table-->
+<table cellpadding="0" cellspacing="0" class="ws_animate-slide-down">
+    <tr #tableTr class="header">
+        <th *ngFor="let header of headerTexts; let i = index" #tableHeader> {{header}}
+            <button class="ws_button--icon ws_align-vert--middle" (click)="sortTable(header)">
+                <div class="ws_icon__sort"></div>
+            </button>
+        </th>
+
+
+        <th width="150">
+            <!--pagination-->
+            <div class="ws_pagination ws_float-right">
+                <div paginator class="ws_float-right" *ngIf="pageCalc" [currentPage]="pageCalc.currentPage" [last]="pageCalc.endPage"
+                    (changed)="pageChanged($event)"></div>
+            </div>
+        </th>
+    </tr>
+
+
+    <ng-container
+        *ngIf="(reportMode==ReportMode.ExpirationUtilization || reportMode==ReportMode.ProgramUtilization || reportMode==ReportMode.UsePercentageUtilization || reportMode==ReportMode.AllCompaniesUtilization) && utilizationReports">
+        <ng-container *ngFor="let report of utilizationReports; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.companyName}}</span></td>
+                <td><span #cellSpan>{{report.programStartDate | date:'MMM d, y, HH:mm'}}</span></td>
+                <td><span #cellSpan>{{report.expireDate | date:'MMM d, y, HH:mm'}}</span></td>
+                <td><span #cellSpan>{{report.documentsUsage}}</span></td>
+                <td><span #cellSpan>{{report.smsUsage}}</span></td>
+                <td><span #cellSpan>{{report.periodicDocumentUsage}}</span></td>
+                <td><span #cellSpan>{{report.periodicSMSUsage}}</span></td>
+                <!-- <td>
+                    <span *ngIf="report.lastMonthDocumentUsagePercentage!=-1"
+                        #cellSpan>{{report.lastMonthDocumentUsagePercentage}}%</span>
+                    <span *ngIf="report.lastMonthDocumentUsagePercentage==-1" #cellSpan>Unlimited</span>
+                </td> -->
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="reportMode==ReportMode.GroupUtilization && groupUtilizationReports">
+        <ng-container *ngFor="let report of groupUtilizationReports; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.groupName}}</span></td>
+                <td><span #cellSpan>{{report.periodicDocumentUsage}}</span></td>
+                <td><span #cellSpan>{{report.periodicSMSUsage}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container
+        *ngIf="(reportMode==ReportMode.ProgramByUtilization || reportMode==ReportMode.ProgramsByUsage) && programReports">
+        <ng-container *ngFor="let programReport of programReports; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{programReport.name}}</span></td>
+                <td><span #cellSpan>{{programReport.users}}</span></td>
+                <td><span #cellSpan>{{programReport.templates}}</span></td>
+                <td><span #cellSpan>{{programReport.documentsPerMonth}}</span></td>
+                <td><span #cellSpan>{{programReport.smsPerMonth}}</span></td>
+                <td><span #cellSpan>{{programReport.serverSignature}}</span></td>
+                <td><span #cellSpan>{{programReport.smartCard}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container
+        *ngIf="reportMode==ReportMode.GroupDocumentStatuses && groupDocStatusesReport">
+        <ng-container *ngFor="let report of groupDocStatusesReport; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.groupName}}</span></td>
+                <td><span #cellSpan>{{report.createdDocs}}</span></td>
+                <td><span #cellSpan>{{report.sentDocs}}</span></td>
+                <td><span #cellSpan>{{report.viewedDocs}}</span></td>
+                <td><span #cellSpan>{{report.signedDocs}}</span></td>
+                <td><span #cellSpan>{{report.declinedDocs}}</span></td>
+                <td><span #cellSpan>{{report.deletedDocs}}</span></td>
+                <td><span #cellSpan>{{report.canceledDocs}}</span></td>
+                <td><span #cellSpan>{{report.serverSignedDocs}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container
+        *ngIf="(reportMode==ReportMode.DocsByUsers || reportMode==ReportMode.DocsBySigners) && docsByUsers">
+        <ng-container *ngFor="let report of docsByUsers; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.contactName}}</span></td>
+                <td><span #cellSpan>{{report.documentAmount}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(reportMode==ReportMode.CompanyUsers) && companyUsers">
+        <ng-container *ngFor="let report of companyUsers; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.userName}}</span></td>
+                <td><span #cellSpan>{{report.email}}</span></td>
+                <td><span #cellSpan>{{report.documentAmounts}}</span></td>
+                <td><span #cellSpan>{{report.groupName}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(reportMode==ReportMode.FreeTrialUsers) && freeTrialUsers">
+        <ng-container *ngFor="let report of freeTrialUsers; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.name}}</span></td>
+                <td><span #cellSpan>{{report.email}}</span></td>
+                <td><span #cellSpan>{{report.userName || "N/A"}}</span></td>
+                <td><span #cellSpan>{{report.documentsUsage}}</span></td>
+                <td><span #cellSpan>{{report.smsUsage}}</span></td>
+                <td><span #cellSpan>{{report.templatesUsage}}</span></td>
+                <td><span #cellSpan>{{report.creationDate | date:'mediumDate'}}</span></td>
+                <td><span #cellSpan>{{report.expirationDate | date:'mediumDate'}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(reportMode==ReportMode.UsageByUsers) && usageByUsers">
+        <ng-container *ngFor="let report of usageByUsers; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.companyName}}</span></td>
+                <td><span #cellSpan>{{report.groupName}}</span></td>
+                <td><span #cellSpan>{{report.email}}</span></td>
+                <td><span #cellSpan>{{report.sentDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.signedDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.declinedDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.canceledDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.deletedDocumentsCount}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(reportMode==ReportMode.UsageByCompanies) && usageByCompanies">
+        <ng-container *ngFor="let report of usageByCompanies; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.companyName}}</span></td>
+                <td><span #cellSpan>{{report.groupName}}</span></td>
+                <td><span #cellSpan>{{report.sentDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.signedDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.declinedDocumentsCount}}</span></td>
+                <td><span #cellSpan>{{report.canceledDocumentsCount}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(reportMode==ReportMode.TemplatesByUsage) && templatesByUsage">
+        <ng-container *ngFor="let report of templatesByUsage; index as i">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{report.templateName}}</span></td>
+                <td><span #cellSpan>{{report.companyName}}</span></td>
+                <td><span #cellSpan>{{report.groupName ?? '-'}}</span></td>
+                <td><span #cellSpan>{{report.usageCount}}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+        </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="(reportMode==ReportMode.UsageBySignatureType) && usageBySignatureTypes">
+            <tr class="ws_tr__menu">
+                <td><span #cellSpan>{{usageBySignatureTypes.companyName}}</span></td>
+                <td><span #cellSpan>{{ usageBySignatureTypes.graphicFieldsCount !== -1 ? usageBySignatureTypes.graphicFieldsCount : '-' }}</span></td>
+                <td><span #cellSpan>{{ usageBySignatureTypes.smartCardFieldsCount !== -1 ? usageBySignatureTypes.smartCardFieldsCount : '-' }}</span></td>
+                <td><span #cellSpan>{{ usageBySignatureTypes.serverFieldsCount !== -1 ? usageBySignatureTypes.serverFieldsCount : '-' }}</span></td>
+                <td><span #cellSpan></span></td>
+            </tr>
+    </ng-container>
+</table>
+<app-banner-alert #bannerAlert></app-banner-alert>

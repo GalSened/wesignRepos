@@ -1,0 +1,24 @@
+
+<div style="position: absolute;" [style.width.px]="width"
+    [style.height.px]="height" [style.top.px]="top" [style.left.px]="left"
+    [class.is-signed]="disabled"     
+    
+    [class.is-error]="!isValid && appState && appState.isSubmitted && !disabled"
+    class="ct-c-field ct-animate-fadein" *ngIf="!textfield.isHidden" >
+    <div class="marker" *ngIf="textfield.mandatory && !disabled" ></div>
+    
+    <div class="field__icon" *ngIf="!disabled">
+        <i-feather name="{{iFeatherName}}"></i-feather>
+    </div>
+
+    <input *ngIf="!isMultilineText" [type]="fieldType" style="text-align: center;" id="{{textfield.name}}" class="ct-input--primary" name="{{textfield.name}}" (focus)="focusField($event)"
+        [(ngModel)]="textfield.value" (paste)="onPaste($event)" (keypress)="onKeyPress($event)" (change)="isValidInput()" [attr.required]="textfield.mandatory ? '' : null"
+        [attr.required]="textfield.mandatory ? '' : null" [attr.data-description]="textfield.description" [pattern]="pattern" [placeholder]="placeHolder"
+        [disabled]="disabled" #currentInput />
+
+    <textarea *ngIf="isMultilineText" wrap="hard" [type]="fieldType" id="{{textfield.name}}" class="ct-input--primary multiline" name="{{textfield.name}}" (focus)="focusField($event)"
+    
+    [(ngModel)]="textfield.value" (paste)="onPaste($event)" (keypress)="onKeyPress($event)" (change)="isValidInput()" [attr.required]="textfield.mandatory ? '' : null"
+    [attr.required]="textfield.mandatory ? '' : null" [attr.data-description]="textfield.description" [attr.pattern]="pattern ? pattern : null" [placeholder]="placeHolder"
+    [disabled]="disabled" #currentInput></textarea>
+</div>

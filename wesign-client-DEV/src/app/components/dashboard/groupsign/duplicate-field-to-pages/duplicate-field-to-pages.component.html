@@ -1,0 +1,46 @@
+<div class="ct-c-modal" [ngClass]="isShown ? 'ct-is-shown' : 'ct-is-hidden' " >
+    <div class="modal__overlay">
+        <div class="modal__container">
+            <h3>{{ "FIELDS.DUPLICATE_FIELD" | translate}}</h3>
+            <div class="ct-separator"></div>
+            <div class="ct-break--short"></div>
+            <div>
+            <label class="ct-radio ct-text-left">
+                <span>{{'FIELDS.ALL_PAGES' | translate}}</span>
+
+                <input type="radio" id="AllFileds" name="fieldsDup"   [(ngModel)]="allSelected" [value]="true" checked>
+
+                <span id="span3" class="ct-radio__checkmark"></span>
+            </label>
+        </div>
+        <div class="ct-break--short"></div>
+        <div> 
+            <label class="ct-radio ct-text-left">
+                <span>{{'FIELDS.PAGES' | translate}} : </span>
+
+                <input type="radio" id="selectedFields" name="fieldsDup"  [(ngModel)]="allSelected" [value]="false">
+
+                <span id="span3" class="ct-radio__checkmark"></span>
+               
+            </label>
+            <input type="text" [(ngModel)]="selectedPages" placeholder="{{'FIELDS.DUPLICATE_FIELDS_PLACEHOLDER' | translate}}" maxlength="60" [readonly]="allSelected" >
+        </div>
+
+            <div class="ct-break--medium"></div>
+            <ng-container *ngIf="errorMsg">
+                <div class="ct-text-center">
+                    <label class="is-error">{{errorMsg}}</label>
+                </div>
+            </ng-container>
+            <div class="ct-break--medium"></div>
+            <div class="ct-float-right">
+                <button class="ct-button--outline" (click)="cancel()">{{ "REGISTER.CANCEL" | translate}}</button>
+
+                <button class="ct-button--primary" (click)="submit()">{{'REGISTER.SUBMIT' | translate}}</button>
+
+            </div>
+        </div>
+
+
+    </div>
+</div>

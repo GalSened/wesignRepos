@@ -1,0 +1,130 @@
+// breaks
+.ct-break {
+  margin-bottom: 0;
+}
+
+.ct-break--shorter {
+  margin-bottom: 10px;
+}
+
+.ct-break--short {
+  margin-bottom: 25px;
+}
+
+.ct-break--medium {
+  margin-bottom: 50px;
+}
+
+.ct-break--large {
+  margin-bottom: 100px;
+}
+
+.ct-break--larger {
+  margin-bottom: 150px;
+}
+
+// horizontal-breaks
+
+.ct-horizontal-break--shorter {
+  margin-left: 5px;
+}
+
+.ct-horizontal-break--short {
+  margin-left: 25px;
+}
+
+.ct-horizontal-break--medium {
+  margin-left: 50px;
+}
+
+.ct-horizontal-break--large {
+  margin-left: 100px;
+}
+
+.ct-horizontal-break--larger {
+  margin-left: 150px;
+}
+
+.ct-horizontal-break--largest {
+  margin-left: 300px;
+}
+
+// float
+.ct-float-left {
+  float: left;
+}
+
+.ct-float-right {
+  float: right;
+}
+
+// display
+.ct-is-hidden {
+  display: none !important;
+}
+
+.ct-is-shown {
+  display: initial !important;
+}
+
+.ct-is-visible {
+  visibility: visible;
+}
+
+.ct-is-not-visible {
+  visibility: hidden;
+}
+
+// text align
+.ct-text-center {
+  text-align: center;
+}
+
+.ct-text-justify-center {
+  justify-content: center;
+}
+
+.ct-text-left {
+  text-align: left;
+}
+
+.ct-text-right-no-direction {
+    
+  text-align: right;
+}
+
+.ct-text-right {
+  text-align: right;
+}
+
+.ct-is-inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// misc
+.ct-is-clear {
+  clear: both;
+}
+
+// colors
+.color--error {
+  color: $color--error !important;
+  svg{
+    color: $color--error !important;
+  }
+}
+
+.color--confirm {
+  color: $color--confirm !important;
+  svg{
+    color: $color--confirm !important;
+  }
+}
+
+.color--alert {
+  color: $color--alert !important;
+  svg{
+    color: $color--alert !important;
+  }
+}
