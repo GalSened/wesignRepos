@@ -1,0 +1,66 @@
+name: Deploy All WeSign Components
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_backend:
+        description: 'Deploy backend services'
+        required: true
+        default: true
+        type: boolean
+      deploy_user_client:
+        description: 'Deploy user client'
+        required: true
+        default: true
+        type: boolean
+      deploy_mgmt_client:
+        description: 'Deploy management client'
+        required: true
+        default: true
+        type: boolean
+      deploy_signer_client:
+        description: 'Deploy signer client'
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  backend:
+    name: Deploy Backend
+    if: ${{ inputs.deploy_backend }}
+    uses: ./.github/workflows/deploy-backend.yml
+    secrets: inherit
+
+  user-client:
+    name: Deploy User Client
+    if: |
+      always() &&
+      inputs.deploy_user_client &&
+      (needs.backend.result == 'success' || needs.backend.result == 'skipped')
+    needs: [backend]
+    uses: ./.github/workflows/deploy-user-client.yml
+    secrets: inherit
+
+  mgmt-client:
+    name: Deploy Management Client
+    if: |
+      always() &&
+      inputs.deploy_mgmt_client &&
+      (needs.user-client.result == 'success' || needs.user-client.result == 'skipped')
+    needs: [user-client]
+    uses: ./.github/workflows/deploy-mgmt-client.yml
+    secrets: inherit
+
+  signer-client:
+    name: Deploy Signer Client
+    if: |
+      always() &&
+      inputs.deploy_signer_client &&
+      (needs.mgmt-client.result == 'success' || needs.mgmt-client.result == 'skipped')
+    needs: [mgmt-client]
+    uses: ./.github/workflows/deploy-signer-client.yml
+    secrets: inherit

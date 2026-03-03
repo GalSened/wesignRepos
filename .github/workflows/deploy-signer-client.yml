@@ -1,0 +1,801 @@
+name: Deploy WeSign Signer Client
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: true
+        type: choice
+        options:
+          - wesigndev
+        default: wesigndev
+  workflow_call:
+    inputs:
+      environment:
+        description: "Target environment"
+        required: false
+        type: string
+        default: wesigndev
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: wesign-deploy
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "18"
+  AWS_REGION: us-east-1
+
+jobs:
+  # ──────────────────────────────────────────────
+  # Job 1: Build Angular app and upload to S3
+  # ──────────────────────────────────────────────
+  build:
+    name: Build Signer Client
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'wesigndev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        working-directory: wesignsigner-client-app-DEV
+        run: npm ci --legacy-peer-deps
+
+      - name: Build production bundle
+        working-directory: wesignsigner-client-app-DEV
+        run: npm run prod-publish
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload build artifacts to S3
+        working-directory: wesignsigner-client-app-DEV
+        run: |
+          aws s3 cp dist/ "s3://${{ vars.ARTIFACT_BUCKET }}/deploy/signer-client/${{ github.run_id }}/" --recursive
+          echo "Uploaded build artifacts to s3://${{ vars.ARTIFACT_BUCKET }}/deploy/signer-client/${{ github.run_id }}/"
+
+  # ──────────────────────────────────────────────
+  # Job 2: Deploy to APP1 (rolling deploy)
+  # ──────────────────────────────────────────────
+  deploy-app1:
+    name: Deploy to APP1
+    runs-on: ubuntu-latest
+    needs: build
+    environment: wesigndev
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deregister APP1 from target groups
+        run: |
+          for TG in "${{ vars.TG_APP_ARN }}" "${{ vars.TG_HTTPS_ARN }}" "${{ vars.TG_MGMT_ARN }}"; do
+            echo "Deregistering from: $TG"
+            aws elbv2 deregister-targets \
+              --target-group-arn "$TG" \
+              --targets "Id=${{ vars.APP1_INSTANCE_ID }}" \
+              --region "${{ vars.AWS_REGION }}"
+          done
+          echo "APP1 deregistered from all target groups"
+
+      - name: Wait for connection drain
+        run: |
+          echo "Waiting 30s for connections to drain (dev environment)..."
+          sleep 30
+
+      - name: "SSM: Backup SignerFrontend on APP1"
+        id: ssm_backup_app1
+        env:
+          INSTANCE_ID: ${{ vars.APP1_INSTANCE_ID }}
+        run: |
+          cat > /tmp/backup.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+          $src = 'C:\Comda\Wesign\Sites\SignerFrontend'
+          $dst = "C:\Comda\Wesign\Backups\SignerFrontend\backup_$timestamp"
+
+          Write-Host "Creating backup: $dst"
+          New-Item -ItemType Directory -Path $dst -Force | Out-Null
+          Copy-Item "$src\*" $dst -Recurse -Force
+
+          # Symlink latest
+          $latest = 'C:\Comda\Wesign\Backups\SignerFrontend\latest'
+          if (Test-Path $latest) { Remove-Item $latest -Force }
+          New-Item -ItemType Junction -Path $latest -Target $dst | Out-Null
+
+          # Keep last 5 backups
+          Get-ChildItem 'C:\Comda\Wesign\Backups\SignerFrontend' -Directory |
+            Where-Object { $_.Name -match '^backup_' } |
+            Sort-Object Name -Descending |
+            Select-Object -Skip 5 |
+            ForEach-Object { Remove-Item $_.FullName -Recurse -Force }
+
+          Write-Host "Backup complete: $dst"
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/backup-signer-app1.ps1"
+          aws s3 cp /tmp/backup.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\backup.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\backup.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== SSM Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "SSM command failed with status: $STATUS"
+              echo "=== STDERR ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              echo "=== STDOUT ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "SSM command timed out waiting for completion"
+            exit 1
+          fi
+
+      - name: "SSM: Deploy SignerFrontend to APP1"
+        id: ssm_deploy_app1
+        env:
+          INSTANCE_ID: ${{ vars.APP1_INSTANCE_ID }}
+        run: |
+          cat > /tmp/deploy.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $runId = '${{ github.run_id }}'
+          $bucket = '${{ vars.ARTIFACT_BUCKET }}'
+          $target = 'C:\Comda\Wesign\Sites\SignerFrontend'
+          $temp = "C:\Comda\Wesign\DeployTemp\signer-client-$runId"
+
+          Write-Host "Downloading build artifacts from S3..."
+          New-Item -ItemType Directory -Path $temp -Force | Out-Null
+          aws s3 cp "s3://$bucket/deploy/signer-client/$runId/" $temp --recursive
+
+          # Copy all downloaded files to target
+          Write-Host "Deploying to $target..."
+          Get-ChildItem $temp -File | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Force
+          }
+          Get-ChildItem $temp -Directory | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Recurse -Force
+          }
+
+          # Cleanup temp
+          Remove-Item $temp -Recurse -Force
+          Write-Host 'Deploy complete'
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/deploy-signer-app1.ps1"
+          aws s3 cp /tmp/deploy.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\deploy.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\deploy.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== SSM Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "SSM command failed with status: $STATUS"
+              echo "=== STDERR ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              echo "=== STDOUT ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "SSM command timed out waiting for completion"
+            exit 1
+          fi
+
+      - name: "SSM: Health check APP1"
+        id: ssm_health_app1
+        env:
+          INSTANCE_ID: ${{ vars.APP1_INSTANCE_ID }}
+        run: |
+          cat > /tmp/healthcheck.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $maxRetries = 12
+          for ($i = 1; $i -le $maxRetries; $i++) {
+            try {
+              $r = Invoke-WebRequest -Uri 'https://localhost/signer/' -UseBasicParsing -TimeoutSec 10 -SkipCertificateCheck
+              if ($r.StatusCode -eq 200) {
+                Write-Host 'Health check passed'
+                exit 0
+              }
+            } catch {
+              Write-Host "Attempt $i failed: $_"
+            }
+            Start-Sleep -Seconds 5
+          }
+          Write-Error 'Health check failed after all retries'
+          exit 1
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/healthcheck-signer-app1.ps1"
+          aws s3 cp /tmp/healthcheck.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\healthcheck.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\healthcheck.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== SSM Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "SSM command failed with status: $STATUS"
+              echo "=== STDERR ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              echo "=== STDOUT ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "SSM command timed out waiting for completion"
+            exit 1
+          fi
+
+      - name: Register APP1 back to target groups
+        run: |
+          echo "Registering APP1 back to target groups..."
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_APP_ARN }}" \
+            --targets "Id=${{ vars.APP1_INSTANCE_ID }},Port=80" \
+            --region "${{ vars.AWS_REGION }}"
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_HTTPS_ARN }}" \
+            --targets "Id=${{ vars.APP1_INSTANCE_ID }},Port=443" \
+            --region "${{ vars.AWS_REGION }}"
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_MGMT_ARN }}" \
+            --targets "Id=${{ vars.APP1_INSTANCE_ID }},Port=10443" \
+            --region "${{ vars.AWS_REGION }}"
+          echo "APP1 registered on all target groups"
+
+      - name: Wait for APP1 healthy in target groups
+        run: |
+          for TG in "${{ vars.TG_APP_ARN }}" "${{ vars.TG_HTTPS_ARN }}" "${{ vars.TG_MGMT_ARN }}"; do
+            echo "Waiting for healthy in: $TG"
+            aws elbv2 wait target-in-service \
+              --target-group-arn "$TG" \
+              --targets "Id=${{ vars.APP1_INSTANCE_ID }}" \
+              --region "${{ vars.AWS_REGION }}" || true
+          done
+          echo "APP1 is healthy in all target groups"
+
+      - name: "Rollback: Restore SignerFrontend on APP1"
+        if: failure()
+        env:
+          INSTANCE_ID: ${{ vars.APP1_INSTANCE_ID }}
+        run: |
+          cat > /tmp/rollback.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $latest = 'C:\Comda\Wesign\Backups\SignerFrontend\latest'
+          $target = 'C:\Comda\Wesign\Sites\SignerFrontend'
+
+          if (-not (Test-Path $latest)) {
+            Write-Error 'No backup found at latest junction'
+            exit 1
+          }
+
+          Write-Host "Rolling back from: $latest"
+          Get-ChildItem $latest -File | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Force
+          }
+          Get-ChildItem $latest -Directory | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Recurse -Force
+          }
+          Write-Host 'Rollback complete'
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/rollback-signer-app1.ps1"
+          aws s3 cp /tmp/rollback.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\rollback.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\rollback.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Rollback Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== Rollback Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "Rollback SSM failed with status: $STATUS"
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              break
+            fi
+            sleep 10
+          done
+
+      - name: "Rollback: Re-register APP1"
+        if: failure()
+        run: |
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_APP_ARN }}" \
+            --targets "Id=${{ vars.APP1_INSTANCE_ID }},Port=80" \
+            --region "${{ vars.AWS_REGION }}" || true
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_HTTPS_ARN }}" \
+            --targets "Id=${{ vars.APP1_INSTANCE_ID }},Port=443" \
+            --region "${{ vars.AWS_REGION }}" || true
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_MGMT_ARN }}" \
+            --targets "Id=${{ vars.APP1_INSTANCE_ID }},Port=10443" \
+            --region "${{ vars.AWS_REGION }}" || true
+          echo "APP1 re-registered after rollback"
+
+  # ──────────────────────────────────────────────
+  # Job 3: Deploy to APP2 (rolling deploy)
+  # ──────────────────────────────────────────────
+  deploy-app2:
+    name: Deploy to APP2
+    runs-on: ubuntu-latest
+    needs: deploy-app1
+    environment: wesigndev
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deregister APP2 from target groups
+        run: |
+          for TG in "${{ vars.TG_APP_ARN }}" "${{ vars.TG_HTTPS_ARN }}" "${{ vars.TG_MGMT_ARN }}"; do
+            echo "Deregistering from: $TG"
+            aws elbv2 deregister-targets \
+              --target-group-arn "$TG" \
+              --targets "Id=${{ vars.APP2_INSTANCE_ID }}" \
+              --region "${{ vars.AWS_REGION }}"
+          done
+          echo "APP2 deregistered from all target groups"
+
+      - name: Wait for connection drain
+        run: |
+          echo "Waiting 30s for connections to drain (dev environment)..."
+          sleep 30
+
+      - name: "SSM: Backup SignerFrontend on APP2"
+        id: ssm_backup_app2
+        env:
+          INSTANCE_ID: ${{ vars.APP2_INSTANCE_ID }}
+        run: |
+          cat > /tmp/backup.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+          $src = 'C:\Comda\Wesign\Sites\SignerFrontend'
+          $dst = "C:\Comda\Wesign\Backups\SignerFrontend\backup_$timestamp"
+
+          Write-Host "Creating backup: $dst"
+          New-Item -ItemType Directory -Path $dst -Force | Out-Null
+          Copy-Item "$src\*" $dst -Recurse -Force
+
+          # Symlink latest
+          $latest = 'C:\Comda\Wesign\Backups\SignerFrontend\latest'
+          if (Test-Path $latest) { Remove-Item $latest -Force }
+          New-Item -ItemType Junction -Path $latest -Target $dst | Out-Null
+
+          # Keep last 5 backups
+          Get-ChildItem 'C:\Comda\Wesign\Backups\SignerFrontend' -Directory |
+            Where-Object { $_.Name -match '^backup_' } |
+            Sort-Object Name -Descending |
+            Select-Object -Skip 5 |
+            ForEach-Object { Remove-Item $_.FullName -Recurse -Force }
+
+          Write-Host "Backup complete: $dst"
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/backup-signer-app2.ps1"
+          aws s3 cp /tmp/backup.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\backup.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\backup.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== SSM Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "SSM command failed with status: $STATUS"
+              echo "=== STDERR ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              echo "=== STDOUT ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "SSM command timed out waiting for completion"
+            exit 1
+          fi
+
+      - name: "SSM: Deploy SignerFrontend to APP2"
+        id: ssm_deploy_app2
+        env:
+          INSTANCE_ID: ${{ vars.APP2_INSTANCE_ID }}
+        run: |
+          cat > /tmp/deploy.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $runId = '${{ github.run_id }}'
+          $bucket = '${{ vars.ARTIFACT_BUCKET }}'
+          $target = 'C:\Comda\Wesign\Sites\SignerFrontend'
+          $temp = "C:\Comda\Wesign\DeployTemp\signer-client-$runId"
+
+          Write-Host "Downloading build artifacts from S3..."
+          New-Item -ItemType Directory -Path $temp -Force | Out-Null
+          aws s3 cp "s3://$bucket/deploy/signer-client/$runId/" $temp --recursive
+
+          # Copy all downloaded files to target
+          Write-Host "Deploying to $target..."
+          Get-ChildItem $temp -File | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Force
+          }
+          Get-ChildItem $temp -Directory | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Recurse -Force
+          }
+
+          # Cleanup temp
+          Remove-Item $temp -Recurse -Force
+          Write-Host 'Deploy complete'
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/deploy-signer-app2.ps1"
+          aws s3 cp /tmp/deploy.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\deploy.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\deploy.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== SSM Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "SSM command failed with status: $STATUS"
+              echo "=== STDERR ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              echo "=== STDOUT ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "SSM command timed out waiting for completion"
+            exit 1
+          fi
+
+      - name: "SSM: Health check APP2"
+        id: ssm_health_app2
+        env:
+          INSTANCE_ID: ${{ vars.APP2_INSTANCE_ID }}
+        run: |
+          cat > /tmp/healthcheck.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $maxRetries = 12
+          for ($i = 1; $i -le $maxRetries; $i++) {
+            try {
+              $r = Invoke-WebRequest -Uri 'https://localhost/signer/' -UseBasicParsing -TimeoutSec 10 -SkipCertificateCheck
+              if ($r.StatusCode -eq 200) {
+                Write-Host 'Health check passed'
+                exit 0
+              }
+            } catch {
+              Write-Host "Attempt $i failed: $_"
+            }
+            Start-Sleep -Seconds 5
+          }
+          Write-Error 'Health check failed after all retries'
+          exit 1
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/healthcheck-signer-app2.ps1"
+          aws s3 cp /tmp/healthcheck.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\healthcheck.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\healthcheck.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== SSM Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "SSM command failed with status: $STATUS"
+              echo "=== STDERR ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              echo "=== STDOUT ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              exit 1
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "Success" ]; then
+            echo "SSM command timed out waiting for completion"
+            exit 1
+          fi
+
+      - name: Register APP2 back to target groups
+        run: |
+          echo "Registering APP2 back to target groups..."
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_APP_ARN }}" \
+            --targets "Id=${{ vars.APP2_INSTANCE_ID }},Port=80" \
+            --region "${{ vars.AWS_REGION }}"
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_HTTPS_ARN }}" \
+            --targets "Id=${{ vars.APP2_INSTANCE_ID }},Port=443" \
+            --region "${{ vars.AWS_REGION }}"
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_MGMT_ARN }}" \
+            --targets "Id=${{ vars.APP2_INSTANCE_ID }},Port=10443" \
+            --region "${{ vars.AWS_REGION }}"
+          echo "APP2 registered on all target groups"
+
+      - name: Wait for APP2 healthy in target groups
+        run: |
+          for TG in "${{ vars.TG_APP_ARN }}" "${{ vars.TG_HTTPS_ARN }}" "${{ vars.TG_MGMT_ARN }}"; do
+            echo "Waiting for healthy in: $TG"
+            aws elbv2 wait target-in-service \
+              --target-group-arn "$TG" \
+              --targets "Id=${{ vars.APP2_INSTANCE_ID }}" \
+              --region "${{ vars.AWS_REGION }}" || true
+          done
+          echo "APP2 is healthy in all target groups"
+
+      - name: "Rollback: Restore SignerFrontend on APP2"
+        if: failure()
+        env:
+          INSTANCE_ID: ${{ vars.APP2_INSTANCE_ID }}
+        run: |
+          cat > /tmp/rollback.ps1 << 'PSEOF'
+          $ErrorActionPreference = 'Stop'
+          $latest = 'C:\Comda\Wesign\Backups\SignerFrontend\latest'
+          $target = 'C:\Comda\Wesign\Sites\SignerFrontend'
+
+          if (-not (Test-Path $latest)) {
+            Write-Error 'No backup found at latest junction'
+            exit 1
+          }
+
+          Write-Host "Rolling back from: $latest"
+          Get-ChildItem $latest -File | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Force
+          }
+          Get-ChildItem $latest -Directory | ForEach-Object {
+            Copy-Item $_.FullName "$target\$($_.Name)" -Recurse -Force
+          }
+          Write-Host 'Rollback complete'
+          PSEOF
+
+          SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/rollback-signer-app2.ps1"
+          aws s3 cp /tmp/rollback.ps1 "s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY"
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name "AWS-RunPowerShellScript" \
+            --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\rollback.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\rollback.ps1\"]}" \
+            --region "${{ vars.AWS_REGION }}" \
+            --timeout-seconds 300 \
+            --query "Command.CommandId" --output text)
+
+          echo "SSM Rollback Command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$INSTANCE_ID" \
+              --region "${{ vars.AWS_REGION }}" \
+              --query "Status" --output text 2>/dev/null || echo "InProgress")
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "=== Rollback Output ==="
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardOutputContent" --output text
+              break
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "TimedOut" ] || [ "$STATUS" = "Cancelled" ]; then
+              echo "Rollback SSM failed with status: $STATUS"
+              aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" --region "${{ vars.AWS_REGION }}" --query "StandardErrorContent" --output text
+              break
+            fi
+            sleep 10
+          done
+
+      - name: "Rollback: Re-register APP2"
+        if: failure()
+        run: |
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_APP_ARN }}" \
+            --targets "Id=${{ vars.APP2_INSTANCE_ID }},Port=80" \
+            --region "${{ vars.AWS_REGION }}" || true
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_HTTPS_ARN }}" \
+            --targets "Id=${{ vars.APP2_INSTANCE_ID }},Port=443" \
+            --region "${{ vars.AWS_REGION }}" || true
+          aws elbv2 register-targets \
+            --target-group-arn "${{ vars.TG_MGMT_ARN }}" \
+            --targets "Id=${{ vars.APP2_INSTANCE_ID }},Port=10443" \
+            --region "${{ vars.AWS_REGION }}" || true
+          echo "APP2 re-registered after rollback"
+
+  # ──────────────────────────────────────────────
+  # Job 4: Notify deploy status
+  # ──────────────────────────────────────────────
+  notify:
+    name: Notify Deploy Status
+    runs-on: ubuntu-latest
+    needs: [deploy-app1, deploy-app2]
+    if: always()
+    environment: wesigndev
+    steps:
+      - name: Send Teams notification
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          DEPLOY_STATUS_APP1: ${{ needs.deploy-app1.result }}
+          DEPLOY_STATUS_APP2: ${{ needs.deploy-app2.result }}
+        run: |
+          if [ "$DEPLOY_STATUS_APP1" = "success" ] && [ "$DEPLOY_STATUS_APP2" = "success" ]; then
+            STATUS="SUCCESS"
+            COLOR="00FF00"
+            THEME_COLOR="28a745"
+          else
+            STATUS="FAILED"
+            COLOR="FF0000"
+            THEME_COLOR="dc3545"
+          fi
+
+          curl -s -X POST "$TEAMS_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d @- << EOF
+          {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "themeColor": "$THEME_COLOR",
+            "summary": "WeSign Signer Client Deploy: $STATUS",
+            "sections": [{
+              "activityTitle": "WeSign Signer Client Deployment",
+              "facts": [
+                { "name": "Status", "value": "$STATUS" },
+                { "name": "APP1", "value": "$DEPLOY_STATUS_APP1" },
+                { "name": "APP2", "value": "$DEPLOY_STATUS_APP2" },
+                { "name": "Environment", "value": "${{ inputs.environment || 'wesigndev' }}" },
+                { "name": "Run", "value": "#${{ github.run_number }}" },
+                { "name": "Triggered by", "value": "${{ github.actor }}" }
+              ],
+              "markdown": true
+            }],
+            "potentialAction": [{
+              "@type": "OpenUri",
+              "name": "View Run",
+              "targets": [{
+                "os": "default",
+                "uri": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              }]
+            }]
+          }
+          EOF
+
+          echo "Teams notification sent: $STATUS"
