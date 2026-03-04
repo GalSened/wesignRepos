@@ -69,6 +69,14 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore user-backend/WeSignV3.sln -r win-x64 /p:NoWarn=NU1605
 
+      - name: Fix case-sensitive file references
+        run: |
+          # Linux is case-sensitive; Windows project references may differ in case
+          RESOURCES="user-backend/PdfHandler/Resources"
+          if [ -f "$RESOURCES/arial.ttf" ] && [ ! -f "$RESOURCES/Arial.ttf" ]; then
+            ln -s arial.ttf "$RESOURCES/Arial.ttf"
+          fi
+
       - name: Publish all services
         run: |
           declare -A SERVICES
