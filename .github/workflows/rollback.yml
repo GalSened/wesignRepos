@@ -164,7 +164,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Rollback user-client"
         if: ${{ inputs.component == 'user-client' || inputs.component == 'all' }}
@@ -217,7 +220,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Rollback mgmt-client"
         if: ${{ inputs.component == 'mgmt-client' || inputs.component == 'all' }}
@@ -270,7 +276,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Rollback signer-client"
         if: ${{ inputs.component == 'signer-client' || inputs.component == 'all' }}
@@ -323,7 +332,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Health check"
         run: |
@@ -383,7 +395,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: Register APP1 in target groups
         run: |
@@ -539,7 +554,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Rollback user-client"
         if: ${{ inputs.component == 'user-client' || inputs.component == 'all' }}
@@ -592,7 +610,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Rollback mgmt-client"
         if: ${{ inputs.component == 'mgmt-client' || inputs.component == 'all' }}
@@ -645,7 +666,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Rollback signer-client"
         if: ${{ inputs.component == 'signer-client' || inputs.component == 'all' }}
@@ -698,7 +722,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: "SSM: Health check"
         run: |
@@ -758,7 +785,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for SSM command" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for SSM command"
+            exit 1
+          fi
 
       - name: Register APP2 in target groups
         run: |

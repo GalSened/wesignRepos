@@ -348,7 +348,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out waiting for deploy" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for deploy"
+            exit 1
+          fi
 
       - name: Register APP1 in target groups
         run: |
@@ -383,7 +386,9 @@ jobs:
               echo "  Attempt $attempt: $HEALTH"
               sleep 10
             done
-            [ "$HEALTH" != "healthy" ] && echo "WARNING: APP1 not healthy in $TG"
+            if [ "$HEALTH" != "healthy" ]; then
+              echo "WARNING: APP1 not healthy in $TG"
+            fi
           done
 
       - name: "Rollback APP1 on failure"
@@ -640,7 +645,10 @@ jobs:
             sleep 10
           done
 
-          [ "$STATUS" != "Success" ] && echo "Timed out" && exit 1
+          if [ "$STATUS" != "Success" ]; then
+            echo "Timed out waiting for deploy"
+            exit 1
+          fi
 
       - name: Register APP2 in target groups
         run: |
@@ -674,7 +682,9 @@ jobs:
               echo "  Attempt $attempt: $HEALTH"
               sleep 10
             done
-            [ "$HEALTH" != "healthy" ] && echo "WARNING: APP2 not healthy in $TG"
+            if [ "$HEALTH" != "healthy" ]; then
+              echo "WARNING: APP2 not healthy in $TG"
+            fi
           done
 
       - name: "Rollback APP2 on failure"
