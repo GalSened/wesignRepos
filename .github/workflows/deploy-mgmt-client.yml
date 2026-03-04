@@ -137,7 +137,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\backup.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\backup.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command: $COMMAND_ID"
 
@@ -208,7 +208,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\deploy.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\deploy.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command: $COMMAND_ID"
 
@@ -273,7 +273,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\healthcheck.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\healthcheck.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command: $COMMAND_ID"
 
@@ -367,7 +367,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\rollback.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\rollback.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Rollback Command: $COMMAND_ID"
 
@@ -478,7 +478,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\backup.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\backup.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command: $COMMAND_ID"
 
@@ -549,7 +549,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\deploy.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\deploy.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command: $COMMAND_ID"
 
@@ -614,7 +614,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\healthcheck.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\healthcheck.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command: $COMMAND_ID"
 
@@ -708,7 +708,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://${{ vars.ARTIFACT_BUCKET }}/$SCRIPT_KEY C:\\\\Temp\\\\rollback.ps1 --region ${{ vars.AWS_REGION }}; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\rollback.ps1\"]}" \
             --region "${{ vars.AWS_REGION }}" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Rollback Command: $COMMAND_ID"
 

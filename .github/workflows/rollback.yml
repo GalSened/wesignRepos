@@ -139,7 +139,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 600 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -192,7 +192,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -245,7 +245,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -298,7 +298,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -361,7 +361,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -414,7 +414,7 @@ jobs:
                 --target-group-arn "$TG" \
                 --targets "Id=${{ vars.APP1_INSTANCE_ID }}" \
                 --query "TargetHealthDescriptions[0].TargetHealth.State" \
-                --output text 2>/dev/null || echo "unknown")
+                --output text 2>/dev/null | tr -d '\r' || echo "unknown")
               if [ "$HEALTH" = "healthy" ]; then
                 echo "APP1 healthy in $TG"
                 break
@@ -517,7 +517,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 600 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -570,7 +570,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -623,7 +623,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -676,7 +676,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -739,7 +739,7 @@ jobs:
             --parameters "{\"commands\":[\"aws s3 cp s3://$BUCKET/$SCRIPT_KEY C:\\\\Temp\\\\script.ps1 --region $AWS_REGION; powershell -ExecutionPolicy Bypass -File C:\\\\Temp\\\\script.ps1\"]}" \
             --region "$AWS_REGION" \
             --timeout-seconds 300 \
-            --query "Command.CommandId" --output text)
+            --query "Command.CommandId" --output text | tr -d '\r')
 
           echo "SSM Command ID: $COMMAND_ID"
 
@@ -792,7 +792,7 @@ jobs:
                 --target-group-arn "$TG" \
                 --targets "Id=${{ vars.APP2_INSTANCE_ID }}" \
                 --query "TargetHealthDescriptions[0].TargetHealth.State" \
-                --output text 2>/dev/null || echo "unknown")
+                --output text 2>/dev/null | tr -d '\r' || echo "unknown")
               if [ "$HEALTH" = "healthy" ]; then
                 echo "APP2 healthy in $TG"
                 break
