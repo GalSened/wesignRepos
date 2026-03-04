@@ -530,7 +530,7 @@ jobs:
                       Stop-WebAppPool -Name $pool
                       Write-Host "Stopped: $pool"
                   }
-              } catch { Write-Host "Pool $pool: $_" }
+              } catch { Write-Host "Pool ${pool}: $_" }
           }
           Start-Sleep -Seconds 10
 
@@ -544,11 +544,13 @@ jobs:
               aws s3 cp "s3://$bucket/deploy/backend/$runId/$svc.zip" $zipPath --region $region --no-progress
               if ($LASTEXITCODE -ne 0) { throw "Failed to download $svc.zip" }
 
-              # Save configs
+              # Save config files (server has its own appsettings/web.config)
+              $preservePatterns = @('appsettings*.json','web.config')
               $savedConfigs = @{}
-              foreach ($cfg in @('appsettings.json','web.config')) {
-                  $cfgPath = Join-Path $target $cfg
-                  if (Test-Path $cfgPath) { $savedConfigs[$cfg] = Get-Content $cfgPath -Raw }
+              foreach ($pattern in $preservePatterns) {
+                  Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
+                      $savedConfigs[$_.Name] = Get-Content $_.FullName -Raw
+                  }
               }
 
               # Extract and deploy
@@ -568,7 +570,7 @@ jobs:
           # ── Start Pools ──
           Write-Host '=== Start IIS Pools ==='
           foreach ($pool in $pools) {
-              try { Start-WebAppPool -Name $pool; Write-Host "Started: $pool" } catch { Write-Host "Pool $pool: $_" }
+              try { Start-WebAppPool -Name $pool; Write-Host "Started: $pool" } catch { Write-Host "Pool ${pool}: $_" }
           }
 
           # ── Health Check (using curl.exe -k for PS 5.1 compatibility) ──
