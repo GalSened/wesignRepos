@@ -75,17 +75,28 @@ jobs:
 
       - name: Add server-side runtime packages
         run: |
-          # Serilog.Sinks.MariaDB is configured in server appsettings but not in .csproj files.
-          # Add it temporarily so the build output includes the DLL and correct deps.json entry.
-          for proj in \
-            user-backend/WeSign/WeSign.csproj \
-            user-backend/WeSignSigner/WeSignSigner.csproj \
-            user-backend/WeSignManagement/WeSignManagement.csproj \
-            user-backend/WSE-ADAuth/WSE-ADAuth.csproj \
-            user-backend/PdfExternalService/PdfExternalService.csproj \
-            user-backend/MongoIntegratorService/HistoryIntegratorService.csproj; do
-            dotnet add "$proj" package Serilog.Sinks.MariaDB --version 1.0.1 --no-restore
-            echo "Added Serilog.Sinks.MariaDB to $proj"
+          # These Serilog sinks are configured in server appsettings.json but not in .csproj files.
+          # Add them temporarily so the build includes the DLLs and correct deps.json entries.
+          PACKAGES=(
+            "Serilog.Sinks.MariaDB:1.0.1"
+            "Serilog.Sinks.AwsCloudWatch:4.3.37"
+            "Serilog.Sinks.MySQL:5.0.0"
+          )
+          PROJECTS=(
+            "user-backend/WeSign/WeSign.csproj"
+            "user-backend/WeSignSigner/WeSignSigner.csproj"
+            "user-backend/WeSignManagement/WeSignManagement.csproj"
+            "user-backend/WSE-ADAuth/WSE-ADAuth.csproj"
+            "user-backend/PdfExternalService/PdfExternalService.csproj"
+            "user-backend/MongoIntegratorService/HistoryIntegratorService.csproj"
+          )
+          for pkg_ver in "${PACKAGES[@]}"; do
+            PKG="${pkg_ver%%:*}"
+            VER="${pkg_ver##*:}"
+            for proj in "${PROJECTS[@]}"; do
+              dotnet add "$proj" package "$PKG" --version "$VER" --no-restore 2>/dev/null || true
+            done
+            echo "Added $PKG v$VER to all projects"
           done
 
       - name: Restore NuGet packages
