@@ -47,6 +47,13 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Pin .NET SDK version
+        run: |
+          # Ensure we use the 9.0.x SDK (runner may have 10.0.x which can produce
+          # incompatible deps.json for the 9.0 runtime on the server)
+          echo '{"sdk":{"version":"9.0.0","rollForward":"latestFeature"}}' > global.json
+          dotnet --version
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -82,7 +89,7 @@ jobs:
           done
 
       - name: Restore NuGet packages
-        run: dotnet restore user-backend/WeSignV3.sln -r win-x64 /p:NoWarn=NU1605
+        run: dotnet restore user-backend/WeSignV3.sln /p:NoWarn=NU1605
 
       - name: Fix case-sensitive file references
         run: |
@@ -106,7 +113,7 @@ jobs:
             PROJ="${SERVICES[$SVC]}"
             echo "=== Publishing $SVC from $PROJ ==="
             dotnet publish "$PROJ" \
-              -c Release -r win-x64 --self-contained false \
+              -c Release --self-contained false \
               -o "publish/$SVC" --no-restore
 
             # Strip config files (server has its own appsettings/web.config)
