@@ -66,6 +66,21 @@ jobs:
           dotnet nuget add source /tmp/nuget-local --name comda-private
           dotnet nuget list source
 
+      - name: Add server-side runtime packages
+        run: |
+          # Serilog.Sinks.MariaDB is configured in server appsettings but not in .csproj files.
+          # Add it temporarily so the build output includes the DLL and correct deps.json entry.
+          for proj in \
+            user-backend/WeSign/WeSign.csproj \
+            user-backend/WeSignSigner/WeSignSigner.csproj \
+            user-backend/WeSignManagement/WeSignManagement.csproj \
+            user-backend/WSE-ADAuth/WSE-ADAuth.csproj \
+            user-backend/PdfExternalService/PdfExternalService.csproj \
+            user-backend/MongoIntegratorService/HistoryIntegratorService.csproj; do
+            dotnet add "$proj" package Serilog.Sinks.MariaDB --version 1.0.1 --no-restore
+            echo "Added Serilog.Sinks.MariaDB to $proj"
+          done
+
       - name: Restore NuGet packages
         run: dotnet restore user-backend/WeSignV3.sln -r win-x64 /p:NoWarn=NU1605
 
@@ -94,13 +109,11 @@ jobs:
               -c Release -r win-x64 --self-contained false \
               -o "publish/$SVC" --no-restore
 
-            # Strip config/runtime files (server has its own)
+            # Strip config files (server has its own appsettings/web.config)
             rm -f "publish/$SVC/appsettings.json"
             rm -f "publish/$SVC/appsettings."*.json
             rm -f "publish/$SVC/web.config"
-            rm -f "publish/$SVC/"*.deps.json
-            rm -f "publish/$SVC/"*.runtimeconfig.json
-            echo "Published $SVC (config+runtime stripped)"
+            echo "Published $SVC (config stripped)"
           done
 
       - name: Package and upload artifacts to S3
@@ -207,8 +220,8 @@ jobs:
               aws s3 cp "s3://$bucket/deploy/backend/$runId/$svc.zip" $zipPath --region $region --no-progress
               if ($LASTEXITCODE -ne 0) { throw "Failed to download $svc.zip" }
 
-              # Save config + runtime files (server may have extra deps)
-              $preservePatterns = @('appsettings*.json','web.config','*.deps.json','*.runtimeconfig.json')
+              # Save config files (server has its own appsettings/web.config)
+              $preservePatterns = @('appsettings*.json','web.config')
               $savedFiles = @{}
               foreach ($pattern in $preservePatterns) {
                   Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
@@ -376,7 +389,7 @@ jobs:
               if ($latest) {
                   $target = "C:\Comda\Wesign\Sites\$svc"
                   $savedFiles = @{}
-                  foreach ($pattern in @('appsettings*.json','web.config','*.deps.json','*.runtimeconfig.json')) {
+                  foreach ($pattern in @('appsettings*.json','web.config')) {
                       Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
                           $savedFiles[$_.Name] = Get-Content $_.FullName -Raw
                       }
@@ -667,7 +680,7 @@ jobs:
               if ($latest) {
                   $target = "C:\Comda\Wesign\Sites\$svc"
                   $savedFiles = @{}
-                  foreach ($pattern in @('appsettings*.json','web.config','*.deps.json','*.runtimeconfig.json')) {
+                  foreach ($pattern in @('appsettings*.json','web.config')) {
                       Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
                           $savedFiles[$_.Name] = Get-Content $_.FullName -Raw
                       }
