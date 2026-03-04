@@ -149,6 +149,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -201,6 +202,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -253,6 +255,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -305,6 +308,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -367,6 +371,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -522,6 +527,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -574,6 +580,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -626,6 +633,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -678,6 +686,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
@@ -740,6 +749,7 @@ jobs:
               --instance-id "$INSTANCE_ID" \
               --region "$AWS_REGION" \
               --query "Status" --output text 2>/dev/null || echo "InProgress")
+            STATUS=$(echo "$STATUS" | tr -d '\r')
 
             if [ "$STATUS" = "Success" ]; then
               echo "=== Output ==="
