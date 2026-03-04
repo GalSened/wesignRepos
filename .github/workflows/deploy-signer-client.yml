@@ -115,7 +115,7 @@ jobs:
 
           # Symlink latest
           $latest = 'C:\Comda\Wesign\Backups\SignerFrontend\latest'
-          if (Test-Path $latest) { Remove-Item $latest -Force }
+          if (Test-Path $latest) { cmd /c rmdir $latest 2>$null; Remove-Item $latest -Force -ErrorAction SilentlyContinue }
           New-Item -ItemType Junction -Path $latest -Target $dst | Out-Null
 
           # Keep last 5 backups
@@ -456,7 +456,7 @@ jobs:
 
           # Symlink latest
           $latest = 'C:\Comda\Wesign\Backups\SignerFrontend\latest'
-          if (Test-Path $latest) { Remove-Item $latest -Force }
+          if (Test-Path $latest) { cmd /c rmdir $latest 2>$null; Remove-Item $latest -Force -ErrorAction SilentlyContinue }
           New-Item -ItemType Junction -Path $latest -Target $dst | Out-Null
 
           # Keep last 5 backups
