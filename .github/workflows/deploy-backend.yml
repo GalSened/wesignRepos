@@ -108,7 +108,6 @@ jobs:
           $runId = 'RUN_ID_PLACEHOLDER'
           $bucket = 'BUCKET_PLACEHOLDER'
           $region = 'REGION_PLACEHOLDER'
-          $nugetFeed = 'NUGET_FEED_PLACEHOLDER'
           $basePath = 'C:\Comda\Wesign\Sites'
           $backupBase = 'C:\Comda\Wesign\Backups'
           $buildDir = "C:\Comda\Wesign\BuildTemp\backend-$runId"
@@ -161,17 +160,7 @@ jobs:
           tar -xzf $tarPath -C $srcDir
           if ($LASTEXITCODE -ne 0) { throw "tar extraction failed" }
 
-          # Add private NuGet source if configured
-          if ($nugetFeed -and $nugetFeed -ne '' -and $nugetFeed -ne 'NUGET_FEED_PLACEHOLDER') {
-              Write-Host "Adding private NuGet source: $nugetFeed"
-              dotnet nuget add source $nugetFeed --name comda-private 2>$null
-              if ($LASTEXITCODE -ne 0) {
-                  Write-Host "Source may already exist, updating..."
-                  dotnet nuget update source comda-private --source $nugetFeed 2>$null
-              }
-          }
-
-          # Restore
+          # Restore (NuGet.Config in source root defines package sources)
           Write-Host 'Restoring NuGet packages...'
           $slnPath = Get-ChildItem $srcDir -Filter '*.sln' -Recurse | Select-Object -First 1
           if (-not $slnPath) { throw "No .sln file found" }
@@ -290,8 +279,6 @@ jobs:
           sed -i "s|RUN_ID_PLACEHOLDER|${{ github.run_id }}|g" /tmp/build-deploy.ps1
           sed -i "s|BUCKET_PLACEHOLDER|${{ vars.ARTIFACT_BUCKET }}|g" /tmp/build-deploy.ps1
           sed -i "s|REGION_PLACEHOLDER|${{ vars.AWS_REGION }}|g" /tmp/build-deploy.ps1
-          sed -i "s|NUGET_FEED_PLACEHOLDER|${{ vars.NUGET_FEED_URL }}|g" /tmp/build-deploy.ps1
-
           # Upload script to S3
           SCRIPT_KEY="deploy/scripts/${{ github.run_id }}/app1-build-deploy.ps1"
           aws s3 cp /tmp/build-deploy.ps1 "s3://$BUCKET/$SCRIPT_KEY"
