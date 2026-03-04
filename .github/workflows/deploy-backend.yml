@@ -94,11 +94,13 @@ jobs:
               -c Release -r win-x64 --self-contained false \
               -o "publish/$SVC" --no-restore
 
-            # Strip config files (server has its own)
+            # Strip config/runtime files (server has its own)
             rm -f "publish/$SVC/appsettings.json"
             rm -f "publish/$SVC/appsettings."*.json
             rm -f "publish/$SVC/web.config"
-            echo "Published $SVC (config stripped)"
+            rm -f "publish/$SVC/"*.deps.json
+            rm -f "publish/$SVC/"*.runtimeconfig.json
+            echo "Published $SVC (config+runtime stripped)"
           done
 
       - name: Package and upload artifacts to S3
@@ -205,12 +207,12 @@ jobs:
               aws s3 cp "s3://$bucket/deploy/backend/$runId/$svc.zip" $zipPath --region $region --no-progress
               if ($LASTEXITCODE -ne 0) { throw "Failed to download $svc.zip" }
 
-              # Save config files
-              $savedConfigs = @{}
-              foreach ($cfg in @('appsettings.json','web.config')) {
-                  $cfgPath = Join-Path $target $cfg
-                  if (Test-Path $cfgPath) {
-                      $savedConfigs[$cfg] = Get-Content $cfgPath -Raw
+              # Save config + runtime files (server may have extra deps)
+              $preservePatterns = @('appsettings*.json','web.config','*.deps.json','*.runtimeconfig.json')
+              $savedFiles = @{}
+              foreach ($pattern in $preservePatterns) {
+                  Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
+                      $savedFiles[$_.Name] = Get-Content $_.FullName -Raw
                   }
               }
 
@@ -220,10 +222,10 @@ jobs:
               if (-not (Test-Path $target)) { New-Item -ItemType Directory -Path $target -Force | Out-Null }
               Copy-Item "$extractDir\*" $target -Recurse -Force
 
-              # Restore config files
-              foreach ($cfg in $savedConfigs.Keys) {
-                  Set-Content -Path (Join-Path $target $cfg) -Value $savedConfigs[$cfg] -NoNewline
-                  Write-Host "Preserved: $svc\$cfg"
+              # Restore preserved files
+              foreach ($f in $savedFiles.Keys) {
+                  Set-Content -Path (Join-Path $target $f) -Value $savedFiles[$f] -NoNewline
+                  Write-Host "Preserved: $svc\$f"
               }
               Write-Host "Deployed: $svc"
           }
@@ -373,14 +375,15 @@ jobs:
               $latest = Get-ChildItem $backupDir -Directory | Where-Object { $_.Name -match '^backup_' } | Sort-Object Name -Descending | Select-Object -First 1
               if ($latest) {
                   $target = "C:\Comda\Wesign\Sites\$svc"
-                  $savedConfigs = @{}
-                  foreach ($cfg in @('appsettings.json','web.config')) {
-                      $cfgPath = Join-Path $target $cfg
-                      if (Test-Path $cfgPath) { $savedConfigs[$cfg] = Get-Content $cfgPath -Raw }
+                  $savedFiles = @{}
+                  foreach ($pattern in @('appsettings*.json','web.config','*.deps.json','*.runtimeconfig.json')) {
+                      Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
+                          $savedFiles[$_.Name] = Get-Content $_.FullName -Raw
+                      }
                   }
                   Copy-Item "$($latest.FullName)\*" $target -Recurse -Force
-                  foreach ($cfg in $savedConfigs.Keys) {
-                      Set-Content -Path (Join-Path $target $cfg) -Value $savedConfigs[$cfg] -NoNewline
+                  foreach ($f in $savedFiles.Keys) {
+                      Set-Content -Path (Join-Path $target $f) -Value $savedFiles[$f] -NoNewline
                   }
                   Write-Host "Restored: $svc"
               }
@@ -663,14 +666,15 @@ jobs:
               $latest = Get-ChildItem $backupDir -Directory | Where-Object { $_.Name -match '^backup_' } | Sort-Object Name -Descending | Select-Object -First 1
               if ($latest) {
                   $target = "C:\Comda\Wesign\Sites\$svc"
-                  $savedConfigs = @{}
-                  foreach ($cfg in @('appsettings.json','web.config')) {
-                      $cfgPath = Join-Path $target $cfg
-                      if (Test-Path $cfgPath) { $savedConfigs[$cfg] = Get-Content $cfgPath -Raw }
+                  $savedFiles = @{}
+                  foreach ($pattern in @('appsettings*.json','web.config','*.deps.json','*.runtimeconfig.json')) {
+                      Get-ChildItem $target -Filter $pattern -ErrorAction SilentlyContinue | ForEach-Object {
+                          $savedFiles[$_.Name] = Get-Content $_.FullName -Raw
+                      }
                   }
                   Copy-Item "$($latest.FullName)\*" $target -Recurse -Force
-                  foreach ($cfg in $savedConfigs.Keys) {
-                      Set-Content -Path (Join-Path $target $cfg) -Value $savedConfigs[$cfg] -NoNewline
+                  foreach ($f in $savedFiles.Keys) {
+                      Set-Content -Path (Join-Path $target $f) -Value $savedFiles[$f] -NoNewline
                   }
                   Write-Host "Restored: $svc"
               }
