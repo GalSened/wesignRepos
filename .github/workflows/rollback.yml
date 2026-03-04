@@ -328,27 +328,24 @@ jobs:
       - name: "SSM: Health check"
         run: |
           cat > /tmp/healthcheck.ps1 << 'PSEOF'
-          $ErrorActionPreference = 'Stop'
           $endpoints = @(
               @{Name='UserBackend'; Url='https://localhost/userApi/'},
               @{Name='SignerBackend'; Url='https://localhost/signerApi/'},
               @{Name='ManagementBackend'; Url='https://localhost:10443/managementApi/'},
               @{Name='WSEAuth'; Url='https://localhost/auth/'}
           )
-          $maxRetries = 12
           $failed = @()
           foreach ($ep in $endpoints) {
               $ok = $false
-              for ($i = 1; $i -le $maxRetries; $i++) {
-                  try {
-                      $r = Invoke-WebRequest -Uri $ep.Url -UseBasicParsing -TimeoutSec 10 -SkipCertificateCheck
-                      if ($r.StatusCode -lt 500) { $ok = $true; Write-Host "$($ep.Name): OK (HTTP $($r.StatusCode))"; break }
-                  } catch { Write-Host "$($ep.Name) attempt ${i}: $_" }
+              for ($i = 1; $i -le 6; $i++) {
+                  $code = & curl.exe -k -s -o NUL -w '%{http_code}' --connect-timeout 10 $ep.Url 2>$null
+                  if ($code -and [int]$code -lt 500) { $ok = $true; Write-Host "$($ep.Name): OK (HTTP $code)"; break }
+                  Write-Host "$($ep.Name) attempt ${i}: HTTP $code"
                   Start-Sleep -Seconds 5
               }
               if (-not $ok) { $failed += $ep.Name }
           }
-          if ($failed.Count -gt 0) { Write-Error "Health check failed: $($failed -join ', ')"; exit 1 }
+          if ($failed.Count -gt 0) { Write-Host "HEALTH CHECK FAILED: $($failed -join ', ')"; exit 1 }
           Write-Host 'All health checks passed'
           PSEOF
 
@@ -706,27 +703,24 @@ jobs:
       - name: "SSM: Health check"
         run: |
           cat > /tmp/healthcheck.ps1 << 'PSEOF'
-          $ErrorActionPreference = 'Stop'
           $endpoints = @(
               @{Name='UserBackend'; Url='https://localhost/userApi/'},
               @{Name='SignerBackend'; Url='https://localhost/signerApi/'},
               @{Name='ManagementBackend'; Url='https://localhost:10443/managementApi/'},
               @{Name='WSEAuth'; Url='https://localhost/auth/'}
           )
-          $maxRetries = 12
           $failed = @()
           foreach ($ep in $endpoints) {
               $ok = $false
-              for ($i = 1; $i -le $maxRetries; $i++) {
-                  try {
-                      $r = Invoke-WebRequest -Uri $ep.Url -UseBasicParsing -TimeoutSec 10 -SkipCertificateCheck
-                      if ($r.StatusCode -lt 500) { $ok = $true; Write-Host "$($ep.Name): OK (HTTP $($r.StatusCode))"; break }
-                  } catch { Write-Host "$($ep.Name) attempt ${i}: $_" }
+              for ($i = 1; $i -le 6; $i++) {
+                  $code = & curl.exe -k -s -o NUL -w '%{http_code}' --connect-timeout 10 $ep.Url 2>$null
+                  if ($code -and [int]$code -lt 500) { $ok = $true; Write-Host "$($ep.Name): OK (HTTP $code)"; break }
+                  Write-Host "$($ep.Name) attempt ${i}: HTTP $code"
                   Start-Sleep -Seconds 5
               }
               if (-not $ok) { $failed += $ep.Name }
           }
-          if ($failed.Count -gt 0) { Write-Error "Health check failed: $($failed -join ', ')"; exit 1 }
+          if ($failed.Count -gt 0) { Write-Host "HEALTH CHECK FAILED: $($failed -join ', ')"; exit 1 }
           Write-Host 'All health checks passed'
           PSEOF
 

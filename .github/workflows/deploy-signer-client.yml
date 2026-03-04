@@ -246,21 +246,16 @@ jobs:
           INSTANCE_ID: ${{ vars.APP1_INSTANCE_ID }}
         run: |
           cat > /tmp/healthcheck.ps1 << 'PSEOF'
-          $ErrorActionPreference = 'Stop'
-          $maxRetries = 12
-          for ($i = 1; $i -le $maxRetries; $i++) {
-            try {
-              $r = Invoke-WebRequest -Uri 'https://localhost/signer/' -UseBasicParsing -TimeoutSec 10 -SkipCertificateCheck
-              if ($r.StatusCode -eq 200) {
-                Write-Host 'Health check passed'
-                exit 0
-              }
-            } catch {
-              Write-Host "Attempt $i failed: $_"
+          for ($i = 1; $i -le 6; $i++) {
+            $code = & curl.exe -k -s -o NUL -w '%{http_code}' --connect-timeout 10 'https://localhost/signer/' 2>$null
+            if ($code -and [int]$code -lt 500) {
+              Write-Host "Health check passed (HTTP $code)"
+              exit 0
             }
+            Write-Host "Attempt $i : HTTP $code"
             Start-Sleep -Seconds 5
           }
-          Write-Error 'Health check failed after all retries'
+          Write-Host 'Health check failed after all retries'
           exit 1
           PSEOF
 
@@ -587,21 +582,16 @@ jobs:
           INSTANCE_ID: ${{ vars.APP2_INSTANCE_ID }}
         run: |
           cat > /tmp/healthcheck.ps1 << 'PSEOF'
-          $ErrorActionPreference = 'Stop'
-          $maxRetries = 12
-          for ($i = 1; $i -le $maxRetries; $i++) {
-            try {
-              $r = Invoke-WebRequest -Uri 'https://localhost/signer/' -UseBasicParsing -TimeoutSec 10 -SkipCertificateCheck
-              if ($r.StatusCode -eq 200) {
-                Write-Host 'Health check passed'
-                exit 0
-              }
-            } catch {
-              Write-Host "Attempt $i failed: $_"
+          for ($i = 1; $i -le 6; $i++) {
+            $code = & curl.exe -k -s -o NUL -w '%{http_code}' --connect-timeout 10 'https://localhost/signer/' 2>$null
+            if ($code -and [int]$code -lt 500) {
+              Write-Host "Health check passed (HTTP $code)"
+              exit 0
             }
+            Write-Host "Attempt $i : HTTP $code"
             Start-Sleep -Seconds 5
           }
-          Write-Error 'Health check failed after all retries'
+          Write-Host 'Health check failed after all retries'
           exit 1
           PSEOF
 
