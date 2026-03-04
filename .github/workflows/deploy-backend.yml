@@ -67,7 +67,7 @@ jobs:
           dotnet nuget list source
 
       - name: Restore NuGet packages
-        run: dotnet restore user-backend/WeSignV3.sln
+        run: dotnet restore user-backend/WeSignV3.sln /p:NoWarn=NU1605
 
       - name: Publish all services
         run: |
