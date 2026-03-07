@@ -60,18 +60,15 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Download private NuGet packages from S3
+      - name: Authenticate GitHub Packages NuGet source
         run: |
-          mkdir -p /tmp/nuget-local
-          aws s3 sync "s3://${{ vars.ARTIFACT_BUCKET }}/deploy/nuget-packages/" /tmp/nuget-local/ \
-            --region "${{ vars.AWS_REGION }}"
-          echo "Downloaded packages:"
-          ls -la /tmp/nuget-local/
-
-      - name: Configure NuGet sources
-        run: |
-          dotnet nuget add source /tmp/nuget-local --name comda-private
-          dotnet nuget list source
+          dotnet nuget remove source github --configfile user-backend/nuget.config 2>/dev/null || true
+          dotnet nuget add source https://nuget.pkg.github.com/comda-co-il/index.json \
+            --name github \
+            --username github \
+            --password "${{ secrets.NUGET_AUTH_TOKEN }}" \
+            --store-password-in-clear-text \
+            --configfile user-backend/nuget.config
 
       - name: Add server-side runtime packages
         run: |
